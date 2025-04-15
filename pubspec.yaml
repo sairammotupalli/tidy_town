@@ -1,0 +1,42 @@
+name: tidy_town
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '^3.7.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.2
+  lottie: ^2.7.0
+  google_fonts: ^6.1.0
+  flutter_tts: ^3.8.5
+  
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/welcome.gif
+    - assets/images/home_back1.gif
+    - assets/images/avatar.png
+    - assets/images/home_back.png
+    - assets/images/1.png
+    - assets/images/recycle/recycle_ws.jpeg
+    - assets/images/compost/compost_ws.png
+    - assets/images/landfill/landfill_ws.jpg
+
+  fonts:
+    - family: ComicNeue
+      fonts:
+        - asset: assets/fonts/ComicNeue-Bold.ttf
