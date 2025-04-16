@@ -207,16 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 decoration: BoxDecoration(
-                  // color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(25),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black.withOpacity(0.1),
-                  //     spreadRadius: 1,
-                  //     blurRadius: 10,
-                  //     offset: const Offset(0, -2),
-                  //   ),
-                  // ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -224,7 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildGradientButton(
                       icon: Icons.person,
                       onPressed: () => _showLogoutDialog(context),
-                      isPopupMenu: true,
                     ),
                     _buildGradientButton(
                       icon: Icons.home,
@@ -254,10 +244,10 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isPopupMenu = false,
   }) {
     final buttonContent = Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Icon(
         icon,
-        size: 55,
+        size: 35,
         color: const Color.fromARGB(255, 255, 250, 250),
       ),
     );
@@ -279,26 +269,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      child: isPopupMenu
-          ? PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'logout') {
-                  onPressed();
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'logout',
-                  child: Text('Logout'),
-                ),
-              ],
-              child: buttonContent,
-            )
-          : IconButton(
-              onPressed: onPressed,
-              icon: buttonContent,
-              padding: EdgeInsets.zero,
-            ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: buttonContent,
+        padding: EdgeInsets.zero,
+      ),
     );
   }
 }

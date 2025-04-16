@@ -33,6 +33,12 @@ flutter:
     - assets/images/home_back.png
     - assets/images/1.png
     - assets/images/recycle/recycle_ws.jpeg
+    - assets/images/recycle/paper.png
+    - assets/images/recycle/plastic.png
+    - assets/images/recycle/glass.png
+    - assets/images/recycle/metal.png
+    - assets/images/recycle/pizza.jpg
+    - assets/images/recycle/banana.jpeg
     - assets/images/compost/compost_ws.png
     - assets/images/landfill/landfill_ws.jpg
 

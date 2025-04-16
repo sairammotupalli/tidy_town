@@ -18,27 +18,41 @@ class TranslationService {
     "Landfill": "Vertedero",
     "Settings": "Ajustes",
     "Logout": "Cerrar sesión",
+    "Cancel": "Cancelar",
+    "😢 Logout?": "😢 ¿Cerrar sesión?",
+    "Hey Western! Are you sure you want to logout?": "¡Hola Western! ¿Estás seguro de que quieres cerrar sesión?",
+    "Recycling ♻️": "Reciclaje ♻️",
 
-    // Recycle Screen
-    "Learn about recyclable items!": "¡Aprende sobre los artículos reciclables!",
-    "Recycling is like giving trash a super power! It's when we turn used things like bottles and paper into new things instead of throwing them away. It's like magic that helps keep our Earth clean!": 
-    "¡Reciclar es como darle un superpoder a la basura! Es cuando convertimos cosas usadas como botellas y papel en cosas nuevas en lugar de tirarlas. ¡Es como magia que ayuda a mantener limpia nuestra Tierra!",
-    
-    // Compost Screen
-    "Learn about compostable items!": "¡Aprende sobre los artículos compostables!",
-    "Composting is nature's way of recycling! It's when we take food scraps and plant materials and turn them into super food for plants. It's like making a yummy smoothie for our garden!":
-    "¡El compostaje es la forma en que la naturaleza recicla! Es cuando tomamos restos de comida y materiales de plantas y los convertimos en superalimentos para las plantas. ¡Es como hacer un batido delicioso para nuestro jardín!",
-    
-    // Landfill Screen
-    "Learn about landfill items!": "¡Aprende sobre los artículos de vertedero!",
-    "A landfill is like Earth's storage box where we put things we can't recycle or compost. It's important to put as little as possible here because it takes a very long time for these things to break down. That's why we try to recycle and compost first!":
-    "Un vertedero es como la caja de almacenamiento de la Tierra donde ponemos las cosas que no podemos reciclar o compostar. Es importante poner lo menos posible aquí porque estas cosas tardan mucho tiempo en descomponerse. ¡Por eso intentamos reciclar y compostar primero!",
+    // Recycle Screen Titles and Subtitles
+    "What is Recycling?": "¿Qué es el Reciclaje?",
+    "Learn about recycling in a fun way! 🌟": "¡Aprende sobre el reciclaje de una manera divertida! 🌟",
+    "What Can Be Recycled?": "¿Qué se Puede Reciclar?",
+    "Discover recyclable items! 🔍": "¡Descubre los artículos reciclables! 🔍",
+    "Why Should We Recycle?": "¿Por Qué Debemos Reciclar?",
+    "Meet Tommy the Turtle! 🐢": "¡Conoce a Tommy la Tortuga! 🐢",
+    "Recycle Quiz": "Cuestionario de Reciclaje",
+    "Test your knowledge! 🎯": "¡Pon a prueba tus conocimientos! 🎯",
+
+    // Captain Recycle's Message
+    "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨": 
+    "¡Hola! ¡Soy el Capitán Reciclaje! ¡Reciclar es como darle superpoderes a la basura! Tomamos cosas viejas como botellas y papel y las convertimos en cosas nuevas. ¡Es como magia que ayuda a mantener nuestra Tierra limpia y feliz! 🌍✨",
+
+    // Tommy's Message
+    "Meet Tommy the Turtle! He wants to tell you why recycling is important:\n\n🌊 It keeps our oceans clean for sea animals\n🌳 Saves trees and forests\n⚡ Helps save energy\n🌍 Makes Earth happy and healthy!":
+    "¡Conoce a Tommy la Tortuga! Quiere contarte por qué es importante reciclar:\n\n🌊 Mantiene nuestros océanos limpios para los animales marinos\n🌳 Salva árboles y bosques\n⚡ Ayuda a ahorrar energía\n🌍 ¡Hace que la Tierra esté feliz y saludable!",
+
+    // Quiz Content
+    "Tap the items that can be recycled!": "¡Toca los artículos que se pueden reciclar!",
+    "Yes! This can be recycled! ⭐": "¡Sí! ¡Esto se puede reciclar! ⭐",
+    "Oops! This cannot be recycled. Try again! 💫": "¡Ups! Esto no se puede reciclar. ¡Inténtalo de nuevo! 💫",
 
     // Common items
     "Paper and Cardboard": "Papel y Cartón",
     "Plastic Bottles": "Botellas de Plástico",
     "Glass Containers": "Envases de Vidrio",
     "Metal Cans": "Latas de Metal",
+    "Pizza Box (with grease)": "Caja de Pizza (con grasa)",
+    "Banana Peel": "Cáscara de Plátano",
     "Fruit and Vegetable Scraps": "Restos de Frutas y Verduras",
     "Coffee Grounds": "Café Molido",
     "Yard Trimmings": "Recortes de Jardín",
