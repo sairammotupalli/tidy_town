@@ -120,13 +120,13 @@ class _RecycleScreenState extends State<RecycleScreen> {
         children: [
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.blue.shade50, Colors.white],
-                ),
-              ),
+              // decoration: BoxDecoration(
+              //   gradient: LinearGradient(
+              //     begin: Alignment.topCenter,
+              //     end: Alignment.bottomCenter,
+              //     colors: [Colors.blue.shade50, Colors.white],
+              //   ),
+              // ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return Center(
@@ -180,34 +180,28 @@ class _RecycleScreenState extends State<RecycleScreen> {
               ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildGradientButton(
-                  icon: Icons.person,
-                  onPressed: () => _showLogoutDialog(),
-                ),
-                _buildGradientButton(
-                  icon: Icons.home,
-                  onPressed: () => Navigator.pop(context),
-                ),
-                _buildGradientButton(
-                  icon: Icons.settings,
-                  onPressed: () {},
-                ),
-                _buildGradientButton(
-                  icon: Icons.volume_up,
-                  onPressed: () {},
-                ),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildGradientButton(
+                icon: Icons.person,
+                onPressed: () => _showLogoutDialog(),
+              ),
+              _buildGradientButton(
+                icon: Icons.home,
+                onPressed: () => Navigator.pop(context),
+              ),
+              _buildGradientButton(
+                icon: Icons.settings,
+                onPressed: () {},
+              ),
+              _buildGradientButton(
+                icon: Icons.volume_up,
+                onPressed: () {},
+              ),
+            ],
           ),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -398,38 +392,90 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Widget _buildWhatIsRecyclingContent() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/avatar.png'),
-                fit: BoxFit.contain,
+    return Stack(
+      children: [
+        // Background Image
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/recycle/background.jpeg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        // Content in white paper
+        Positioned(
+          top: 100,
+          left: 80,
+          right: 40,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Text(
+              //   _translationService.translate("What is Recycling?"),
+              //   style: const TextStyle(
+              //     fontSize: 28,
+              //     fontWeight: FontWeight.bold,
+              //     color: Colors.blue,
+              //     fontFamily: 'ComicNeue',
+              //   ),
+              // ),
+              const SizedBox(height: 20),
+              Text(
+                _translationService.translate(
+                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨"
+                ),
+                style: const TextStyle(
+                  fontSize: 22,
+                  height: 1.5,
+                  fontFamily: 'ComicNeue',
+                  color: Colors.black87,
+                  
+                ),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 20),
-          Text(
-            _translationService.translate(
-              "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨"
-            ),
-            style: const TextStyle(
-              fontSize: 18,
-              fontFamily: 'ComicNeue',
-            ),
-            textAlign: TextAlign.center,
+        ),
+        // Menu buttons at bottom
+        Positioned(
+          bottom: 20,
+          left: 0,
+          right: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildGradientButton(
+                icon: Icons.person,
+                onPressed: () => _showLogoutDialog(),
+              ),
+              _buildGradientButton(
+                icon: Icons.home,
+                onPressed: () => Navigator.pop(context),
+              ),
+              _buildGradientButton(
+                icon: Icons.settings,
+                onPressed: () {},
+              ),
+              _buildGradientButton(
+                icon: Icons.volume_up,
+                onPressed: () => _speakText(
+                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!"
+                ),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.volume_up),
-            onPressed: () => _speakText(
-              "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!"
-            ),
-          ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBulletPoint(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 20,
+        height: 1.4,
+        fontFamily: 'ComicNeue',
+        color: Colors.black87,
       ),
     );
   }
@@ -643,49 +689,15 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.blue.shade50, Colors.white],
-                ),
-              ),
-              child: content,
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.blue.shade50, Colors.white],
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildGradientButton(
-                  icon: Icons.person,
-                  onPressed: () => _showLogoutDialog(),
-                ),
-                _buildGradientButton(
-                  icon: Icons.home,
-                  onPressed: () => Navigator.pop(context),
-                ),
-                _buildGradientButton(
-                  icon: Icons.settings,
-                  onPressed: () {},
-                ),
-                _buildGradientButton(
-                  icon: Icons.volume_up,
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
+        child: content,
       ),
     );
   }

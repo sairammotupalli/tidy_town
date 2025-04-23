@@ -75,6 +75,12 @@ class TranslationService {
     "Used tissues and paper towels are not recyclable": "Los pañuelos y toallas de papel usados no son reciclables",
     "Most places cannot recycle styrofoam packaging": "La mayoría de los lugares no pueden reciclar el empaque de poliestireno",
     "Regular plastic bags cannot be recycled in normal bins": "Las bolsas de plástico normales no se pueden reciclar en contenedores normales",
+    "Why is it Important?": "¿Por qué es Importante?",
+    "Gives trash a second life": "Dale una segunda vida a la basura",
+    "Helps plants and animals": "Ayuda a las plantas y animales",
+    "Makes our planet happy": "Hace feliz a nuestro planeta",
+    "Keeps our home clean": "Mantiene limpio nuestro hogar",
+    "Listen to the Story": "Escuchar la Historia",
   };
 
   String translate(String text) {
