@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../services/translation_service.dart';
 
 class RecycleScreen extends StatefulWidget {
@@ -22,7 +23,9 @@ class _RecycleScreenState extends State<RecycleScreen> {
           translationService: _translationService,
         ),
       ),
-    );
+    ).then((_) {
+      setState(() {}); // Trigger rebuild when returning from detail screen
+    });
   }
 
   Widget _buildCard(BuildContext context, {
@@ -109,9 +112,8 @@ class _RecycleScreenState extends State<RecycleScreen> {
               color: Colors.blue.shade900,
             ),
             onPressed: () {
-              setState(() {
-                _translationService.toggleLanguage();
-              });
+              _translationService.toggleLanguage();
+              setState(() {}); // Force rebuild of the entire screen
             },
           ),
         ],
@@ -288,6 +290,11 @@ class RecycleDetailScreen extends StatefulWidget {
 class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   late final TranslationService _translationService;
   final FlutterTts flutterTts = FlutterTts();
+  final AudioPlayer audioPlayer = AudioPlayer();
+  Map<String, String> tommyVoice = {'name': 'default', 'locale': 'en-US'};
+  Map<String, String> bottleVoice = {'name': 'default', 'locale': 'en-US'};
+  bool isPlaying = false;
+
   final List<Map<String, dynamic>> recyclableItems = [
     {
       'name': 'Paper and Cardboard',
@@ -325,69 +332,160 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   void initState() {
     super.initState();
     _translationService = widget.translationService;
+    _setupTts();
+    _setupAudio();
   }
 
-  Future<void> _speakText(String text) async {
-    await _translationService.speak(_translationService.translate(text));
+  @override
+  void didUpdateWidget(RecycleDetailScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.translationService != widget.translationService) {
+      _translationService = widget.translationService;
+      _setupTts(); // Update TTS language when translation service changes
+    }
   }
 
-  Widget _buildGradientButton({
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF5B3B2B), Color(0xFF7B4B35)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+  @override
+  void dispose() {
+    flutterTts.stop();
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _setupTts() async {
+    await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
+    await flutterTts.setSpeechRate(0.3);
+    
+    // Get available voices
+    final voices = await flutterTts.getVoices;
+    
+    // Find appropriate voices for characters
+    if (voices != null) {
+      // Look for a child-like voice for Tommy
+      final tommyVoiceData = voices.firstWhere(
+        (voice) => voice.name.toLowerCase().contains('child') || 
+                   voice.name.toLowerCase().contains('young'),
+        orElse: () => voices.first,
+      );
+      tommyVoice = {'name': tommyVoiceData.name, 'locale': tommyVoiceData.locale};
+
+      // Look for a different voice for the bottle
+      final bottleVoiceData = voices.firstWhere(
+        (voice) => voice.name.toLowerCase().contains('female') || 
+                   voice.name.toLowerCase().contains('woman'),
+        orElse: () => voices.first,
+      );
+      bottleVoice = {'name': bottleVoiceData.name, 'locale': bottleVoiceData.locale};
+    }
+  }
+
+  Future<void> _setupAudio() async {
+    await audioPlayer.setSource(AssetSource('sounds/high-five.mp3'));
+    await audioPlayer.setVolume(1.0);
+  }
+
+  Future<void> _playHighFive() async {
+    await audioPlayer.stop();
+    await audioPlayer.play(AssetSource('sounds/high-five.mp3'));
+  }
+
+  Future<void> _speakLines(int startIndex) async {
+    if (isPlaying) {
+      await flutterTts.stop();
+      setState(() {
+        isPlaying = false;
+      });
+      return;
+    }
+
+    setState(() {
+      isPlaying = true;
+    });
+
+    // Speak the current item's name
+    if (startIndex < recyclableItems.length) {
+      final item = recyclableItems[startIndex];
+      final translatedName = _translationService.translate(item['name']);
+      
+      await flutterTts.setVoice(tommyVoice);
+      await flutterTts.speak(translatedName);
+      
+      // Wait for the speech to complete plus a pause
+      final length = translatedName.length;
+      final basePause = 1000; // Base pause of 1 second
+      final charPause = (length * 50).clamp(500, 2000); // Additional pause based on text length
+      await Future.delayed(Duration(milliseconds: charPause + basePause));
+    }
+
+    setState(() {
+      isPlaying = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String title = '';
+    Widget content;
+
+    switch (widget.pageIndex) {
+      case 0:
+        title = "What is Recycling?";
+        content = _buildWhatIsRecyclingContent();
+        break;
+      case 1:
+        title = "What Can Be Recycled?";
+        content = _buildWhatCanBeRecycledContent();
+        break;
+      case 2:
+        title = "Why Should We Recycle?";
+        content = _buildWhyRecycleContent();
+        break;
+      case 3:
+        title = "Recycle Quiz";
+        content = _buildRecycleQuizContent();
+        break;
+      default:
+        title = "Recycling";
+        content = const Center(child: Text("Content not found"));
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          _translationService.translate(title),
+          style: const TextStyle(
+            fontFamily: 'ComicNeue',
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+        backgroundColor: Colors.blue.shade100,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _translationService.isSpanish ? Icons.language : Icons.translate,
+              color: Colors.blue.shade900,
+            ),
+            onPressed: () {
+              _translationService.toggleLanguage();
+              setState(() {}); // Force rebuild of the entire screen
+            },
           ),
         ],
       ),
-      child: IconButton(
-        onPressed: onPressed,
-        icon: Container(
-          padding: const EdgeInsets.all(12),
-          child: Icon(
-            icon,
-            size: 35,
-            color: const Color.fromARGB(255, 255, 250, 250),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.blue.shade50, Colors.white],
           ),
         ),
-        padding: EdgeInsets.zero,
+        child: content,
       ),
-    );
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(_translationService.translate('Hey Western! Are you sure you want to logout?')),
-          actions: <Widget>[
-            TextButton(
-              child: Text(_translationService.translate('Cancel')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(_translationService.translate('Logout')),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -410,15 +508,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Text(
-              //   _translationService.translate("What is Recycling?"),
-              //   style: const TextStyle(
-              //     fontSize: 28,
-              //     fontWeight: FontWeight.bold,
-              //     color: Colors.blue,
-              //     fontFamily: 'ComicNeue',
-              //   ),
-              // ),
               const SizedBox(height: 20),
               Text(
                 _translationService.translate(
@@ -429,7 +518,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                   height: 1.5,
                   fontFamily: 'ComicNeue',
                   color: Colors.black87,
-                  
                 ),
               ),
             ],
@@ -457,9 +545,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
               ),
               _buildGradientButton(
                 icon: Icons.volume_up,
-                onPressed: () => _speakText(
-                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!"
-                ),
+                onPressed: () => _speakLines(0),
               ),
             ],
           ),
@@ -495,7 +581,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
           elevation: 4,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: InkWell(
-            onTap: () => _speakText(recyclableItems[index]['name']),
+            onTap: () => _speakLines(index),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -527,42 +613,138 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Widget _buildWhyRecycleContent() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/avatar.png'),
-                fit: BoxFit.contain,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.blue.shade50, Colors.white],
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: Column(
+            children: [
+              Text(
+                _translationService.translate("Choose a story to learn why recycling is important!"),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'ComicNeue',
+                  color: Colors.blue,
+                ),
+                textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 40),
+              // Story 1 Card
+              _buildStoryCard(
+                title: "Tommy and the Talking Bottle",
+                icon: Icons.eco,
+                colors: [Colors.blue.shade300, Colors.blue.shade600],
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StoryDetailScreen(
+                      storyTitle: "Tommy and the Talking Bottle",
+                      storyContent: [
+                        "Whoa! What's that shiny thing in the sand?",
+                        "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!",
+                        "Oh no! Aren't you supposed to go in the recycling bin?",
+                        "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!",
+                        "Kids, did you hear that? Recycling helps me keep the beach clean!",
+                        "And it gives me a chance to be useful again! Let's all recycle!",
+                        "Bye! Have a good day kids! 👋"
+                      ],
+                      speakers: [
+                        "tommy", "bottle", "tommy", "bottle", "tommy", "bottle", "both"
+                      ],
+                      translationService: _translationService,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Story 2 Card
+              _buildStoryCard(
+                title: "Luna the Leaf's Big Idea",
+                icon: Icons.forest,
+                colors: [Colors.green.shade300, Colors.green.shade600],
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StoryDetailScreen(
+                      storyTitle: "Luna the Leaf's Big Idea",
+                      storyContent: [
+                        "Hi friends! I'm Luna. I live in a big, happy forest.",
+                        "But my forest friends are in danger because too many trees are being cut down.",
+                        "Hey Luna! If kids recycle paper, we don't need to cut so many trees!",
+                        "That's right! Recycling paper saves homes for birds, bugs, and bears too!",
+                        "Plus, it saves energy and keeps our Earth cool and clean.",
+                        "Let's be Earth heroes and recycle every day!"
+                      ],
+                      speakers: [
+                        "luna", "luna", "bobby", "luna", "bobby", "luna"
+                      ],
+                      translationService: _translationService,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStoryCard({
+    required String title,
+    required IconData icon,
+    required List<Color> colors,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 8,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          width: double.infinity,
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: colors,
             ),
           ),
-          const SizedBox(height: 20),
-          Text(
-            _translationService.translate(
-              "Meet Tommy the Turtle! He wants to tell you why recycling is important:\n\n"
-              "🌊 It keeps our oceans clean for sea animals\n"
-              "🌳 Saves trees and forests\n"
-              "⚡ Helps save energy\n"
-              "🌍 Makes Earth happy and healthy!"
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 50,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _translationService.translate(title),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'ComicNeue',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            style: const TextStyle(
-              fontSize: 18,
-              fontFamily: 'ComicNeue',
-            ),
-            textAlign: TextAlign.center,
           ),
-          IconButton(
-            icon: const Icon(Icons.volume_up),
-            onPressed: () => _speakText(
-              "Meet Tommy the Turtle! He wants to tell you why recycling is important: It keeps our oceans clean for sea animals, Saves trees and forests, Helps save energy, Makes Earth happy and healthy!"
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -647,58 +829,566 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    String title = '';
-    Widget content;
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_translationService.translate('😢 Logout?')),
+          content: Text(_translationService.translate('Hey Western! Are you sure you want to logout?')),
+          actions: <Widget>[
+            TextButton(
+              child: Text(_translationService.translate('Cancel')),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text(_translationService.translate('Logout')),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    switch (widget.pageIndex) {
-      case 0:
-        title = "What is Recycling?";
-        content = _buildWhatIsRecyclingContent();
-        break;
-      case 1:
-        title = "What Can Be Recycled?";
-        content = _buildWhatCanBeRecycledContent();
-        break;
-      case 2:
-        title = "Why Should We Recycle?";
-        content = _buildWhyRecycleContent();
-        break;
-      case 3:
-        title = "Recycle Quiz";
-        content = _buildRecycleQuizContent();
-        break;
-      default:
-        title = "Recycling";
-        content = const Center(child: Text("Content not found"));
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _translationService.translate(title),
-          style: const TextStyle(
-            fontFamily: 'ComicNeue',
-            fontWeight: FontWeight.bold,
+  Widget _buildGradientButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF5B3B2B), Color(0xFF7B4B35)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
-        ),
-        backgroundColor: Colors.blue.shade100,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Container(
+          padding: const EdgeInsets.all(12),
+          child: Icon(
+            icon,
+            size: 35,
+            color: const Color.fromARGB(255, 255, 250, 250),
           ),
         ),
-        child: content,
+        padding: EdgeInsets.zero,
       ),
     );
   }
+}
+
+class StoryDetailScreen extends StatefulWidget {
+  final String storyTitle;
+  final List<String> storyContent;
+  final List<String> speakers;
+  final TranslationService translationService;
+
+  const StoryDetailScreen({
+    super.key,
+    required this.storyTitle,
+    required this.storyContent,
+    required this.speakers,
+    required this.translationService,
+  });
+
+  @override
+  State<StoryDetailScreen> createState() => _StoryDetailScreenState();
+}
+
+class _StoryDetailScreenState extends State<StoryDetailScreen> {
+  final FlutterTts flutterTts = FlutterTts();
+  final AudioPlayer audioPlayer = AudioPlayer();
+  int currentPage = 0;
+  int conversationsPerPage = 2;
+  Map<String, String> tommyVoice = {'name': 'default', 'locale': 'en-US'};
+  Map<String, String> bottleVoice = {'name': 'default', 'locale': 'en-US'};
+  bool isPlaying = false;
+  late final TranslationService _translationService;
+
+  @override
+  void initState() {
+    super.initState();
+    _translationService = widget.translationService;
+    _setupTts();
+    _setupAudio();
+  }
+
+  @override
+  void didUpdateWidget(StoryDetailScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.translationService != widget.translationService) {
+      _translationService = widget.translationService;
+      _setupTts(); // Update TTS language when translation service changes
+      setState(() {}); // Trigger rebuild to update translated text
+    }
+  }
+
+  @override
+  void dispose() {
+    flutterTts.stop();
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _setupTts() async {
+    await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
+    await flutterTts.setSpeechRate(0.3);
+    
+    // Get available voices
+    final voices = await flutterTts.getVoices;
+    
+    // Find appropriate voices for characters
+    if (voices != null) {
+      // Look for a child-like voice for Tommy
+      final tommyVoiceData = voices.firstWhere(
+        (voice) => voice.name.toLowerCase().contains('child') || 
+                   voice.name.toLowerCase().contains('young'),
+        orElse: () => voices.first,
+      );
+      tommyVoice = {'name': tommyVoiceData.name, 'locale': tommyVoiceData.locale};
+
+      // Look for a different voice for the bottle
+      final bottleVoiceData = voices.firstWhere(
+        (voice) => voice.name.toLowerCase().contains('female') || 
+                   voice.name.toLowerCase().contains('woman'),
+        orElse: () => voices.first,
+      );
+      bottleVoice = {'name': bottleVoiceData.name, 'locale': bottleVoiceData.locale};
+    }
+  }
+
+  Future<void> _setupAudio() async {
+    await audioPlayer.setSource(AssetSource('sounds/high-five.mp3'));
+    await audioPlayer.setVolume(1.0);
+  }
+
+  Future<void> _playHighFive() async {
+    await audioPlayer.stop();
+    await audioPlayer.play(AssetSource('sounds/high-five.mp3'));
+  }
+
+  Future<void> _speakLines(int startIndex) async {
+    if (isPlaying) {
+      await flutterTts.stop();
+      setState(() {
+        isPlaying = false;
+      });
+      return;
+    }
+
+    setState(() {
+      isPlaying = true;
+    });
+
+    String lastSpeaker = "";
+    for (int i = startIndex; i < startIndex + conversationsPerPage && i < widget.storyContent.length; i++) {
+      if (!isPlaying) break; // Stop if playing was toggled off
+      
+      final line = widget.storyContent[i];
+      final speaker = widget.speakers[i];
+      final translatedLine = _translationService.translate(line);
+      
+      // Add a longer pause when switching speakers
+      if (lastSpeaker != "" && lastSpeaker != speaker) {
+        await Future.delayed(const Duration(milliseconds: 1500));
+      }
+      
+      // Set appropriate voice based on character
+      if (speaker == "tommy") {
+        await flutterTts.setVoice(tommyVoice);
+      } else if (speaker == "bottle" || speaker == "bobby") {
+        await flutterTts.setVoice(bottleVoice);
+      } else if (speaker == "narrator") {
+        await flutterTts.setVoice({'name': 'default', 'locale': _translationService.isSpanish ? 'es-ES' : 'en-US'});
+      } else if (speaker == "both") {
+        // For the final line, alternate between both voices
+        await flutterTts.setVoice(tommyVoice);
+        await flutterTts.speak(_translationService.translate("Bye! Have a good day kids!"));
+        await Future.delayed(const Duration(milliseconds: 800));
+        
+        // Play high-five sound effect
+        await _playHighFive();
+        await Future.delayed(const Duration(milliseconds: 800));
+        
+        await flutterTts.setVoice(bottleVoice);
+        await flutterTts.speak(_translationService.translate("Bye! Have a good day kids!"));
+        continue;
+      }
+      
+      await flutterTts.speak(translatedLine);
+      
+      // Wait for the speech to complete plus a pause
+      final length = translatedLine.length;
+      final basePause = 1000; // Base pause of 1 second
+      final charPause = (length * 50).clamp(500, 2000); // Additional pause based on text length
+      await Future.delayed(Duration(milliseconds: charPause + basePause));
+      
+      lastSpeaker = speaker;
+    }
+
+    setState(() {
+      isPlaying = false;
+    });
+  }
+
+  List<String> getCurrentPageLines() {
+    final startIndex = currentPage * conversationsPerPage;
+    final endIndex = (startIndex + conversationsPerPage).clamp(0, widget.storyContent.length);
+    return widget.storyContent.sublist(startIndex, endIndex);
+  }
+
+  bool get hasNextPage => (currentPage + 1) * conversationsPerPage < widget.storyContent.length;
+  bool get hasPreviousPage => currentPage > 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentLines = getCurrentPageLines();
+    final isFirstPage = currentPage == 0;
+    final isSecondPage = currentPage == 1;
+    final isThirdPage = currentPage == 2;
+    final isFourthPage = currentPage == 3;
+    
+    return WillPopScope(
+      onWillPop: () async {
+        await flutterTts.stop();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _translationService.translate(widget.storyTitle),
+            style: const TextStyle(
+              fontFamily: 'ComicNeue',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.blue.shade100,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                _translationService.isSpanish ? Icons.language : Icons.translate,
+                color: Colors.blue.shade900,
+              ),
+              onPressed: () {
+                _translationService.toggleLanguage();
+                setState(() {}); // Force rebuild of the entire screen
+              },
+            ),
+          ],
+        ),
+        body: Container(
+          color: Colors.white,
+          child: Stack(
+            children: [
+              // Background image based on page
+              if (isFirstPage)
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/recycle/story1.jpeg',
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else if (isSecondPage)
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/recycle/story2.png',
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else if (isThirdPage)
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/recycle/story3.png',
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else if (isFourthPage)
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/recycle/story4.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              // Content
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: currentLines.length,
+                        itemBuilder: (context, index) {
+                          final startIndex = currentPage * conversationsPerPage;
+                          final line = currentLines[index];
+                          final speaker = widget.speakers[startIndex + index];
+                          final isTommy = speaker == "tommy";
+                          final isNarrator = speaker == "narrator";
+                          
+                          return Align(
+                            alignment: isNarrator ? Alignment.center : (isTommy ? Alignment.centerLeft : Alignment.centerRight),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                maxWidth: isNarrator ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.75,
+                              ),
+                              margin: EdgeInsets.only(
+                                bottom: 30,
+                                left: isTommy ? 0 : 40,
+                                right: isTommy ? 40 : 0,
+                                top: index == 0 ? 20 : 0,
+                              ),
+                              child: isNarrator ? 
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200.withOpacity(0.9),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Text(
+                                    _translationService.translate(line),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'ComicNeue',
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic,
+                                      height: 1.5,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ) :
+                                CustomPaint(
+                                  painter: CloudBubblePainter(
+                                    color: isTommy 
+                                      ? Colors.blue.shade50.withOpacity(0.95)
+                                      : Colors.green.shade50.withOpacity(0.95),
+                                    isLeftAligned: isTommy,
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                                    child: Text(
+                                      _translationService.translate(line),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: 'ComicNeue',
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    // Navigation Buttons at bottom
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          if (hasPreviousPage)
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                await flutterTts.stop();
+                                setState(() {
+                                  isPlaying = false;
+                                  currentPage--;
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back),
+                              label: Text(_translationService.translate('Previous')),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue.shade300,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                          ElevatedButton.icon(
+                            onPressed: () => _speakLines(currentPage * conversationsPerPage),
+                            icon: Icon(
+                              isPlaying ? Icons.stop : Icons.volume_up,
+                              color: Colors.white,
+                            ),
+                            label: Text(_translationService.translate(isPlaying ? 'Stop' : 'Listen')),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isPlaying ? Colors.red.shade300 : Colors.blue.shade300,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                          if (hasNextPage)
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                await flutterTts.stop();
+                                setState(() {
+                                  isPlaying = false;
+                                  currentPage++;
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_forward),
+                              label: Text(_translationService.translate('Next')),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue.shade300,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_translationService.translate('😢 Logout?')),
+          content: Text(_translationService.translate('Hey Western! Are you sure you want to logout?')),
+          actions: <Widget>[
+            TextButton(
+              child: Text(_translationService.translate('Cancel')),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text(_translationService.translate('Logout')),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildGradientButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF5B3B2B), Color(0xFF7B4B35)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Container(
+          padding: const EdgeInsets.all(12),
+          child: Icon(
+            icon,
+            size: 35,
+            color: const Color.fromARGB(255, 255, 250, 250),
+          ),
+        ),
+        padding: EdgeInsets.zero,
+      ),
+    );
+  }
+}
+
+// Custom painter for cloud-like speech bubbles
+class CloudBubblePainter extends CustomPainter {
+  final Color color;
+  final bool isLeftAligned;
+
+  CloudBubblePainter({
+    required this.color,
+    required this.isLeftAligned,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final radius = 20.0;
+    
+    // Main bubble
+    path.moveTo(radius, 0);
+    
+    // Top edge with bumps
+    path.quadraticBezierTo(size.width / 4, -10, size.width / 2, 0);
+    path.quadraticBezierTo(size.width * 3 / 4, 10, size.width - radius, 0);
+    
+    // Right edge
+    path.quadraticBezierTo(size.width + 5, size.height / 3, size.width - radius, size.height - radius);
+    
+    // Bottom edge with bumps
+    path.quadraticBezierTo(size.width * 3 / 4, size.height + 5, size.width / 2, size.height - radius / 2);
+    path.quadraticBezierTo(size.width / 4, size.height - 10, radius, size.height - radius);
+    
+    // Left edge
+    path.quadraticBezierTo(-5, size.height / 3, radius, 0);
+
+    // Add tail
+    if (isLeftAligned) {
+      path.moveTo(30, size.height - radius);
+      path.quadraticBezierTo(10, size.height + 10, 0, size.height + 20);
+      path.quadraticBezierTo(20, size.height - radius + 10, 30, size.height - radius);
+    } else {
+      path.moveTo(size.width - 30, size.height - radius);
+      path.quadraticBezierTo(size.width - 10, size.height + 10, size.width, size.height + 20);
+      path.quadraticBezierTo(size.width - 20, size.height - radius + 10, size.width - 30, size.height - radius);
+    }
+
+    canvas.drawPath(path, paint);
+
+    // Add subtle shadow
+    final shadowPaint = Paint()
+      ..color = Colors.black.withOpacity(0.1)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    canvas.drawPath(path, shadowPaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 } 

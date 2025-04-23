@@ -81,6 +81,60 @@ class TranslationService {
     "Makes our planet happy": "Hace feliz a nuestro planeta",
     "Keeps our home clean": "Mantiene limpio nuestro hogar",
     "Listen to the Story": "Escuchar la Historia",
+
+    // Story Titles
+    "Tommy and the Talking Bottle": "Tommy y la Botella Parlante",
+    "Luna the Leaf's Big Idea": "La Gran Idea de Luna la Hoja",
+    
+    // Navigation
+    "Previous": "Anterior",
+    "Next": "Siguiente",
+    "Listen": "Escuchar",
+    "Stop": "Detener",
+
+    // Tommy's Story
+    "Tommy the Turtle: \"Whoa! What's that shiny thing in the sand?\"": 
+    "Tommy la Tortuga: \"¡Guau! ¿Qué es esa cosa brillante en la arena?\"",
+    
+    "Plastic Bottle: \"Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!\"":
+    "Botella de Plástico: \"¡Hola Tommy! Soy una botella solitaria. ¡Me tiraron y terminé aquí!\"",
+    
+    "Tommy the Turtle: \"Oh no! Aren't you supposed to go in the recycling bin?\"":
+    "Tommy la Tortuga: \"¡Oh no! ¿No deberías estar en el contenedor de reciclaje?\"",
+    
+    "Plastic Bottle: \"Yes! If someone had recycled me, I could've become a toy or even a t-shirt!\"":
+    "Botella de Plástico: \"¡Sí! Si alguien me hubiera reciclado, ¡podría haberme convertido en un juguete o incluso en una camiseta!\"",
+    
+    "Tommy the Turtle: \"Kids, did you hear that? Recycling helps me keep the beach clean!\"":
+    "Tommy la Tortuga: \"Niños, ¿escucharon eso? ¡El reciclaje me ayuda a mantener la playa limpia!\"",
+    
+    "Plastic Bottle: \"And it gives me a chance to be useful again! Let's all recycle!\"":
+    "Botella de Plástico: \"¡Y me da la oportunidad de ser útil de nuevo! ¡Vamos todos a reciclar!\"",
+    
+    "Narrator: \"Tommy and the bottle high-fived (well, sort of), and off they went to find the recycling bin!\"":
+    "Narrador: \"Tommy y la botella chocaron los cinco (bueno, más o menos), ¡y se fueron a buscar el contenedor de reciclaje!\"",
+
+    // Luna's Story
+    "Luna the Leaf: \"Hi friends! I'm Luna. I live in a big, happy forest.\"":
+    "Luna la Hoja: \"¡Hola amigos! Soy Luna. Vivo en un bosque grande y feliz.\"",
+    
+    "Luna the Leaf: \"But my forest friends are in danger because too many trees are being cut down.\"":
+    "Luna la Hoja: \"Pero mis amigos del bosque están en peligro porque están cortando demasiados árboles.\"",
+    
+    "Bobby the Bin: \"Hey Luna! If kids recycle paper, we don't need to cut so many trees!\"":
+    "Bobby el Contenedor: \"¡Hola Luna! Si los niños reciclan papel, ¡no necesitamos cortar tantos árboles!\"",
+    
+    "Luna the Leaf: \"That's right! Recycling paper saves homes for birds, bugs, and bears too!\"":
+    "Luna la Hoja: \"¡Así es! ¡Reciclar papel salva hogares para pájaros, insectos y osos también!\"",
+    
+    "Bobby the Bin: \"Plus, it saves energy and keeps our Earth cool and clean.\"":
+    "Bobby el Contenedor: \"Además, ahorra energía y mantiene nuestra Tierra fresca y limpia.\"",
+    
+    "Luna the Leaf: \"Let's be Earth heroes and recycle every day!\"":
+    "Luna la Hoja: \"¡Seamos héroes de la Tierra y reciclemos todos los días!\"",
+
+    // Story Selection
+    "Choose a story to learn why recycling is important!": "¡Elige una historia para aprender por qué es importante reciclar!",
   };
 
   String translate(String text) {
