@@ -47,7 +47,24 @@ flutter:
     - assets/images/recycle/story4.png
     - assets/images/compost/compost_ws.png
     - assets/images/landfill/landfill_ws.jpg
-    - assets/sounds/
+    - assets/images/recycle/lunalast.gif
+    - assets/images/recycle/luna3.png
+    - assets/images/recycle/luna1.png
+    - assets/images/recycle/luna2.png
+    - assets/images/recycle/luna4.png
+    - assets/images/recycle/luna5.png
+    - assets/images/recycle/storyb.png
+    - assets/images/recycle/wally1.png
+    - assets/images/recycle/wally2.png
+    - assets/images/recycle/wally3.png
+    - assets/images/recycle/wally4.png
+    - assets/images/recycle/wally5.png
+    - assets/images/recycle/wally6.png
+    - assets/images/recycle/wally7.png
+    - assets/images/recycle/wally8.png
+    - assets/images/recycle/moral.png
+    - assets/images/HomePage.png
+
 
   fonts:
     - family: ComicNeue

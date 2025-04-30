@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/translation_service.dart';
+import '../services/progress_service.dart';
+import 'luna_story_screen.dart';
+import 'wally_story_screen.dart';
 
 class RecycleScreen extends StatefulWidget {
   const RecycleScreen({super.key});
@@ -361,21 +364,30 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     
     // Find appropriate voices for characters
     if (voices != null) {
-      // Look for a child-like voice for Tommy
+      // Look for a deep male voice for Tommy
       final tommyVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('child') || 
-                   voice.name.toLowerCase().contains('young'),
+        (voice) => voice.name.toLowerCase().contains('male') || 
+                   voice.name.toLowerCase().contains('man') ||
+                   voice.name.toLowerCase().contains('michael') ||
+                   voice.name.toLowerCase().contains('daniel') ||
+                   voice.name.toLowerCase().contains('david'),
         orElse: () => voices.first,
       );
       tommyVoice = {'name': tommyVoiceData.name, 'locale': tommyVoiceData.locale};
+      await flutterTts.setPitch(0.8); // Lower pitch for deeper male voice
+      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
 
-      // Look for a different voice for the bottle
+      // Look for a higher pitched female voice for the bottle
       final bottleVoiceData = voices.firstWhere(
         (voice) => voice.name.toLowerCase().contains('female') || 
-                   voice.name.toLowerCase().contains('woman'),
+                   voice.name.toLowerCase().contains('woman') ||
+                   voice.name.toLowerCase().contains('samantha') ||
+                   voice.name.toLowerCase().contains('karen'),
         orElse: () => voices.first,
       );
       bottleVoice = {'name': bottleVoiceData.name, 'locale': bottleVoiceData.locale};
+      await flutterTts.setPitch(1.3); // Higher pitch for female voice
+      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
     }
   }
 
@@ -450,42 +462,43 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
           _translationService.translate(title),
           style: const TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                offset: Offset(1.0, 1.0),
+                blurRadius: 3.0,
+                color: Colors.black45,
+              ),
+            ],
           ),
         ),
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Colors.blue.shade900,
+              color: Colors.white,
             ),
             onPressed: () {
               _translationService.toggleLanguage();
-              setState(() {}); // Force rebuild of the entire screen
+              setState(() {});
             },
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
-          ),
-        ),
-        child: content,
-      ),
+      body: content,
     );
   }
 
@@ -613,87 +626,116 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Widget _buildWhyRecycleContent() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.blue.shade50, Colors.white],
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-          child: Column(
-            children: [
-              Text(
-                _translationService.translate("Choose a story to learn why recycling is important!"),
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'ComicNeue',
-                  color: Colors.blue,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              // Story 1 Card
-              _buildStoryCard(
-                title: "Tommy and the Talking Bottle",
-                icon: Icons.eco,
-                colors: [Colors.blue.shade300, Colors.blue.shade600],
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => StoryDetailScreen(
-                      storyTitle: "Tommy and the Talking Bottle",
-                      storyContent: [
-                        "Whoa! What's that shiny thing in the sand?",
-                        "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!",
-                        "Oh no! Aren't you supposed to go in the recycling bin?",
-                        "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!",
-                        "Kids, did you hear that? Recycling helps me keep the beach clean!",
-                        "And it gives me a chance to be useful again! Let's all recycle!",
-                        "Bye! Have a good day kids! 👋"
-                      ],
-                      speakers: [
-                        "tommy", "bottle", "tommy", "bottle", "tommy", "bottle", "both"
-                      ],
-                      translationService: _translationService,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              // Story 2 Card
-              _buildStoryCard(
-                title: "Luna the Leaf's Big Idea",
-                icon: Icons.forest,
-                colors: [Colors.green.shade300, Colors.green.shade600],
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => StoryDetailScreen(
-                      storyTitle: "Luna the Leaf's Big Idea",
-                      storyContent: [
-                        "Hi friends! I'm Luna. I live in a big, happy forest.",
-                        "But my forest friends are in danger because too many trees are being cut down.",
-                        "Hey Luna! If kids recycle paper, we don't need to cut so many trees!",
-                        "That's right! Recycling paper saves homes for birds, bugs, and bears too!",
-                        "Plus, it saves energy and keeps our Earth cool and clean.",
-                        "Let's be Earth heroes and recycle every day!"
-                      ],
-                      speakers: [
-                        "luna", "luna", "bobby", "luna", "bobby", "luna"
-                      ],
-                      translationService: _translationService,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          // Background Image
+          SizedBox.expand(
+            child: Image.asset(
+              'assets/images/recycle/storyb.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
+          // Content
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 30),
+                  // Subtitle
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Text(
+                      _translationService.translate("Choose a story to learn why recycling is important!"),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'ComicNeue',
+                        color: Colors.black,
+                        letterSpacing: 1.2,
+                        height: 1.5,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.0, 1.0),
+                            blurRadius: 3.0,
+                            color: Color.fromRGBO(255, 255, 255, 0.7),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  // Story Cards
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        _buildStoryCard(
+                          title: "Tommy and the Talking Bottle",
+                          icon: Icons.eco,
+                          colors: [Colors.blue.shade300, Colors.blue.shade600],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => StoryDetailScreen(
+                                storyTitle: "Tommy and the Talking Bottle",
+                                storyContent: [
+                                  "Whoa! What's that shiny thing in the sand?",
+                                  "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!",
+                                  "Oh no! Aren't you supposed to go in the recycling bin?",
+                                  "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!",
+                                  "Kids, did you hear that? Recycling helps me keep the beach clean!",
+                                  "And it gives me a chance to be useful again! Let's all recycle!",
+                                  "Bye! Have a good day kids! 👋"
+                                ],
+                                speakers: [
+                                  "tommy", "bottle", "tommy", "bottle", "tommy", "bottle", "both"
+                                ],
+                                translationService: _translationService,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        _buildStoryCard(
+                          title: "Luna the Leaf's Big Idea",
+                          icon: Icons.forest,
+                          colors: [Colors.green.shade300, Colors.green.shade600],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LunaStoryScreen(
+                                translationService: _translationService,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        _buildStoryCard(
+                          title: "Wally the Water Bottle's Second Chance",
+                          icon: Icons.water_drop,
+                          colors: [Colors.cyan.shade300, Colors.cyan.shade600],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WallyStoryScreen(
+                                translationService: _translationService,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -708,38 +750,43 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       onTap: onTap,
       child: Card(
         elevation: 8,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), // Increased vertical margin
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Container(
           width: double.infinity,
-          height: 180,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
               colors: colors,
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0), // Increased vertical padding
+            child: Row(
               children: [
                 Icon(
                   icon,
-                  size: 50,
+                  size: 40,
                   color: Colors.white,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  _translationService.translate(title),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontFamily: 'ComicNeue',
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Text(
+                    _translationService.translate(title),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'ComicNeue',
+                    ),
                   ),
-                  textAlign: TextAlign.center,
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ],
             ),
@@ -779,8 +826,21 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                 elevation: 4,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 child: InkWell(
-                  onTap: () {
+                  onTap: () async {
                     final isCorrect = recyclableItems[index]['isRecyclable'];
+                    
+                    // Get current progress
+                    int currentProgress = await ProgressService.getProgress('Recycle');
+                    
+                    if (isCorrect) {
+                      // Only increment progress if answer is correct and item hasn't been correctly identified before
+                      if (currentProgress < index + 1) {
+                        await ProgressService.updateProgress('Recycle', index + 1);
+                      }
+                    }
+
+                    // Show feedback
+                    if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -795,6 +855,33 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         duration: const Duration(seconds: 2),
                       ),
                     );
+
+                    // If all recyclable items have been correctly identified
+                    if (isCorrect && currentProgress < index + 1) {
+                      int totalRecyclableItems = recyclableItems.where((item) => item['isRecyclable']).length;
+                      int newProgress = await ProgressService.getProgress('Recycle');
+                      
+                      if (newProgress >= totalRecyclableItems) {
+                        if (!mounted) return;
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('🎉 Congratulations! 🎉'),
+                            content: Text(
+                              _translationService.translate(
+                                'You\'ve successfully identified all recyclable items!'
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(_translationService.translate('Continue')),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -952,21 +1039,30 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     
     // Find appropriate voices for characters
     if (voices != null) {
-      // Look for a child-like voice for Tommy
+      // Look for a deep male voice for Tommy
       final tommyVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('child') || 
-                   voice.name.toLowerCase().contains('young'),
+        (voice) => voice.name.toLowerCase().contains('male') || 
+                   voice.name.toLowerCase().contains('man') ||
+                   voice.name.toLowerCase().contains('michael') ||
+                   voice.name.toLowerCase().contains('daniel') ||
+                   voice.name.toLowerCase().contains('david'),
         orElse: () => voices.first,
       );
       tommyVoice = {'name': tommyVoiceData.name, 'locale': tommyVoiceData.locale};
+      await flutterTts.setPitch(0.8); // Lower pitch for deeper male voice
+      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
 
-      // Look for a different voice for the bottle
+      // Look for a higher pitched female voice for the bottle
       final bottleVoiceData = voices.firstWhere(
         (voice) => voice.name.toLowerCase().contains('female') || 
-                   voice.name.toLowerCase().contains('woman'),
+                   voice.name.toLowerCase().contains('woman') ||
+                   voice.name.toLowerCase().contains('samantha') ||
+                   voice.name.toLowerCase().contains('karen'),
         orElse: () => voices.first,
       );
       bottleVoice = {'name': bottleVoiceData.name, 'locale': bottleVoiceData.locale};
+      await flutterTts.setPitch(1.3); // Higher pitch for female voice
+      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
     }
   }
 

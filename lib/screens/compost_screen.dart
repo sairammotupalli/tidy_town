@@ -36,7 +36,7 @@ class _CompostScreenState extends State<CompostScreen> {
 
   Future<void> _speakText(String text) async {
     await flutterTts.setLanguage('en-US');
-    await flutterTts.setPitch(1.3);
+    await flutterTts.setPitch(0.5);
     await flutterTts.setSpeechRate(0.4);
     await flutterTts.speak(text);
   }
