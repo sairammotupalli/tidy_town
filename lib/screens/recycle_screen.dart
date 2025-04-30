@@ -21,17 +21,19 @@ class _RecycleScreenState extends State<RecycleScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecycleDetailScreen(
-          pageIndex: index,
-          translationService: _translationService,
-        ),
+        builder:
+            (context) => RecycleDetailScreen(
+              pageIndex: index,
+              translationService: _translationService,
+            ),
       ),
     ).then((_) {
       setState(() {}); // Trigger rebuild when returning from detail screen
     });
   }
 
-  Widget _buildCard(BuildContext context, {
+  Widget _buildCard(
+    BuildContext context, {
     required String title,
     required String subtitle,
     required IconData icon,
@@ -50,20 +52,13 @@ class _RecycleScreenState extends State<RecycleScreen> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                color.withOpacity(0.7),
-                color,
-              ],
+              colors: [color.withOpacity(0.7), color],
             ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 50,
-                color: Colors.white,
-              ),
+              Icon(icon, size: 50, color: Colors.white),
               const SizedBox(height: 16),
               Text(
                 _translationService.translate(title),
@@ -136,7 +131,10 @@ class _RecycleScreenState extends State<RecycleScreen> {
                 builder: (context, constraints) {
                   return Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 40.0,
+                      ),
                       child: GridView.count(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -196,14 +194,8 @@ class _RecycleScreenState extends State<RecycleScreen> {
                 icon: Icons.home,
                 onPressed: () => Navigator.pop(context),
               ),
-              _buildGradientButton(
-                icon: Icons.settings,
-                onPressed: () {},
-              ),
-              _buildGradientButton(
-                icon: Icons.volume_up,
-                onPressed: () {},
-              ),
+              _buildGradientButton(icon: Icons.settings, onPressed: () {}),
+              _buildGradientButton(icon: Icons.volume_up, onPressed: () {}),
             ],
           ),
           const SizedBox(height: 20),
@@ -218,7 +210,11 @@ class _RecycleScreenState extends State<RecycleScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(_translationService.translate('Hey Western! Are you sure you want to logout?')),
+          content: Text(
+            _translationService.translate(
+              'Hey Western! Are you sure you want to logout?',
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               child: Text(_translationService.translate('Cancel')),
@@ -227,10 +223,7 @@ class _RecycleScreenState extends State<RecycleScreen> {
             TextButton(
               child: Text(_translationService.translate('Logout')),
               onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/',
-                ); // Back to welcome
+                Navigator.pushReplacementNamed(context, '/'); // Back to welcome
               },
             ),
           ],
@@ -356,36 +349,46 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Future<void> _setupTts() async {
-    await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
+    await flutterTts.setLanguage(
+      _translationService.isSpanish ? "es-ES" : "en-US",
+    );
     await flutterTts.setSpeechRate(0.3);
-    
+
     // Get available voices
     final voices = await flutterTts.getVoices;
-    
+
     // Find appropriate voices for characters
     if (voices != null) {
       // Look for a deep male voice for Tommy
       final tommyVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('male') || 
-                   voice.name.toLowerCase().contains('man') ||
-                   voice.name.toLowerCase().contains('michael') ||
-                   voice.name.toLowerCase().contains('daniel') ||
-                   voice.name.toLowerCase().contains('david'),
+        (voice) =>
+            voice.name.toLowerCase().contains('male') ||
+            voice.name.toLowerCase().contains('man') ||
+            voice.name.toLowerCase().contains('michael') ||
+            voice.name.toLowerCase().contains('daniel') ||
+            voice.name.toLowerCase().contains('david'),
         orElse: () => voices.first,
       );
-      tommyVoice = {'name': tommyVoiceData.name, 'locale': tommyVoiceData.locale};
+      tommyVoice = {
+        'name': tommyVoiceData.name,
+        'locale': tommyVoiceData.locale,
+      };
       await flutterTts.setPitch(0.8); // Lower pitch for deeper male voice
       await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
 
       // Look for a higher pitched female voice for the bottle
       final bottleVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('female') || 
-                   voice.name.toLowerCase().contains('woman') ||
-                   voice.name.toLowerCase().contains('samantha') ||
-                   voice.name.toLowerCase().contains('karen'),
+        (voice) =>
+            voice.name.toLowerCase().contains('female') ||
+            voice.name.toLowerCase().contains('woman') ||
+            voice.name.toLowerCase().contains('samantha') ||
+            voice.name.toLowerCase().contains('karen'),
         orElse: () => voices.first,
       );
-      bottleVoice = {'name': bottleVoiceData.name, 'locale': bottleVoiceData.locale};
+      bottleVoice = {
+        'name': bottleVoiceData.name,
+        'locale': bottleVoiceData.locale,
+      };
       await flutterTts.setPitch(1.3); // Higher pitch for female voice
       await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
     }
@@ -418,14 +421,17 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     if (startIndex < recyclableItems.length) {
       final item = recyclableItems[startIndex];
       final translatedName = _translationService.translate(item['name']);
-      
+
       await flutterTts.setVoice(tommyVoice);
       await flutterTts.speak(translatedName);
-      
+
       // Wait for the speech to complete plus a pause
       final length = translatedName.length;
       final basePause = 1000; // Base pause of 1 second
-      final charPause = (length * 50).clamp(500, 2000); // Additional pause based on text length
+      final charPause = (length * 50).clamp(
+        500,
+        2000,
+      ); // Additional pause based on text length
       await Future.delayed(Duration(milliseconds: charPause + basePause));
     }
 
@@ -524,7 +530,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
               const SizedBox(height: 20),
               Text(
                 _translationService.translate(
-                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨"
+                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨",
                 ),
                 style: const TextStyle(
                   fontSize: 22,
@@ -552,10 +558,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                 icon: Icons.home,
                 onPressed: () => Navigator.pop(context),
               ),
-              _buildGradientButton(
-                icon: Icons.settings,
-                onPressed: () {},
-              ),
+              _buildGradientButton(icon: Icons.settings, onPressed: () {}),
               _buildGradientButton(
                 icon: Icons.volume_up,
                 onPressed: () => _speakLines(0),
@@ -592,7 +595,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       itemBuilder: (context, index) {
         return Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: InkWell(
             onTap: () => _speakLines(index),
             child: Padding(
@@ -608,7 +613,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    _translationService.translate(recyclableItems[index]['name']),
+                    _translationService.translate(
+                      recyclableItems[index]['name'],
+                    ),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
@@ -633,7 +640,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
           // Background Image
           SizedBox.expand(
             child: Image.asset(
-              'assets/images/recycle/storyb.png',
+              'assets/images/recycle/learning.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -648,7 +655,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Text(
-                      _translationService.translate("Choose a story to learn why recycling is important!"),
+                      _translationService.translate(
+                        "Choose a story to learn why recycling is important!",
+                      ),
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -677,55 +686,71 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                           title: "Tommy and the Talking Bottle",
                           icon: Icons.eco,
                           colors: [Colors.blue.shade300, Colors.blue.shade600],
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => StoryDetailScreen(
-                                storyTitle: "Tommy and the Talking Bottle",
-                                storyContent: [
-                                  "Whoa! What's that shiny thing in the sand?",
-                                  "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!",
-                                  "Oh no! Aren't you supposed to go in the recycling bin?",
-                                  "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!",
-                                  "Kids, did you hear that? Recycling helps me keep the beach clean!",
-                                  "And it gives me a chance to be useful again! Let's all recycle!",
-                                  "Bye! Have a good day kids! 👋"
-                                ],
-                                speakers: [
-                                  "tommy", "bottle", "tommy", "bottle", "tommy", "bottle", "both"
-                                ],
-                                translationService: _translationService,
+                          onTap:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => StoryDetailScreen(
+                                        storyTitle:
+                                            "Tommy and the Talking Bottle",
+                                        storyContent: [
+                                          "Whoa! What's that shiny thing in the sand?",
+                                          "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!",
+                                          "Oh no! Aren't you supposed to go in the recycling bin?",
+                                          "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!",
+                                          "Kids, did you hear that? Recycling helps me keep the beach clean!",
+                                          "And it gives me a chance to be useful again! Let's all recycle!",
+                                          "Bye! Have a good day kids! 👋",
+                                        ],
+                                        speakers: [
+                                          "tommy",
+                                          "bottle",
+                                          "tommy",
+                                          "bottle",
+                                          "tommy",
+                                          "bottle",
+                                          "both",
+                                        ],
+                                        translationService: _translationService,
+                                      ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                         const SizedBox(height: 30),
                         _buildStoryCard(
                           title: "Luna the Leaf's Big Idea",
                           icon: Icons.forest,
-                          colors: [Colors.green.shade300, Colors.green.shade600],
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LunaStoryScreen(
-                                translationService: _translationService,
+                          colors: [
+                            Colors.green.shade300,
+                            Colors.green.shade600,
+                          ],
+                          onTap:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => LunaStoryScreen(
+                                        translationService: _translationService,
+                                      ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                         const SizedBox(height: 30),
                         _buildStoryCard(
                           title: "Wally the Water Bottle's Second Chance",
                           icon: Icons.water_drop,
                           colors: [Colors.cyan.shade300, Colors.cyan.shade600],
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WallyStoryScreen(
-                                translationService: _translationService,
+                          onTap:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => WallyStoryScreen(
+                                        translationService: _translationService,
+                                      ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -750,7 +775,10 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       onTap: onTap,
       child: Card(
         elevation: 8,
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), // Increased vertical margin
+        margin: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ), // Increased vertical margin
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Container(
           width: double.infinity,
@@ -763,14 +791,13 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0), // Increased vertical padding
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 20.0,
+            ), // Increased vertical padding
             child: Row(
               children: [
-                Icon(
-                  icon,
-                  size: 40,
-                  color: Colors.white,
-                ),
+                Icon(icon, size: 40, color: Colors.white),
                 const SizedBox(width: 20),
                 Expanded(
                   child: Text(
@@ -802,7 +829,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       child: Column(
         children: [
           Text(
-            _translationService.translate("Tap the items that can be recycled!"),
+            _translationService.translate(
+              "Tap the items that can be recycled!",
+            ),
             style: const TextStyle(
               fontSize: 18,
               fontFamily: 'ComicNeue',
@@ -824,18 +853,25 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
             itemBuilder: (context, index) {
               return Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: InkWell(
                   onTap: () async {
                     final isCorrect = recyclableItems[index]['isRecyclable'];
-                    
+
                     // Get current progress
-                    int currentProgress = await ProgressService.getProgress('Recycle');
-                    
+                    int currentProgress = await ProgressService.getProgress(
+                      'Recycle',
+                    );
+
                     if (isCorrect) {
                       // Only increment progress if answer is correct and item hasn't been correctly identified before
                       if (currentProgress < index + 1) {
-                        await ProgressService.updateProgress('Recycle', index + 1);
+                        await ProgressService.updateProgress(
+                          'Recycle',
+                          index + 1,
+                        );
                       }
                     }
 
@@ -847,38 +883,47 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                           _translationService.translate(
                             isCorrect
                                 ? "Yes! This can be recycled! ⭐"
-                                : "Oops! This cannot be recycled. Try again! 💫"
+                                : "Oops! This cannot be recycled. Try again! 💫",
                           ),
                           style: const TextStyle(fontSize: 16),
                         ),
-                        backgroundColor: isCorrect ? Colors.green : Colors.orange,
+                        backgroundColor:
+                            isCorrect ? Colors.green : Colors.orange,
                         duration: const Duration(seconds: 2),
                       ),
                     );
 
                     // If all recyclable items have been correctly identified
                     if (isCorrect && currentProgress < index + 1) {
-                      int totalRecyclableItems = recyclableItems.where((item) => item['isRecyclable']).length;
-                      int newProgress = await ProgressService.getProgress('Recycle');
-                      
+                      int totalRecyclableItems =
+                          recyclableItems
+                              .where((item) => item['isRecyclable'])
+                              .length;
+                      int newProgress = await ProgressService.getProgress(
+                        'Recycle',
+                      );
+
                       if (newProgress >= totalRecyclableItems) {
                         if (!mounted) return;
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('🎉 Congratulations! 🎉'),
-                            content: Text(
-                              _translationService.translate(
-                                'You\'ve successfully identified all recyclable items!'
+                          builder:
+                              (context) => AlertDialog(
+                                title: const Text('🎉 Congratulations! 🎉'),
+                                content: Text(
+                                  _translationService.translate(
+                                    'You\'ve successfully identified all recyclable items!',
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      _translationService.translate('Continue'),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(_translationService.translate('Continue')),
-                              ),
-                            ],
-                          ),
                         );
                       }
                     }
@@ -896,7 +941,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          _translationService.translate(recyclableItems[index]['name']),
+                          _translationService.translate(
+                            recyclableItems[index]['name'],
+                          ),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 16,
@@ -922,7 +969,11 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(_translationService.translate('Hey Western! Are you sure you want to logout?')),
+          content: Text(
+            _translationService.translate(
+              'Hey Western! Are you sure you want to logout?',
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               child: Text(_translationService.translate('Cancel')),
@@ -1031,36 +1082,46 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
   }
 
   Future<void> _setupTts() async {
-    await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
+    await flutterTts.setLanguage(
+      _translationService.isSpanish ? "es-ES" : "en-US",
+    );
     await flutterTts.setSpeechRate(0.3);
-    
+
     // Get available voices
     final voices = await flutterTts.getVoices;
-    
+
     // Find appropriate voices for characters
     if (voices != null) {
       // Look for a deep male voice for Tommy
       final tommyVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('male') || 
-                   voice.name.toLowerCase().contains('man') ||
-                   voice.name.toLowerCase().contains('michael') ||
-                   voice.name.toLowerCase().contains('daniel') ||
-                   voice.name.toLowerCase().contains('david'),
+        (voice) =>
+            voice.name.toLowerCase().contains('male') ||
+            voice.name.toLowerCase().contains('man') ||
+            voice.name.toLowerCase().contains('michael') ||
+            voice.name.toLowerCase().contains('daniel') ||
+            voice.name.toLowerCase().contains('david'),
         orElse: () => voices.first,
       );
-      tommyVoice = {'name': tommyVoiceData.name, 'locale': tommyVoiceData.locale};
+      tommyVoice = {
+        'name': tommyVoiceData.name,
+        'locale': tommyVoiceData.locale,
+      };
       await flutterTts.setPitch(0.8); // Lower pitch for deeper male voice
       await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
 
       // Look for a higher pitched female voice for the bottle
       final bottleVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('female') || 
-                   voice.name.toLowerCase().contains('woman') ||
-                   voice.name.toLowerCase().contains('samantha') ||
-                   voice.name.toLowerCase().contains('karen'),
+        (voice) =>
+            voice.name.toLowerCase().contains('female') ||
+            voice.name.toLowerCase().contains('woman') ||
+            voice.name.toLowerCase().contains('samantha') ||
+            voice.name.toLowerCase().contains('karen'),
         orElse: () => voices.first,
       );
-      bottleVoice = {'name': bottleVoiceData.name, 'locale': bottleVoiceData.locale};
+      bottleVoice = {
+        'name': bottleVoiceData.name,
+        'locale': bottleVoiceData.locale,
+      };
       await flutterTts.setPitch(1.3); // Higher pitch for female voice
       await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
     }
@@ -1090,48 +1151,62 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     });
 
     String lastSpeaker = "";
-    for (int i = startIndex; i < startIndex + conversationsPerPage && i < widget.storyContent.length; i++) {
+    for (
+      int i = startIndex;
+      i < startIndex + conversationsPerPage && i < widget.storyContent.length;
+      i++
+    ) {
       if (!isPlaying) break; // Stop if playing was toggled off
-      
+
       final line = widget.storyContent[i];
       final speaker = widget.speakers[i];
       final translatedLine = _translationService.translate(line);
-      
+
       // Add a longer pause when switching speakers
       if (lastSpeaker != "" && lastSpeaker != speaker) {
         await Future.delayed(const Duration(milliseconds: 1500));
       }
-      
+
       // Set appropriate voice based on character
       if (speaker == "tommy") {
         await flutterTts.setVoice(tommyVoice);
       } else if (speaker == "bottle" || speaker == "bobby") {
         await flutterTts.setVoice(bottleVoice);
       } else if (speaker == "narrator") {
-        await flutterTts.setVoice({'name': 'default', 'locale': _translationService.isSpanish ? 'es-ES' : 'en-US'});
+        await flutterTts.setVoice({
+          'name': 'default',
+          'locale': _translationService.isSpanish ? 'es-ES' : 'en-US',
+        });
       } else if (speaker == "both") {
         // For the final line, alternate between both voices
         await flutterTts.setVoice(tommyVoice);
-        await flutterTts.speak(_translationService.translate("Bye! Have a good day kids!"));
+        await flutterTts.speak(
+          _translationService.translate("Bye! Have a good day kids!"),
+        );
         await Future.delayed(const Duration(milliseconds: 800));
-        
+
         // Play high-five sound effect
         await _playHighFive();
         await Future.delayed(const Duration(milliseconds: 800));
-        
+
         await flutterTts.setVoice(bottleVoice);
-        await flutterTts.speak(_translationService.translate("Bye! Have a good day kids!"));
+        await flutterTts.speak(
+          _translationService.translate("Bye! Have a good day kids!"),
+        );
         continue;
       }
-      
+
       await flutterTts.speak(translatedLine);
-      
+
       // Wait for the speech to complete plus a pause
       final length = translatedLine.length;
       final basePause = 1000; // Base pause of 1 second
-      final charPause = (length * 50).clamp(500, 2000); // Additional pause based on text length
+      final charPause = (length * 50).clamp(
+        500,
+        2000,
+      ); // Additional pause based on text length
       await Future.delayed(Duration(milliseconds: charPause + basePause));
-      
+
       lastSpeaker = speaker;
     }
 
@@ -1142,11 +1217,15 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
   List<String> getCurrentPageLines() {
     final startIndex = currentPage * conversationsPerPage;
-    final endIndex = (startIndex + conversationsPerPage).clamp(0, widget.storyContent.length);
+    final endIndex = (startIndex + conversationsPerPage).clamp(
+      0,
+      widget.storyContent.length,
+    );
     return widget.storyContent.sublist(startIndex, endIndex);
   }
 
-  bool get hasNextPage => (currentPage + 1) * conversationsPerPage < widget.storyContent.length;
+  bool get hasNextPage =>
+      (currentPage + 1) * conversationsPerPage < widget.storyContent.length;
   bool get hasPreviousPage => currentPage > 0;
 
   @override
@@ -1156,7 +1235,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     final isSecondPage = currentPage == 1;
     final isThirdPage = currentPage == 2;
     final isFourthPage = currentPage == 3;
-    
+
     return WillPopScope(
       onWillPop: () async {
         await flutterTts.stop();
@@ -1179,7 +1258,9 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
           actions: [
             IconButton(
               icon: Icon(
-                _translationService.isSpanish ? Icons.language : Icons.translate,
+                _translationService.isSpanish
+                    ? Icons.language
+                    : Icons.translate,
                 color: Colors.blue.shade900,
               ),
               onPressed: () {
@@ -1236,12 +1317,22 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                           final speaker = widget.speakers[startIndex + index];
                           final isTommy = speaker == "tommy";
                           final isNarrator = speaker == "narrator";
-                          
+
                           return Align(
-                            alignment: isNarrator ? Alignment.center : (isTommy ? Alignment.centerLeft : Alignment.centerRight),
+                            alignment:
+                                isNarrator
+                                    ? Alignment.center
+                                    : (isTommy
+                                        ? Alignment.centerLeft
+                                        : Alignment.centerRight),
                             child: Container(
                               constraints: BoxConstraints(
-                                maxWidth: isNarrator ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.75,
+                                maxWidth:
+                                    isNarrator
+                                        ? MediaQuery.of(context).size.width *
+                                            0.9
+                                        : MediaQuery.of(context).size.width *
+                                            0.75,
                               ),
                               margin: EdgeInsets.only(
                                 bottom: 30,
@@ -1249,45 +1340,57 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                                 right: isTommy ? 40 : 0,
                                 top: index == 0 ? 20 : 0,
                               ),
-                              child: isNarrator ? 
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200.withOpacity(0.9),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Text(
-                                    _translationService.translate(line),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: 'ComicNeue',
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      height: 1.5,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ) :
-                                CustomPaint(
-                                  painter: CloudBubblePainter(
-                                    color: isTommy 
-                                      ? Colors.blue.shade50.withOpacity(0.95)
-                                      : Colors.green.shade50.withOpacity(0.95),
-                                    isLeftAligned: isTommy,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                                    child: Text(
-                                      _translationService.translate(line),
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontFamily: 'ComicNeue',
-                                        fontWeight: FontWeight.bold,
-                                        height: 1.5,
+                              child:
+                                  isNarrator
+                                      ? Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade200
+                                              .withOpacity(0.9),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          _translationService.translate(line),
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontFamily: 'ComicNeue',
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            height: 1.5,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                      : CustomPaint(
+                                        painter: CloudBubblePainter(
+                                          color:
+                                              isTommy
+                                                  ? Colors.blue.shade50
+                                                      .withOpacity(0.95)
+                                                  : Colors.green.shade50
+                                                      .withOpacity(0.95),
+                                          isLeftAligned: isTommy,
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.fromLTRB(
+                                            20,
+                                            16,
+                                            20,
+                                            24,
+                                          ),
+                                          child: Text(
+                                            _translationService.translate(line),
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontFamily: 'ComicNeue',
+                                              fontWeight: FontWeight.bold,
+                                              height: 1.5,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                             ),
                           );
                         },
@@ -1309,27 +1412,45 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                                 });
                               },
                               icon: const Icon(Icons.arrow_back),
-                              label: Text(_translationService.translate('Previous')),
+                              label: Text(
+                                _translationService.translate('Previous'),
+                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue.shade300,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
                             ),
                           ElevatedButton.icon(
-                            onPressed: () => _speakLines(currentPage * conversationsPerPage),
+                            onPressed:
+                                () => _speakLines(
+                                  currentPage * conversationsPerPage,
+                                ),
                             icon: Icon(
                               isPlaying ? Icons.stop : Icons.volume_up,
                               color: Colors.white,
                             ),
-                            label: Text(_translationService.translate(isPlaying ? 'Stop' : 'Listen')),
+                            label: Text(
+                              _translationService.translate(
+                                isPlaying ? 'Stop' : 'Listen',
+                              ),
+                            ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isPlaying ? Colors.red.shade300 : Colors.blue.shade300,
+                              backgroundColor:
+                                  isPlaying
+                                      ? Colors.red.shade300
+                                      : Colors.blue.shade300,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -1345,11 +1466,16 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                                 });
                               },
                               icon: const Icon(Icons.arrow_forward),
-                              label: Text(_translationService.translate('Next')),
+                              label: Text(
+                                _translationService.translate('Next'),
+                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue.shade300,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -1374,7 +1500,11 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(_translationService.translate('Hey Western! Are you sure you want to logout?')),
+          content: Text(
+            _translationService.translate(
+              'Hey Western! Are you sure you want to logout?',
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               child: Text(_translationService.translate('Cancel')),
@@ -1434,34 +1564,47 @@ class CloudBubblePainter extends CustomPainter {
   final Color color;
   final bool isLeftAligned;
 
-  CloudBubblePainter({
-    required this.color,
-    required this.isLeftAligned,
-  });
+  CloudBubblePainter({required this.color, required this.isLeftAligned});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
 
     final path = Path();
     final radius = 20.0;
-    
+
     // Main bubble
     path.moveTo(radius, 0);
-    
+
     // Top edge with bumps
     path.quadraticBezierTo(size.width / 4, -10, size.width / 2, 0);
     path.quadraticBezierTo(size.width * 3 / 4, 10, size.width - radius, 0);
-    
+
     // Right edge
-    path.quadraticBezierTo(size.width + 5, size.height / 3, size.width - radius, size.height - radius);
-    
+    path.quadraticBezierTo(
+      size.width + 5,
+      size.height / 3,
+      size.width - radius,
+      size.height - radius,
+    );
+
     // Bottom edge with bumps
-    path.quadraticBezierTo(size.width * 3 / 4, size.height + 5, size.width / 2, size.height - radius / 2);
-    path.quadraticBezierTo(size.width / 4, size.height - 10, radius, size.height - radius);
-    
+    path.quadraticBezierTo(
+      size.width * 3 / 4,
+      size.height + 5,
+      size.width / 2,
+      size.height - radius / 2,
+    );
+    path.quadraticBezierTo(
+      size.width / 4,
+      size.height - 10,
+      radius,
+      size.height - radius,
+    );
+
     // Left edge
     path.quadraticBezierTo(-5, size.height / 3, radius, 0);
 
@@ -1469,22 +1612,38 @@ class CloudBubblePainter extends CustomPainter {
     if (isLeftAligned) {
       path.moveTo(30, size.height - radius);
       path.quadraticBezierTo(10, size.height + 10, 0, size.height + 20);
-      path.quadraticBezierTo(20, size.height - radius + 10, 30, size.height - radius);
+      path.quadraticBezierTo(
+        20,
+        size.height - radius + 10,
+        30,
+        size.height - radius,
+      );
     } else {
       path.moveTo(size.width - 30, size.height - radius);
-      path.quadraticBezierTo(size.width - 10, size.height + 10, size.width, size.height + 20);
-      path.quadraticBezierTo(size.width - 20, size.height - radius + 10, size.width - 30, size.height - radius);
+      path.quadraticBezierTo(
+        size.width - 10,
+        size.height + 10,
+        size.width,
+        size.height + 20,
+      );
+      path.quadraticBezierTo(
+        size.width - 20,
+        size.height - radius + 10,
+        size.width - 30,
+        size.height - radius,
+      );
     }
 
     canvas.drawPath(path, paint);
 
     // Add subtle shadow
-    final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.1)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    final shadowPaint =
+        Paint()
+          ..color = Colors.black.withOpacity(0.1)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
     canvas.drawPath(path, shadowPaint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
-} 
+}

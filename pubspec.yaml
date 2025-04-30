@@ -29,7 +29,7 @@ flutter:
 
   assets:
     - assets/images/welcome.gif
-    - assets/images/home_back1.gif
+    
     - assets/images/avatar.png
     - assets/images/home_back.png
     - assets/images/1.png
@@ -53,7 +53,7 @@ flutter:
     - assets/images/recycle/luna2.png
     - assets/images/recycle/luna4.png
     - assets/images/recycle/luna5.png
-    - assets/images/recycle/storyb.png
+    
     - assets/images/recycle/wally1.png
     - assets/images/recycle/wally2.png
     - assets/images/recycle/wally3.png
@@ -64,6 +64,8 @@ flutter:
     - assets/images/recycle/wally8.png
     - assets/images/recycle/moral.png
     - assets/images/HomePage.png
+    - assets/images/recycle/learning.png
+
 
 
   fonts:
