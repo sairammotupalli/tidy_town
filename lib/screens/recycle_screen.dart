@@ -291,6 +291,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   Map<String, String> bottleVoice = {'name': 'default', 'locale': 'en-US'};
   bool isPlaying = false;
 
+  late final PageController pageController;
+  late final ValueNotifier<int> currentPageNotifier;
+
   final List<Map<String, dynamic>> recyclableItems = [
     {
       'name': 'Paper and Cardboard',
@@ -330,6 +333,8 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     _translationService = widget.translationService;
     _setupTts();
     _setupAudio();
+    pageController = PageController();
+    currentPageNotifier = ValueNotifier<int>(0);
   }
 
   @override
@@ -345,6 +350,8 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   void dispose() {
     flutterTts.stop();
     audioPlayer.dispose();
+    pageController.dispose();
+    currentPageNotifier.dispose();
     super.dispose();
   }
 
@@ -583,50 +590,186 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Widget _buildWhatCanBeRecycledContent() {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.8,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-      itemCount: 4, // Show only recyclable items
-      itemBuilder: (context, index) {
-        return Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: InkWell(
-            onTap: () => _speakLines(index),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Image.asset(
-                      recyclableItems[index]['image'],
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    _translationService.translate(
-                      recyclableItems[index]['name'],
-                    ),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'ComicNeue',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/recycle/whatcanbe.png',
+                fit: BoxFit.cover,
               ),
             ),
-          ),
+            Column(
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: pageController,
+                    itemCount: 4,
+                    onPageChanged: (index) {
+                      currentPageNotifier.value = index;
+                      setState(() {});
+                    },
+                    itemBuilder: (context, index) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 180),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: SizedBox(
+                              height: 350,
+                              child: Image.asset(
+                                recyclableItems[index]['image'],
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 0),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _translationService.translate(
+                                    recyclableItems[index]['name'],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontFamily: 'ComicNeue',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 0),
+                                Text(
+                                  _translationService.translate('Tap to hear more!'),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'ComicNeue',
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                // Page Indicator
+                ValueListenableBuilder<int>(
+                  valueListenable: currentPageNotifier,
+                  builder: (context, currentPage, _) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(4, (index) {
+                          return Container(
+                            width: 12,
+                            height: 12,
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: currentPage == index
+                                  ? Colors.blue.shade700
+                                  : Colors.blue.shade200,
+                            ),
+                          );
+                        }),
+                      ),
+                    );
+                  },
+                ),
+                // Navigation Buttons
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 300),
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: currentPageNotifier,
+                    builder: (context, currentPage, _) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              if (currentPage > 0) {
+                                pageController.previousPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                            label: Text(_translationService.translate('Previous')),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade300,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: currentPage < 3
+                                ? () {
+                                    pageController.nextPage(
+                                      duration: const Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
+                                : null,
+                            icon: const Icon(Icons.arrow_forward),
+                            label: Text(_translationService.translate('Next')),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade300,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                // Bottom Navigation Buttons
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildGradientButton(
+                        icon: Icons.person,
+                        onPressed: () => _showLogoutDialog(),
+                      ),
+                      _buildGradientButton(
+                        icon: Icons.home,
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      _buildGradientButton(icon: Icons.settings, onPressed: () {}),
+                      _buildGradientButton(
+                        icon: Icons.volume_up,
+                        onPressed: () => _speakLines(0),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         );
       },
     );

@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.2.2
-  lottie: ^2.7.0
+  lottie: ^3.3.1
   google_fonts: ^6.1.0
   flutter_tts: ^3.8.5
   audioplayers: ^5.2.1
@@ -65,6 +65,7 @@ flutter:
     - assets/images/recycle/moral.png
     - assets/images/HomePage.png
     - assets/images/recycle/learning.png
+    - assets/images/recycle/whatcanbe.png
 
 
 
