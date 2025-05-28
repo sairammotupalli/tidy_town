@@ -296,34 +296,40 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
   final List<Map<String, dynamic>> recyclableItems = [
     {
-      'name': 'Paper and Cardboard',
+      'name': 'Paper',
       'image': 'assets/images/recycle/paper.png',
       'isRecyclable': true,
+      'story': "Hey! I'm paper, and I'm like a superhero that can transform! I can be recycled up to 7 times before I retire! 📝♻️",
     },
     {
-      'name': 'Plastic Bottles',
-      'image': 'assets/images/recycle/plastic.png',
-      'isRecyclable': true,
-    },
-    {
-      'name': 'Glass Containers',
+      'name': 'Glass',
       'image': 'assets/images/recycle/glass.png',
       'isRecyclable': true,
+      'story': "Hi there! I'm glass, and I'm practically immortal! I can be recycled forever without losing my quality! 🥂✨",
     },
     {
-      'name': 'Metal Cans',
+      'name': 'Metal',
       'image': 'assets/images/recycle/metal.png',
       'isRecyclable': true,
+      'story': "Yo! I'm metal, and I'm like a phoenix! I can be melted down and reborn into something new over and over! 🔥🔄",
     },
     {
-      'name': 'Pizza',
+      'name': 'Plastic',
+      'image': 'assets/images/recycle/plastic.png',
+      'isRecyclable': true,
+      'story': "Hello! I'm plastic, and I'm on a mission! When recycled, I can become new bottles, toys, or even clothes! 🎯👕",
+    },
+    {
+      'name': 'Pizza Box',
       'image': 'assets/images/recycle/pizza.jpg',
       'isRecyclable': false,
+      'story': "Oops! I'm a pizza box, and I'm too greasy to be recycled! I'm like a party guest who spilled food everywhere! 🍕😅",
     },
     {
-      'name': 'Banana Peel',
-      'image': 'assets/images/recycle/banana.jpeg',
+      'name': 'Plastic Bags',
+      'image': 'assets/images/recycle/plastic.png',
       'isRecyclable': false,
+      'story': "Hey! I'm a plastic bag, and I'm too thin to be recycled in regular bins! I need special recycling centers to handle me! 🛍️♻️",
     },
   ];
 
@@ -335,6 +341,13 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     _setupAudio();
     pageController = PageController();
     currentPageNotifier = ValueNotifier<int>(0);
+    
+    // Add completion handler for TTS
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        isPlaying = false;
+      });
+    });
   }
 
   @override
@@ -605,7 +618,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                 Expanded(
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: 4,
+                    itemCount: recyclableItems.length,
                     onPageChanged: (index) {
                       currentPageNotifier.value = index;
                       setState(() {});
@@ -642,13 +655,58 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 0),
-                                Text(
-                                  _translationService.translate('Tap to hear more!'),
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'ComicNeue',
-                                    color: Colors.grey.shade700,
+                                const SizedBox(height: 20),
+                                GestureDetector(
+                                  onTap: () async {
+                                    String story = _translationService.translate(
+                                      recyclableItems[index]['story'],
+                                    );
+                                    if (isPlaying) {
+                                      await flutterTts.stop();
+                                      setState(() {
+                                        isPlaying = false;
+                                      });
+                                    } else {
+                                      await flutterTts.speak(story);
+                                      setState(() {
+                                        isPlaying = true;
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade100,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Colors.blue.shade300,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          isPlaying ? Icons.stop : Icons.volume_up,
+                                          color: Colors.blue.shade700,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          _translationService.translate(
+                                            isPlaying ? 'Stop Story' : 'Tap to hear my story!',
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'ComicNeue',
+                                            color: Colors.blue.shade700,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -668,7 +726,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(4, (index) {
+                        children: List.generate(recyclableItems.length, (index) {
                           return Container(
                             width: 12,
                             height: 12,
@@ -687,7 +745,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                 ),
                 // Navigation Buttons
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 300),
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 20),
                   child: ValueListenableBuilder<int>(
                     valueListenable: currentPageNotifier,
                     builder: (context, currentPage, _) {
@@ -695,14 +753,14 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () {
-                              if (currentPage > 0) {
-                                pageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            },
+                            onPressed: currentPage > 0
+                                ? () {
+                                    pageController.previousPage(
+                                      duration: const Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
+                                : null,
                             icon: const Icon(Icons.arrow_back),
                             label: Text(_translationService.translate('Previous')),
                             style: ElevatedButton.styleFrom(
@@ -718,7 +776,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                             ),
                           ),
                           ElevatedButton.icon(
-                            onPressed: currentPage < 3
+                            onPressed: currentPage < recyclableItems.length - 1
                                 ? () {
                                     pageController.nextPage(
                                       duration: const Duration(milliseconds: 300),
@@ -743,28 +801,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         ],
                       );
                     },
-                  ),
-                ),
-                // Bottom Navigation Buttons
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildGradientButton(
-                        icon: Icons.person,
-                        onPressed: () => _showLogoutDialog(),
-                      ),
-                      _buildGradientButton(
-                        icon: Icons.home,
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      _buildGradientButton(icon: Icons.settings, onPressed: () {}),
-                      _buildGradientButton(
-                        icon: Icons.volume_up,
-                        onPressed: () => _speakLines(0),
-                      ),
-                    ],
                   ),
                 ),
               ],

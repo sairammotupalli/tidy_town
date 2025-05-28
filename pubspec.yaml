@@ -66,6 +66,23 @@ flutter:
     - assets/images/HomePage.png
     - assets/images/recycle/learning.png
     - assets/images/recycle/whatcanbe.png
+    
+    # Compost images
+    - assets/images/compost/background.jpeg
+    - assets/images/compost/whatcanbe.png
+    - assets/images/compost/fruits.png
+    - assets/images/compost/coffee.png
+    - assets/images/compost/eggshells.png
+    - assets/images/compost/yard.png
+    - assets/images/compost/plastic.png
+    - assets/images/compost/meat.png
+    - assets/images/compost/learning.png
+    - assets/images/compost/CompostLearning1.png
+    - assets/images/compost/CompostLearning2.png
+    - assets/images/compost/CompostLearning3.png
+    - assets/images/compost/CompostLearning4.png
+    - assets/images/compost/CompostLearning5.png
+    - assets/images/compost/CompostLearning6.png
 
 
 

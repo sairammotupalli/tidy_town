@@ -130,7 +130,7 @@ class _WallyStoryScreenState extends State<WallyStoryScreen> {
       );
       robotVoice = {'name': robotVoiceData.name, 'locale': robotVoiceData.locale};
       await flutterTts.setPitch(0.1);
-      await flutterTts.setSpeechRate(2);
+      await flutterTts.setSpeechRate(0.5);
     }
   }
 
