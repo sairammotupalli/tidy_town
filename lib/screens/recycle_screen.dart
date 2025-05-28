@@ -75,7 +75,7 @@ class _RecycleScreenState extends State<RecycleScreen> {
                 _translationService.translate(subtitle),
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontFamily: 'ComicNeue',
                 ),
                 textAlign: TextAlign.center,
@@ -100,14 +100,14 @@ class _RecycleScreenState extends State<RecycleScreen> {
         ),
         backgroundColor: Colors.blue.shade100,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Colors.blue.shade900,
+              color: Colors.black,
             ),
             onPressed: () {
               _translationService.toggleLanguage();
@@ -296,31 +296,31 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
   final List<Map<String, dynamic>> recyclableItems = [
     {
-      'name': 'Paper',
+      'name': 'Paper and Cardboard',
       'image': 'assets/images/recycle/paper.png',
       'isRecyclable': true,
       'story': "Hey! I'm paper, and I'm like a superhero that can transform! I can be recycled up to 7 times before I retire! 📝♻️",
     },
     {
-      'name': 'Glass',
+      'name': 'Glass Containers',
       'image': 'assets/images/recycle/glass.png',
       'isRecyclable': true,
       'story': "Hi there! I'm glass, and I'm practically immortal! I can be recycled forever without losing my quality! 🥂✨",
     },
     {
-      'name': 'Metal',
+      'name': 'Metal Cans',
       'image': 'assets/images/recycle/metal.png',
       'isRecyclable': true,
       'story': "Yo! I'm metal, and I'm like a phoenix! I can be melted down and reborn into something new over and over! 🔥🔄",
     },
     {
-      'name': 'Plastic',
+      'name': 'Plastic Bottles',
       'image': 'assets/images/recycle/plastic.png',
       'isRecyclable': true,
       'story': "Hello! I'm plastic, and I'm on a mission! When recycled, I can become new bottles, toys, or even clothes! 🎯👕",
     },
     {
-      'name': 'Pizza Box',
+      'name': 'Pizza Box (with grease)',
       'image': 'assets/images/recycle/pizza.jpg',
       'isRecyclable': false,
       'story': "Oops! I'm a pizza box, and I'm too greasy to be recycled! I'm like a party guest who spilled food everywhere! 🍕😅",
@@ -508,14 +508,14 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Colors.white,
+              color: Colors.black,
             ),
             onPressed: () {
               _translationService.toggleLanguage();
@@ -931,6 +931,41 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                                 ),
                               ),
                         ),
+                        const SizedBox(height: 30),
+                        _buildStoryCard(
+                          title: "Rocky the Robot's Recycling Adventure",
+                          icon: Icons.smart_toy,
+                          colors: [Colors.purple.shade300, Colors.purple.shade600],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => StoryDetailScreen(
+                                storyTitle: "Rocky the Robot's Recycling Adventure",
+                                storyContent: [
+                                  "Hi kids! I'm Rocky, a recycling robot from the future! 🤖",
+                                  "In my time, we learned how important recycling is for our planet.",
+                                  "Did you know? Every item you recycle helps save energy and resources!",
+                                  "When we recycle one aluminum can, we save enough energy to power a TV for 3 hours!",
+                                  "And when we recycle paper, we save trees that help clean our air!",
+                                  "In the future, we have special recycling machines everywhere!",
+                                  "But we need YOUR help today to make that future possible!",
+                                  "Remember: Every time you recycle, you're a hero for our planet! 🌍✨",
+                                ],
+                                speakers: [
+                                  "rocky",
+                                  "rocky",
+                                  "rocky",
+                                  "rocky",
+                                  "rocky",
+                                  "rocky",
+                                  "rocky",
+                                  "rocky",
+                                ],
+                                translationService: _translationService,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -1015,6 +1050,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
               fontSize: 18,
               fontFamily: 'ComicNeue',
               fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
@@ -1035,6 +1071,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
+                color: Colors.blue.shade50,
                 child: InkWell(
                   onTap: () async {
                     final isCorrect = recyclableItems[index]['isRecyclable'];
@@ -1431,7 +1468,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
           ),
           backgroundColor: Colors.blue.shade100,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
@@ -1440,7 +1477,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                 _translationService.isSpanish
                     ? Icons.language
                     : Icons.translate,
-                color: Colors.blue.shade900,
+                color: Colors.black,
               ),
               onPressed: () {
                 _translationService.toggleLanguage();
@@ -1457,28 +1494,28 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
               if (isFirstPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/story1.jpeg',
+                    'assets/images/recycle/rocky_pic1.png',  // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isSecondPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/story2.png',
+                    'assets/images/recycle/rocky_pic2.png',  // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isThirdPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/story3.png',
+                    'assets/images/recycle/rocky_pic3.png',  // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isFourthPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/story4.png',
+                    'assets/images/recycle/rocky_pic4.png',  // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -1492,7 +1529,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                         itemCount: currentLines.length,
                         itemBuilder: (context, index) {
                           final startIndex = currentPage * conversationsPerPage;
-                          final line = currentLines[index];
+                          final line = _translationService.translate(currentLines[index]);
                           final speaker = widget.speakers[startIndex + index];
                           final isTommy = speaker == "tommy";
                           final isNarrator = speaker == "narrator";
@@ -1531,7 +1568,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                                           ),
                                         ),
                                         child: Text(
-                                          _translationService.translate(line),
+                                          line,
                                           style: const TextStyle(
                                             fontSize: 18,
                                             fontFamily: 'ComicNeue',
@@ -1560,7 +1597,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                                             24,
                                           ),
                                           child: Text(
-                                            _translationService.translate(line),
+                                            line,
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontFamily: 'ComicNeue',

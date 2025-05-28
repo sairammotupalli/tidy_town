@@ -85,6 +85,33 @@ class TranslationService {
     // Story Titles
     "Tommy and the Talking Bottle": "Tommy y la Botella Parlante",
     "Luna the Leaf's Big Idea": "La Gran Idea de Luna la Hoja",
+    "Wally the Water Bottle's Second Chance": "La Segunda Oportunidad de Wally la Botella de Agua",
+    "Rocky the Robot's Recycling Adventure": "La Aventura de Reciclaje del Robot Rocky",
+    
+    // Rocky's Story
+    "Hi kids! I'm Rocky, a recycling robot from the future! 🤖": 
+    "¡Hola niños! ¡Soy Rocky, un robot reciclador del futuro! 🤖",
+    
+    "In my time, we learned how important recycling is for our planet.":
+    "En mi tiempo, aprendimos lo importante que es reciclar para nuestro planeta.",
+    
+    "Did you know? Every item you recycle helps save energy and resources!":
+    "¿Sabías que? ¡Cada artículo que reciclas ayuda a ahorrar energía y recursos!",
+    
+    "When we recycle one aluminum can, we save enough energy to power a TV for 3 hours!":
+    "¡Cuando reciclamos una lata de aluminio, ahorramos suficiente energía para alimentar un televisor durante 3 horas!",
+    
+    "And when we recycle paper, we save trees that help clean our air!":
+    "¡Y cuando reciclamos papel, salvamos árboles que ayudan a limpiar nuestro aire!",
+    
+    "In the future, we have special recycling machines everywhere!":
+    "¡En el futuro, tenemos máquinas especiales de reciclaje en todas partes!",
+    
+    "But we need YOUR help today to make that future possible!":
+    "¡Pero necesitamos TU ayuda hoy para hacer posible ese futuro!",
+    
+    "Remember: Every time you recycle, you're a hero for our planet! 🌍✨":
+    "Recuerda: ¡Cada vez que reciclas, eres un héroe para nuestro planeta! 🌍✨",
     
     // Navigation
     "Previous": "Anterior",
@@ -135,6 +162,105 @@ class TranslationService {
 
     // Story Selection
     "Choose a story to learn why recycling is important!": "¡Elige una historia para aprender por qué es importante reciclar!",
+
+    // Wally's Story
+    "I was once shiny and full of fresh water. But now? I lay crumpled under a park bench, forgotten.":
+    "Una vez fui brillante y lleno de agua fresca. ¿Pero ahora? Estoy arrugado bajo un banco del parque, olvidado.",
+
+    "I wish I had a purpose again...":
+    "Desearía tener un propósito de nuevo...",
+
+    "Suddenly, a little girl named Maya picked me up!":
+    "¡De repente, una niña llamada Maya me recogió!",
+
+    "Don't worry, Wally! You're going in the recycling bin!":
+    "¡No te preocupes, Wally! ¡Vas al contenedor de reciclaje!",
+
+    "I was nervous... What's going to happen to me?":
+    "Estaba nervioso... ¿Qué me va a pasar?",
+
+    "You'll see—it's the beginning of something amazing!":
+    "Ya verás, ¡es el comienzo de algo increíble!",
+
+    "At the recycling center, I met tons of new friends—Cans, newspapers, yogurt cups, even a cereal box!":
+    "En el centro de reciclaje, conocí a muchos nuevos amigos: latas, periódicos, vasos de yogur, ¡incluso una caja de cereal!",
+
+    "We were all getting sorted on loud conveyor belts.":
+    "Todos estábamos siendo clasificados en ruidosas cintas transportadoras.",
+
+    "Plastic over here! called a robotic arm, scooping me up.":
+    "¡Plástico por aquí! gritó un brazo robótico, recogiéndome.",
+
+    "I got cleaned, squished, melted, and stretched! At first, it tickled.":
+    "¡Me limpiaron, aplastaron, derritieron y estiraron! Al principio, me hacía cosquillas.",
+
+    "I felt different. I'm... I'm not a bottle anymore!":
+    "Me sentía diferente. ¡Ya... ya no soy una botella!",
+
+    "I had become a part of a shiny new backpack!":
+    "¡Me había convertido en parte de una nueva mochila brillante!",
+
+    "Maya wore the new backpack to school proudly.":
+    "Maya llevó la nueva mochila a la escuela con orgullo.",
+
+    "Recycling gives things like Wally a second chance, I told my class.":
+    "El reciclaje le da una segunda oportunidad a cosas como Wally, le dije a mi clase.",
+
+    "And I? I beamed with joy. I'm back in the world—better and braver than ever!":
+    "¿Y yo? Brillé de alegría. ¡Estoy de vuelta en el mundo, mejor y más valiente que nunca!",
+
+    // Wally's Story Moral
+    "Even the smallest items we recycle can become something awesome again!":
+    "¡Incluso los objetos más pequeños que reciclamos pueden convertirse en algo increíble de nuevo!",
+
+    "Recycling gives second chances—to the Earth and everything on it":
+    "El reciclaje da segundas oportunidades, a la Tierra y a todo lo que hay en ella",
+
+    // Tommy's Story Lines
+    "Whoa! What's that shiny thing in the sand?":
+    "¡Vaya! ¿Qué es esa cosa brillante en la arena?",
+
+    "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!":
+    "¡Hola Tommy! Soy una botella solitaria. ¡Me tiraron y terminé aquí!",
+
+    "Oh no! Aren't you supposed to go in the recycling bin?":
+    "¡Oh no! ¿No deberías estar en el contenedor de reciclaje?",
+
+    "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!":
+    "¡Sí! Si alguien me hubiera reciclado, ¡podría haberme convertido en un juguete o incluso en una camiseta!",
+
+    "Kids, did you hear that? Recycling helps me keep the beach clean!":
+    "Niños, ¿escucharon eso? ¡El reciclaje me ayuda a mantener la playa limpia!",
+
+    "And it gives me a chance to be useful again! Let's all recycle!":
+    "¡Y me da la oportunidad de ser útil de nuevo! ¡Vamos todos a reciclar!",
+
+    "Bye! Have a good day kids! 👋":
+    "¡Adiós! ¡Que tengan un buen día niños! 👋",
+
+    // Luna's Story Lines
+    "Hi friends! I'm Luna. I live in a big, happy forest.":
+    "¡Hola amigos! Soy Luna. Vivo en un bosque grande y feliz.",
+
+    "But my forest friends are in danger because too many trees are being cut down.":
+    "Pero mis amigos del bosque están en peligro porque están cortando demasiados árboles.",
+
+    "Hey Luna! If kids recycle paper, we don't need to cut so many trees!":
+    "¡Hola Luna! Si los niños reciclan papel, ¡no necesitamos cortar tantos árboles!",
+
+    "That's right! Recycling paper saves homes for birds, bugs, and bears too!":
+    "¡Así es! ¡Reciclar papel salva hogares para pájaros, insectos y osos también!",
+
+    "Plus, it saves energy and keeps our Earth cool and clean.":
+    "Además, ahorra energía y mantiene nuestra Tierra fresca y limpia.",
+
+    "Let's be Earth heroes and recycle every day!":
+    "¡Seamos héroes de la Tierra y reciclemos todos los días!",
+
+    // Additional Story UI Elements
+    "Moral of the Story": "Moraleja de la Historia",
+    "Tap to hear my story!": "¡Toca para escuchar mi historia!",
+    "Stop Story": "Detener Historia",
   };
 
   String translate(String text) {
