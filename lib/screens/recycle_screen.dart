@@ -495,7 +495,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
           style: const TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Colors.black,
             shadows: [
               Shadow(
                 offset: Offset(1.0, 1.0),
@@ -534,13 +534,13 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
         // Background Image
         Positioned.fill(
           child: Image.asset(
-            'assets/images/recycle/background.jpeg',
+            'assets/images/recycle/newb.gif',
             fit: BoxFit.cover,
           ),
         ),
         // Content in white paper
         Positioned(
-          top: 100,
+          top: 250,
           left: 80,
           right: 40,
           child: Column(
@@ -550,13 +550,14 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
               const SizedBox(height: 20),
               Text(
                 _translationService.translate(
-                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨",
+                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!",
                 ),
                 style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: 30,
                   height: 1.5,
                   fontFamily: 'ComicNeue',
                   color: Colors.black87,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

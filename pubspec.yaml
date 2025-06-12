@@ -40,7 +40,7 @@ flutter:
     - assets/images/recycle/metal.png
     - assets/images/recycle/pizza.jpg
     - assets/images/recycle/banana.jpeg
-    - assets/images/recycle/background.jpeg
+    # - assets/images/recycle/background.jpeg
     - assets/images/recycle/story1.jpeg
     - assets/images/recycle/story2.png
     - assets/images/recycle/story3.png
@@ -70,6 +70,7 @@ flutter:
     - assets/images/HomePage.png
     - assets/images/recycle/learning.png
     - assets/images/recycle/whatcanbe.png
+    - assets/images/recycle/newb.gif
     
     # Compost images
     - assets/images/compost/background.jpeg
@@ -87,8 +88,36 @@ flutter:
     - assets/images/compost/CompostLearning4.png
     - assets/images/compost/CompostLearning5.png
     - assets/images/compost/CompostLearning6.png
+    - assets/images/compost/whatisc.gif
 
+    # Landfill images
+    - assets/images/landfill/whatisl.gif
+    - assets/images/landfill/whatgoes.png
+    - assets/images/landfill/learning.png
+    - assets/images/landfill/LandfillLearning1.png
+    - assets/images/landfill/LandfillLearning2.png
+    - assets/images/landfill/LandfillLearning3.png
+    - assets/images/landfill/LandfillLearning4.png
+    - assets/images/landfill/LandfillLearning5.png
+    - assets/images/landfill/LandfillLearning6.png
 
+    # Game images
+    - assets/images/game/plastic_bottle.png
+    - assets/images/game/apple_core.png
+    - assets/images/game/newspaper.png
+    - assets/images/game/broken_glass.png
+    - assets/images/game/banana_peel.png
+    - assets/images/game/plastic_bag.png
+    - assets/images/game/aluminum_can.png
+    - assets/images/game/coffee_grounds.png
+    - assets/images/game/bin_green.png
+    - assets/images/game/bin_yellow.png
+    - assets/images/game/bin_red.png  
+
+    - assets/animations/cheer.gif
+    - assets/animations/confetti.json
+    - assets/animations/sad.json
+    - assets/animations/animal.json
 
   fonts:
     - family: ComicNeue

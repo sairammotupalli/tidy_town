@@ -19,10 +19,7 @@ class _CompostScreenState extends State<CompostScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CompostDetailScreen(
-          pageIndex: index,
-          translationService: _translationService,
-        ),
+        builder: (context) => CompostDetailScreen(pageIndex: index),
       ),
     ).then((_) {
       setState(() {}); // Trigger rebuild when returning from detail screen
@@ -181,12 +178,10 @@ class _CompostScreenState extends State<CompostScreen> {
 
 class CompostDetailScreen extends StatefulWidget {
   final int pageIndex;
-  final TranslationService translationService;
 
   const CompostDetailScreen({
     super.key,
     required this.pageIndex,
-    required this.translationService,
   });
 
   @override
@@ -194,7 +189,6 @@ class CompostDetailScreen extends StatefulWidget {
 }
 
 class _CompostDetailScreenState extends State<CompostDetailScreen> {
-  late final TranslationService _translationService;
   final FlutterTts flutterTts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
@@ -202,6 +196,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
 
   late final PageController pageController;
   late final ValueNotifier<int> currentPageNotifier;
+  final TranslationService _translationService = TranslationService();
 
   final List<Map<String, dynamic>> compostableItems = [
     {
@@ -245,7 +240,6 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _translationService = widget.translationService;
     _setupTts();
     _setupAudio();
     pageController = PageController();
@@ -349,7 +343,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
           style: const TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Colors.black,
             shadows: [
               Shadow(
                 offset: Offset(1.0, 1.0),
@@ -388,13 +382,13 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
         // Background Image
         Positioned.fill(
           child: Image.asset(
-            'assets/images/recycle/background.jpeg',
+            'assets/images/compost/whatisc.gif',
             fit: BoxFit.cover,
           ),
         ),
         // Content in white paper
         Positioned(
-          top: 100,
+          top: 200,
           left: 80,
           right: 40,
           child: Column(
@@ -404,13 +398,14 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
               const SizedBox(height: 20),
               Text(
                 _translationService.translate(
-                  "Hi! I'm Captain Compost! Composting is like making a special recipe for the Earth! We take food scraps and yard waste and turn them into rich soil that helps plants grow. It's like magic that helps our Earth stay healthy and happy! 🌍✨",
+                  "Hi! I'm Captain Compost! Composting is like making a special recipe for the Earth! We take food scraps and yard waste and turn them into rich soil that helps plants grow. It's like magic that helps our Earth stay healthy and happy!",
                 ),
                 style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: 30,
                   height: 1.5,
                   fontFamily: 'ComicNeue',
                   color: Colors.black87,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

@@ -3,7 +3,9 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'recycle_screen.dart';
 import 'compost_screen.dart';
 import 'landfill_screen.dart';
+import 'waste_sorting_game.dart';
 import '../services/progress_service.dart';
+import 'package:lottie/lottie.dart';
 
 class CategoryProgress {
   final String name;
@@ -175,6 +177,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           return const CompostScreen();
                         case 'Landfill':
                           return const LandfillScreen();
+                        case 'Waste Sorting Game':
+                          return const WasteSortingGame();
                         default:
                           return const RecycleScreen();
                       }
@@ -201,23 +205,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       CategoryProgress(
         name: 'Recycle',
-        totalQuestions: ProgressService.getTotalQuestions('Recycle'),
+        totalQuestions: 6,
         completedQuestions: recycleProgress,
         icon: Icons.recycling,
-        color: Colors.green,
+        color: Colors.blue,
       ),
       CategoryProgress(
         name: 'Compost',
-        totalQuestions: ProgressService.getTotalQuestions('Compost'),
+        totalQuestions: 6,
         completedQuestions: compostProgress,
         icon: Icons.eco,
-        color: Colors.brown,
+        color: Colors.green,
       ),
       CategoryProgress(
         name: 'Landfill',
-        totalQuestions: ProgressService.getTotalQuestions('Landfill'),
+        totalQuestions: 6,
         completedQuestions: landfillProgress,
-        icon: Icons.delete,
+        icon: Icons.delete_outline,
         color: Colors.grey,
       ),
     ];
@@ -259,135 +263,101 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/HomePage.png"),
-            fit: BoxFit.cover,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text(
+          'Tidy Town',
+          style: TextStyle(
+            fontFamily: 'ComicNeue',
+            fontWeight: FontWeight.bold,
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Avatar and stars section
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Transform.translate(
-                        offset: const Offset(0, 5),
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: const BoxDecoration(
-                            color: Color.fromARGB(255, 207, 65, 5),
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/avatar.png'),
-                              alignment: Alignment.center,
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 40,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.red, size: 40),
-                              Icon(Icons.star, color: Colors.orange, size: 40),
-                              Icon(Icons.star, color: Colors.amber, size: 40),
-                              Icon(Icons.star, color: Colors.green, size: 40),
-                              Icon(Icons.star, color: Color(0xFFB2D235), size: 40),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+        backgroundColor: Colors.green.shade100,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _showLogoutDialog(context),
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/home_back.png',
+              fit: BoxFit.fill,
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.green.shade50.withOpacity(0.1),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight),
+                Lottie.asset(
+                  'assets/animations/animal.json',
+                  width: 600,
+                  height: 600,
+                  fit: BoxFit.contain,
                 ),
-              ),
-              
-              // Spacer to push buttons to bottom
-              const Spacer(),
-              
-              // Bottom buttons container
-              Padding(
-                padding: const EdgeInsets.only(bottom: 110),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                const SizedBox(height: 60),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // Play Button
-                    Padding(
-                      padding: const EdgeInsets.only(left: 0, right: 40),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Transform.rotate(
-                          angle: -0.2,
-                          child: GestureDetector(
-                            onTap: () => print("Play pressed"),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: 70,
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "Play",
-                                style: TextStyle(
-                                  color: Color(0xFF4A3728),
-                                  fontSize: 44,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Comic Sans MS',
-                                  shadows: [
-                                    Shadow(
-                                      offset: Offset(2.0, 2.0),
-                                      blurRadius: 3.0,
-                                      color: Color.fromARGB(255, 74, 55, 40),
-                                    ),
-                                  ],
-                                ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 80),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const WasteSortingGame(),
                               ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            padding: const EdgeInsets.symmetric(vertical: 32),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            elevation: 8,
+                          ),
+                          child: const Text(
+                            'PLAY',
+                            style: TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ComicNeue',
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    
-                    // Learn Button
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40, right: 0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Transform.rotate(
-                          angle: 0.2,
-                          child: GestureDetector(
-                            onTap: _showProgressDialog,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: 70,
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "Learn",
-                                style: TextStyle(
-                                  color: Color(0xFF4A3728),
-                                  fontSize: 44,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Comic Sans MS',
-                                  shadows: [
-                                    Shadow(
-                                      offset: Offset(2.0, 2.0),
-                                      blurRadius: 3.0,
-                                      color: Color.fromARGB(255, 74, 55, 40),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 80),
+                        child: ElevatedButton(
+                          onPressed: _showProgressDialog,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            padding: const EdgeInsets.symmetric(vertical: 32),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            elevation: 8,
+                          ),
+                          child: const Text(
+                            'LEARN',
+                            style: TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ComicNeue',
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -395,10 +365,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
