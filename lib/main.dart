@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart';
-
 import 'screens/home_screen.dart';
+import 'services/redis_cache_service.dart';
+import 'services/api_service.dart';
+import 'services/cicd_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Redis cache service
+  await RedisCacheService.instance.initialize();
+  
+  // Initialize API service for CI/CD automation
+  await ApiService.instance.initialize();
+  
+  // Initialize CI/CD service
+  CICDService.instance;
+  
   runApp(const MyApp());
 }
 
