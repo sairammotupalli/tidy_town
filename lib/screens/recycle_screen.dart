@@ -299,37 +299,43 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       'name': 'Paper and Cardboard',
       'image': 'assets/images/recycle/paper.png',
       'isRecyclable': true,
-      'story': "Hey! I'm paper, and I'm like a superhero that can transform! I can be recycled up to 7 times before I retire! 📝♻️",
+      'story':
+          "Hey! I'm paper, and I'm like a superhero that can transform! I can be recycled up to 7 times before I retire!",
     },
     {
       'name': 'Glass Containers',
       'image': 'assets/images/recycle/glass.png',
       'isRecyclable': true,
-      'story': "Hi there! I'm glass, and I'm practically immortal! I can be recycled forever without losing my quality! 🥂✨",
+      'story':
+          "Hi there! I'm glass, and I'm practically immortal! I can be recycled forever without losing my quality!",
     },
     {
       'name': 'Metal Cans',
       'image': 'assets/images/recycle/metal.png',
       'isRecyclable': true,
-      'story': "Yo! I'm metal, and I'm like a phoenix! I can be melted down and reborn into something new over and over! 🔥🔄",
+      'story':
+          "Yo! I'm metal, and I'm like a phoenix! I can be melted down and reborn into something new over and over!",
     },
     {
       'name': 'Plastic Bottles',
       'image': 'assets/images/recycle/plastic.png',
       'isRecyclable': true,
-      'story': "Hello! I'm plastic, and I'm on a mission! When recycled, I can become new bottles, toys, or even clothes! 🎯👕",
+      'story':
+          "Hello! I'm plastic, and I'm on a mission! When recycled, I can become new bottles, toys, or even clothes!",
     },
     {
       'name': 'Pizza Box (with grease)',
       'image': 'assets/images/recycle/pizza.jpg',
       'isRecyclable': false,
-      'story': "Oops! I'm a pizza box, and I'm too greasy to be recycled! I'm like a party guest who spilled food everywhere! 🍕😅",
+      'story':
+          "Oops! I'm a pizza box, and I'm too greasy to be recycled! I'm like a party guest who spilled food everywhere!",
     },
     {
       'name': 'Plastic Bags',
       'image': 'assets/images/recycle/plastic.png',
       'isRecyclable': false,
-      'story': "Hey! I'm a plastic bag, and I'm too thin to be recycled in regular bins! I need special recycling centers to handle me! 🛍️♻️",
+      'story':
+          "Hey! I'm a plastic bag, and I'm too thin to be recycled in regular bins! I need special recycling centers to handle me!",
     },
   ];
 
@@ -341,7 +347,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     _setupAudio();
     pageController = PageController();
     currentPageNotifier = ValueNotifier<int>(0);
-    
+
     // Add completion handler for TTS
     flutterTts.setCompletionHandler(() {
       setState(() {
@@ -553,7 +559,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                   "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!",
                 ),
                 style: const TextStyle(
-                  fontSize: 30,
+                  fontSize: 39,
                   height: 1.5,
                   fontFamily: 'ComicNeue',
                   color: Colors.black87,
@@ -630,7 +636,10 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         children: [
                           const SizedBox(height: 180),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
                             child: SizedBox(
                               height: 350,
                               child: Image.asset(
@@ -659,9 +668,10 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                                 const SizedBox(height: 20),
                                 GestureDetector(
                                   onTap: () async {
-                                    String story = _translationService.translate(
-                                      recyclableItems[index]['story'],
-                                    );
+                                    String story = _translationService
+                                        .translate(
+                                          recyclableItems[index]['story'],
+                                        );
                                     if (isPlaying) {
                                       await flutterTts.stop();
                                       setState(() {
@@ -691,13 +701,17 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
-                                          isPlaying ? Icons.stop : Icons.volume_up,
+                                          isPlaying
+                                              ? Icons.stop
+                                              : Icons.volume_up,
                                           color: Colors.blue.shade700,
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
                                           _translationService.translate(
-                                            isPlaying ? 'Stop Story' : 'Tap to hear my story!',
+                                            isPlaying
+                                                ? 'Stop Story'
+                                                : 'Tap to hear my story!',
                                           ),
                                           style: TextStyle(
                                             fontSize: 16,
@@ -727,16 +741,19 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(recyclableItems.length, (index) {
+                        children: List.generate(recyclableItems.length, (
+                          index,
+                        ) {
                           return Container(
                             width: 12,
                             height: 12,
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: currentPage == index
-                                  ? Colors.blue.shade700
-                                  : Colors.blue.shade200,
+                              color:
+                                  currentPage == index
+                                      ? Colors.blue.shade700
+                                      : Colors.blue.shade200,
                             ),
                           );
                         }),
@@ -746,7 +763,10 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                 ),
                 // Navigation Buttons
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 80,
+                    vertical: 20,
+                  ),
                   child: ValueListenableBuilder<int>(
                     valueListenable: currentPageNotifier,
                     builder: (context, currentPage, _) {
@@ -754,16 +774,21 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: currentPage > 0
-                                ? () {
-                                    pageController.previousPage(
-                                      duration: const Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  }
-                                : null,
+                            onPressed:
+                                currentPage > 0
+                                    ? () {
+                                      pageController.previousPage(
+                                        duration: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                    : null,
                             icon: const Icon(Icons.arrow_back),
-                            label: Text(_translationService.translate('Previous')),
+                            label: Text(
+                              _translationService.translate('Previous'),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue.shade300,
                               foregroundColor: Colors.white,
@@ -777,14 +802,17 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                             ),
                           ),
                           ElevatedButton.icon(
-                            onPressed: currentPage < recyclableItems.length - 1
-                                ? () {
-                                    pageController.nextPage(
-                                      duration: const Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  }
-                                : null,
+                            onPressed:
+                                currentPage < recyclableItems.length - 1
+                                    ? () {
+                                      pageController.nextPage(
+                                        duration: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                    : null,
                             icon: const Icon(Icons.arrow_forward),
                             label: Text(_translationService.translate('Next')),
                             style: ElevatedButton.styleFrom(
@@ -936,36 +964,42 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                         _buildStoryCard(
                           title: "Rocky the Robot's Recycling Adventure",
                           icon: Icons.smart_toy,
-                          colors: [Colors.purple.shade300, Colors.purple.shade600],
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => StoryDetailScreen(
-                                storyTitle: "Rocky the Robot's Recycling Adventure",
-                                storyContent: [
-                                  "Hi kids! I'm Rocky, a recycling robot from the future! 🤖",
-                                  "In my time, we learned how important recycling is for our planet.",
-                                  "Did you know? Every item you recycle helps save energy and resources!",
-                                  "When we recycle one aluminum can, we save enough energy to power a TV for 3 hours!",
-                                  "And when we recycle paper, we save trees that help clean our air!",
-                                  "In the future, we have special recycling machines everywhere!",
-                                  "But we need YOUR help today to make that future possible!",
-                                  "Remember: Every time you recycle, you're a hero for our planet! 🌍✨",
-                                ],
-                                speakers: [
-                                  "rocky",
-                                  "rocky",
-                                  "rocky",
-                                  "rocky",
-                                  "rocky",
-                                  "rocky",
-                                  "rocky",
-                                  "rocky",
-                                ],
-                                translationService: _translationService,
+                          colors: [
+                            Colors.purple.shade300,
+                            Colors.purple.shade600,
+                          ],
+                          onTap:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => StoryDetailScreen(
+                                        storyTitle:
+                                            "Rocky the Robot's Recycling Adventure",
+                                        storyContent: [
+                                          "Hi kids! I'm Rocky, a recycling robot from the future! 🤖",
+                                          "In my time, we learned how important recycling is for our planet.",
+                                          "Did you know? Every item you recycle helps save energy and resources!",
+                                          "When we recycle one aluminum can, we save enough energy to power a TV for 3 hours!",
+                                          "And when we recycle paper, we save trees that help clean our air!",
+                                          "In the future, we have special recycling machines everywhere!",
+                                          "But we need YOUR help today to make that future possible!",
+                                          "Remember: Every time you recycle, you're a hero for our planet! 🌍✨",
+                                        ],
+                                        speakers: [
+                                          "rocky",
+                                          "rocky",
+                                          "rocky",
+                                          "rocky",
+                                          "rocky",
+                                          "rocky",
+                                          "rocky",
+                                          "rocky",
+                                        ],
+                                        translationService: _translationService,
+                                      ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -1040,7 +1074,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
   Widget _buildRecycleQuizContent() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(80),
       child: Column(
         children: [
           Text(
@@ -1495,28 +1529,28 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
               if (isFirstPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/rocky_pic1.png',  // Using a default background image
+                    'assets/images/recycle/rocky_pic1.png', // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isSecondPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/rocky_pic2.png',  // Using a default background image
+                    'assets/images/recycle/rocky_pic2.png', // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isThirdPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/rocky_pic3.png',  // Using a default background image
+                    'assets/images/recycle/rocky_pic3.png', // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isFourthPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/recycle/rocky_pic4.png',  // Using a default background image
+                    'assets/images/recycle/rocky_pic4.png', // Using a default background image
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -1530,7 +1564,9 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                         itemCount: currentLines.length,
                         itemBuilder: (context, index) {
                           final startIndex = currentPage * conversationsPerPage;
-                          final line = _translationService.translate(currentLines[index]);
+                          final line = _translationService.translate(
+                            currentLines[index],
+                          );
                           final speaker = widget.speakers[startIndex + index];
                           final isTommy = speaker == "tommy";
                           final isNarrator = speaker == "narrator";

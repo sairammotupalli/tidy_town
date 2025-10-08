@@ -179,10 +179,7 @@ class _LandfillScreenState extends State<LandfillScreen> {
 class LandfillDetailScreen extends StatefulWidget {
   final int pageIndex;
 
-  const LandfillDetailScreen({
-    super.key,
-    required this.pageIndex,
-  });
+  const LandfillDetailScreen({super.key, required this.pageIndex});
 
   @override
   State<LandfillDetailScreen> createState() => _LandfillDetailScreenState();
@@ -203,37 +200,43 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
       'name': 'Plastic Bags',
       'image': 'assets/images/landfill/LandfillLearning1.png',
       'isLandfill': true,
-      'story': "Hi! I'm a plastic bag, and I'm one of the biggest problems in landfills! I take hundreds of years to break down and can harm wildlife. Please reuse me or use cloth bags instead! 🛍️",
+      'story':
+          "Hi! I'm a plastic bag, and I'm one of the biggest problems in landfills! I take hundreds of years to break down and can harm wildlife. Please reuse me or use cloth bags instead! 🛍️",
     },
     {
       'name': 'Styrofoam',
       'image': 'assets/images/landfill/LandfillLearning2.png',
       'isLandfill': true,
-      'story': "Hey there! I'm Styrofoam, and I'm not biodegradable! I take up lots of space in landfills and can break into tiny pieces that harm animals. Try to avoid using me! 🚫",
+      'story':
+          "Hey there! I'm Styrofoam, and I'm not biodegradable! I take up lots of space in landfills and can break into tiny pieces that harm animals. Try to avoid using me! 🚫",
     },
     {
       'name': 'Batteries',
       'image': 'assets/images/landfill/LandfillLearning3.png',
       'isLandfill': true,
-      'story': "Zap! I'm a battery, and I'm dangerous in landfills! I can leak harmful chemicals. Please recycle me at special collection points! 🔋",
+      'story':
+          "Zap! I'm a battery, and I'm dangerous in landfills! I can leak harmful chemicals. Please recycle me at special collection points! 🔋",
     },
     {
       'name': 'Food Waste',
       'image': 'assets/images/landfill/LandfillLearning4.png',
       'isLandfill': false,
-      'story': "Yum! I'm food waste, and I don't belong in landfills! I can be composted to make rich soil for plants! 🍎",
+      'story':
+          "Yum! I'm food waste, and I don't belong in landfills! I can be composted to make rich soil for plants! 🍎",
     },
     {
       'name': 'Paper',
       'image': 'assets/images/landfill/LandfillLearning5.png',
       'isLandfill': false,
-      'story': "Hi! I'm paper, and I can be recycled many times! Please put me in the recycling bin instead of the landfill! 📄",
+      'story':
+          "Hi! I'm paper, and I can be recycled many times! Please put me in the recycling bin instead of the landfill! 📄",
     },
     {
       'name': 'Glass',
       'image': 'assets/images/landfill/LandfillLearning6.png',
       'isLandfill': false,
-      'story': "Clink! I'm glass, and I can be recycled forever! Please recycle me instead of sending me to the landfill! 🍶",
+      'story':
+          "Clink! I'm glass, and I can be recycled forever! Please recycle me instead of sending me to the landfill! 🍶",
     },
   ];
 
@@ -244,7 +247,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
     _setupAudio();
     pageController = PageController();
     currentPageNotifier = ValueNotifier<int>(0);
-    
+
     flutterTts.setCompletionHandler(() {
       setState(() {
         isSpeaking = false;
@@ -253,7 +256,9 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
   }
 
   Future<void> _setupTts() async {
-    await flutterTts.setLanguage(_translationService.isSpanish ? 'es-ES' : 'en-US');
+    await flutterTts.setLanguage(
+      _translationService.isSpanish ? 'es-ES' : 'en-US',
+    );
     await flutterTts.setPitch(1.0);
     await flutterTts.setSpeechRate(0.5);
   }
@@ -355,14 +360,17 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 73, 72, 72),
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Colors.white,
+              color: Color.fromARGB(255, 73, 72, 72),
             ),
             onPressed: () {
               _translationService.toggleLanguage();
@@ -398,10 +406,10 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                   "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle!",
                 ),
                 style: const TextStyle(
-                  fontSize: 30,
+                  fontSize: 39,
                   height: 1.5,
                   fontFamily: 'ComicNeue',
-                  color: Colors.black87,
+                  color: Color.fromARGB(255, 250, 249, 249),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -457,7 +465,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
           children: [
             Positioned.fill(
               child: Image.asset(
-                'assets/images/landfill/whatgoes.png',
+                'assets/images/recycle/whatcanbe.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -477,12 +485,32 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                         children: [
                           const SizedBox(height: 180),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
                             child: SizedBox(
                               height: 350,
-                              child: Image.asset(
-                                landfillItems[index]['image'],
-                                fit: BoxFit.contain,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  String itemName = _translationService
+                                      .translate(landfillItems[index]['name']);
+                                  if (isSpeaking) {
+                                    await flutterTts.stop();
+                                    setState(() {
+                                      isSpeaking = false;
+                                    });
+                                  } else {
+                                    await flutterTts.speak('I am $itemName');
+                                    setState(() {
+                                      isSpeaking = true;
+                                    });
+                                  }
+                                },
+                                child: Image.asset(
+                                  landfillItems[index]['image'],
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                           ),
@@ -506,9 +534,10 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                                 const SizedBox(height: 20),
                                 GestureDetector(
                                   onTap: () async {
-                                    String story = _translationService.translate(
-                                      landfillItems[index]['story'],
-                                    );
+                                    String story = _translationService
+                                        .translate(
+                                          landfillItems[index]['story'],
+                                        );
                                     if (isSpeaking) {
                                       await flutterTts.stop();
                                       setState(() {
@@ -538,13 +567,17 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
-                                          isSpeaking ? Icons.stop : Icons.volume_up,
+                                          isSpeaking
+                                              ? Icons.stop
+                                              : Icons.volume_up,
                                           color: Colors.grey.shade700,
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
                                           _translationService.translate(
-                                            isSpeaking ? 'Stop Story' : 'Tap to hear my story!',
+                                            isSpeaking
+                                                ? 'Stop Story'
+                                                : 'Tap to hear my story!',
                                           ),
                                           style: TextStyle(
                                             fontSize: 16,
@@ -580,9 +613,10 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: currentPage == index
-                                  ? Colors.grey.shade700
-                                  : Colors.grey.shade200,
+                              color:
+                                  currentPage == index
+                                      ? Colors.grey.shade700
+                                      : Colors.grey.shade200,
                             ),
                           );
                         }),
@@ -591,7 +625,10 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 80,
+                    vertical: 20,
+                  ),
                   child: ValueListenableBuilder<int>(
                     valueListenable: currentPageNotifier,
                     builder: (context, currentPage, _) {
@@ -599,18 +636,28 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: currentPage > 0
-                                ? () {
-                                    pageController.previousPage(
-                                      duration: const Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  }
-                                : null,
+                            onPressed:
+                                currentPage > 0
+                                    ? () {
+                                      pageController.previousPage(
+                                        duration: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                    : null,
                             icon: const Icon(Icons.arrow_back),
-                            label: Text(_translationService.translate('Previous')),
+                            label: Text(
+                              _translationService.translate('Previous'),
+                            ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey.shade300,
+                              backgroundColor: const Color.fromARGB(
+                                255,
+                                62,
+                                61,
+                                61,
+                              ),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
@@ -622,14 +669,17 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                             ),
                           ),
                           ElevatedButton.icon(
-                            onPressed: currentPage < landfillItems.length - 1
-                                ? () {
-                                    pageController.nextPage(
-                                      duration: const Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  }
-                                : null,
+                            onPressed:
+                                currentPage < landfillItems.length - 1
+                                    ? () {
+                                      pageController.nextPage(
+                                        duration: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                    : null,
                             icon: const Icon(Icons.arrow_forward),
                             label: Text(_translationService.translate('Next')),
                             style: ElevatedButton.styleFrom(
@@ -651,6 +701,35 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                 ),
               ],
             ),
+            // Bottom volume button
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: ValueListenableBuilder<int>(
+                valueListenable: currentPageNotifier,
+                builder: (context, currentPage, _) {
+                  return _buildGradientButton(
+                    icon: isSpeaking ? Icons.stop : Icons.volume_up,
+                    onPressed: () async {
+                      if (isSpeaking) {
+                        await flutterTts.stop();
+                        setState(() {
+                          isSpeaking = false;
+                        });
+                      } else {
+                        String itemName = _translationService.translate(
+                          landfillItems[currentPage]['name'],
+                        );
+                        await flutterTts.speak('I am $itemName');
+                        setState(() {
+                          isSpeaking = true;
+                        });
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         );
       },
@@ -664,7 +743,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
         children: [
           SizedBox.expand(
             child: Image.asset(
-              'assets/images/landfill/learning.png',
+              'assets/images/recycle/learning.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -808,22 +887,23 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                         if (!mounted) return;
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('🎉 Congratulations! 🎉'),
-                            content: Text(
-                              _translationService.translate(
-                                'You\'ve successfully identified all landfill items!',
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(
-                                  _translationService.translate('Continue'),
+                          builder:
+                              (context) => AlertDialog(
+                                title: const Text('🎉 Congratulations! 🎉'),
+                                content: Text(
+                                  _translationService.translate(
+                                    'You\'ve successfully identified all landfill items!',
+                                  ),
                                 ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      _translationService.translate('Continue'),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
                         );
                       }
                     }
@@ -917,10 +997,34 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
   }
 
   void _showLogoutDialog() {
-    // Implement logout dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_translationService.translate('😢 Logout?')),
+          content: Text(
+            _translationService.translate(
+              'Hey Western! Are you sure you want to logout?',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(_translationService.translate('Cancel')),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text(_translationService.translate('Logout')),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/'); // Back to welcome
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _speakLines(int pageIndex) async {
     // Implement text-to-speech functionality
   }
-} 
+}
