@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../services/translation_service.dart';
-import '../services/progress_service.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'package:lottie/lottie.dart';
@@ -100,6 +99,8 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
       duration: const Duration(milliseconds: 3000),
     );
     _currentItemController.forward();
+    // Play welcome instructions
+    _playWelcomeInstructions();
   }
 
   Future<void> _initializeTts() async {
@@ -225,6 +226,25 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
       print('Speaking: I am $itemName');
     } catch (e) {
       print('Error speaking: $e');
+    }
+  }
+
+  Future<void> _playWelcomeInstructions() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    await _speakText("Welcome to the Waste Sorting Game!");
+    await Future.delayed(const Duration(milliseconds: 1000));
+    await _speakText("Drag and drop the waste items into the correct bins!");
+    await Future.delayed(const Duration(milliseconds: 1000));
+    await _speakText("Yellow bin is for recycling, green bin is for compost, and red bin is for landfill!");
+    await Future.delayed(const Duration(milliseconds: 1000));
+    await _speakText("Let's start sorting waste and help keep our town tidy!");
+  }
+
+  Future<void> _speakText(String text) async {
+    try {
+      await _tts.speak(text);
+    } catch (e) {
+      // Error speaking text
     }
   }
 
