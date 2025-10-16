@@ -16,6 +16,9 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_tts: ^3.8.5
   audioplayers: ^5.2.1
+  redis: ^3.0.2
+  http: ^1.1.0
+  dio: ^5.3.2
   
 
 

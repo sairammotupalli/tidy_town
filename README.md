@@ -1,4 +1,4 @@
-# tidy_town
+# Tidy_Town
 
 A new Flutter project.
 
