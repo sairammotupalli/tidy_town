@@ -101,23 +101,47 @@ flutter:
     - assets/images/landfill/LandfillLearning5.png
     - assets/images/landfill/LandfillLearning6.png
 
-    # Game images
-    - assets/images/game/plastic_bottle.png
-    - assets/images/game/apple_core.png
-    - assets/images/game/newspaper.png
-    - assets/images/game/broken_glass.png
-    - assets/images/game/banana_peel.png
-    - assets/images/game/plastic_bag.png
-    - assets/images/game/aluminum_can.png
-    - assets/images/game/coffee_grounds.png
+    # Game images - Bins
     - assets/images/game/bin_green.png
     - assets/images/game/bin_yellow.png
-    - assets/images/game/bin_red.png  
+    - assets/images/game/bin_red.png
+
+    # Beach Game Items - Only the items you actually have
+    # Compost Items (Beach)
+    - assets/images/compost/fresh_seaweed.png
+    - assets/images/compost/driftwood.png
+    - assets/images/compost/coconut_shells.png
+
+    # Recycle Items (Beach)
+    - assets/images/recycle/ocean_plastic_bottles.png
+    - assets/images/recycle/beach_cans.png
+    - assets/images/recycle/glass_bottles.png
+
+    # Landfill Items (Beach)
+    - assets/images/landfill/dangerous_plastic_bags.png
+    - assets/images/landfill/waterlogged_papers.png
+    - assets/images/landfill/styrofoam_containers.png
+    - assets/images/landfill/broken_flip_flops.png
+
+    # Thumbnail images for game selection
+    - assets/images/village_thumbnail.png
+    - assets/images/town_thumbnail.png
+    - assets/images/space_thumbnail.png
+    - assets/images/beach_thumbnail.png  
 
     - assets/animations/cheer.gif
     - assets/animations/confetti.json
     - assets/animations/sad.json
     - assets/animations/animal.json
+
+    # Beach Game Character Images
+    - assets/images/beach_alex_happy.png
+    - assets/images/beach_alex_sad.png
+    - assets/images/beach_alex_neutral.png
+    
+    # Beach Background
+    - assets/images/background.png
+    
 
   fonts:
     - family: ComicNeue

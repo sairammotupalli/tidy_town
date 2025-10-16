@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../services/translation_service.dart';
+import '../../services/translation_service.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'package:lottie/lottie.dart';
-import 'waste_sorting_game_selection.dart';
 
-class WasteSortingGame extends StatefulWidget {
-  final GameTheme? theme;
-  
-  const WasteSortingGame({super.key, this.theme});
-
-  @override
-  State<WasteSortingGame> createState() => _WasteSortingGameState();
+abstract class BaseWasteSortingGame extends StatefulWidget {
+  const BaseWasteSortingGame({super.key});
 }
 
-class _WasteSortingGameState extends State<WasteSortingGame> with TickerProviderStateMixin {
+abstract class BaseWasteSortingGameState<T extends BaseWasteSortingGame> extends State<T> with TickerProviderStateMixin {
   late FlutterTts _tts;
   final TranslationService _translationService = TranslationService();
   int score = 0;
@@ -29,60 +23,18 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
   late final AnimationController _shakeController;
   late final AnimationController _currentItemController;
 
-  // Define waste items with their correct bin
-  final List<Map<String, dynamic>> wasteItems = [
-    {
-      'name': 'Plastic Bottle',
-      'image': 'assets/images/game/plastic_bottle.png',
-      'correctBin': 'recycle',
-      'description': 'I am a Plastic Bottle!',
-    },
-    {
-      'name': 'Apple Core',
-      'image': 'assets/images/game/apple_core.png',
-      'correctBin': 'compost',
-      'description': 'hey! I am an apple core!',
-    },
-    {
-      'name': 'Newspaper',
-      'image': 'assets/images/game/newspaper.png',
-      'correctBin': 'recycle',
-      'description': 'I am a Newspaper!',
-    },
-    {
-      'name': 'Broken Glass',
-      'image': 'assets/images/game/broken_glass.png',
-      'correctBin': 'landfill',
-      'description': 'I am a broken glass!',
-    },
-    {
-      'name': 'Banana Peel',
-      'image': 'assets/images/game/banana_peel.png',
-      'correctBin': 'compost',
-      'description': 'I am a Banana Peel!',
-    },
-    {
-      'name': 'Plastic Bag',
-      'image': 'assets/images/game/plastic_bag.png',
-      'correctBin': 'landfill',
-      'description': 'I am a Plastic Bag! where do i go?',
-    },
-    {
-      'name': 'Aluminum Can',
-      'image': 'assets/images/game/aluminum_can.png',
-      'correctBin': 'recycle',
-      'description': 'I am an Aluminum Can!',
-    },
-    {
-      'name': 'Coffee Grounds',
-      'image': 'assets/images/game/coffee_grounds.png',
-      'correctBin': 'compost',
-      'description': 'I am a Coffee Grounds!',
-    },
-  ];
-
   // Track which items have been correctly sorted
   final Set<String> correctlySortedItems = {};
+
+  // Abstract methods to be implemented by each theme
+  String get gameTitle;
+  String get welcomeMessage;
+  List<Map<String, dynamic>> get wasteItems;
+  Map<String, String> get binImages;
+  List<String> get binOrder;
+  Color get primaryColor;
+  Color get secondaryColor;
+  List<Color> get backgroundGradient;
 
   @override
   void initState() {
@@ -202,12 +154,12 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
   void _showSadAnimation() async {
     setState(() {
       showSad = true;
-      sadMessage = 'Oops, try again!';
+      sadMessage = 'Oops wrong!!';
     });
     _shakeController.forward(from: 0.0);
     await SystemSound.play(SystemSoundType.alert);
     await _tts.setLanguage('en-US');
-    await _tts.speak('Oops, try again!');
+    await _tts.speak('Oops wrong!!');
     await Future.delayed(const Duration(milliseconds: 1200));
     setState(() {
       showSad = false;
@@ -234,13 +186,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
 
   Future<void> _playWelcomeInstructions() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    await _speakText("Welcome to the Waste Sorting Game!");
-    await Future.delayed(const Duration(milliseconds: 1000));
-    await _speakText("Drag and drop the waste items into the correct bins!");
-    await Future.delayed(const Duration(milliseconds: 1000));
-    await _speakText("Yellow bin is for recycling, green bin is for compost, and red bin is for landfill!");
-    await Future.delayed(const Duration(milliseconds: 1000));
-    await _speakText("Let's start sorting waste and help keep our town tidy!");
+    await _speakText(welcomeMessage);
   }
 
   Future<void> _speakText(String text) async {
@@ -251,17 +197,8 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    // Map bin types to image assets
-    final binImages = {
-      'compost': 'assets/images/game/bin_green.png',
-      'recycle': 'assets/images/game/bin_yellow.png',
-      'landfill': 'assets/images/game/bin_red.png',
-    };
-    final binOrder = ['compost', 'recycle', 'landfill'];
-
     // Only show unsorted items
     final unsortedItems = wasteItems.where((item) => !correctlySortedItems.contains(item['name'])).toList();
     final currentItem = unsortedItems.isNotEmpty ? unsortedItems.first : null;
@@ -269,13 +206,13 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _translationService.translate(widget.theme?.name ?? 'Waste Sorting Game 🎮'),
+          _translationService.translate(gameTitle),
           style: const TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: widget.theme?.primaryColor.withOpacity(0.3) ?? Colors.green.shade100,
+        backgroundColor: primaryColor.withOpacity(0.3),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -284,7 +221,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: widget.theme?.primaryColor.withOpacity(0.8) ?? Colors.green.shade900,
+              color: primaryColor.withOpacity(0.8),
             ),
             onPressed: () {
               _translationService.toggleLanguage();
@@ -302,9 +239,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: widget.theme != null 
-                  ? [widget.theme!.primaryColor.withOpacity(0.3), widget.theme!.secondaryColor.withOpacity(0.2)]
-                  : [const Color(0xFFB2E3F6), const Color(0xFFF6F9D2)],
+                colors: backgroundGradient,
               ),
             ),
             child: Column(
@@ -493,7 +428,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                         icon: const Icon(Icons.refresh),
                         label: Text(_translationService.translate('Reset')),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
+                          backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
                         ),
                       ),
@@ -503,7 +438,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
               ],
             ),
           ),
-          // Fullscreen celebration overlay (covers header as well)
+          // Fullscreen celebration overlay
           if (showCelebration && poppingMessage != null)
             Positioned.fill(
               child: Container(
@@ -512,7 +447,6 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Cheering GIF full screen with popping animation
                       AnimatedScale(
                         scale: showCelebration ? 1.2 : 0.0,
                         duration: const Duration(milliseconds: 8000),
@@ -527,7 +461,6 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                           ),
                         ),
                       ),
-                      // Popping message (same animation)
                       AnimatedScale(
                         scale: showCelebration ? 1.2 : 0.0,
                         duration: const Duration(milliseconds: 8000),
@@ -535,7 +468,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
                           decoration: BoxDecoration(
-                            color: Colors.green.shade400.withOpacity(0.95),
+                            color: primaryColor.withOpacity(0.95),
                             borderRadius: BorderRadius.circular(32),
                             boxShadow: [
                               BoxShadow(
@@ -568,7 +501,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                 ),
               ),
             ),
-          // Fullscreen sad overlay (covers header as well)
+          // Fullscreen sad overlay
           if (showSad && sadMessage != null)
             Positioned.fill(
               child: Container(
@@ -586,7 +519,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                       ),
                       const SizedBox(height: 16),
                       const Text(
-                        'Oops, try again!',
+                        'Oops wrong!!',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -610,4 +543,4 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
       ),
     );
   }
-} 
+}

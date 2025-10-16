@@ -3,7 +3,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'recycle_screen.dart';
 import 'compost_screen.dart';
 import 'landfill_screen.dart';
-import 'waste_sorting_game.dart';
+import 'waste_sorting_game_selection.dart';
 import 'memory_match_game.dart';
 import '../services/progress_service.dart';
 import 'package:lottie/lottie.dart';
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         case 'Landfill':
                           return const LandfillScreen();
                         case 'Waste Sorting Game':
-                          return const WasteSortingGame();
+                          return const WasteSortingGameSelection();
                         default:
                           return const RecycleScreen();
                       }
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const WasteSortingGame(),
+                            builder: (context) => const WasteSortingGameSelection(),
                           ),
                         );
                       },
