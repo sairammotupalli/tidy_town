@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
+import '../../services/translation_service.dart';
 
 class BeachWasteSortingGame extends StatefulWidget {
   const BeachWasteSortingGame({super.key});
@@ -12,6 +13,7 @@ class BeachWasteSortingGame extends StatefulWidget {
 
 class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with TickerProviderStateMixin {
   FlutterTts _tts = FlutterTts();
+  final TranslationService _translationService = TranslationService();
   int score = 0;
   int currentItemIndex = 0;
   bool isGameComplete = false;
@@ -25,73 +27,87 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
   late final AnimationController _shakeController;
   
   // Beach waste items using your actual beach-specific images
-  final List<Map<String, dynamic>> beachItems = [
+  // Keys are used for translation lookup
+  final List<Map<String, dynamic>> _baseBeachItems = [
     // Compost items (3 beach-specific items)
     {
-      'name': 'Fresh Seaweed',
+      'nameKey': 'Fresh Seaweed',
       'image': 'assets/images/compost/fresh_seaweed.png',
       'correctBin': 'compost',
-      'description': 'I\'m natural seaweed that washed ashore! Alex knows I can decompose naturally and become rich soil for plants.',
+      'descriptionKey': 'I\'m natural seaweed that washed ashore! Alex knows I can decompose naturally and become rich soil for plants.',
     },
     {
-      'name': 'Driftwood',
+      'nameKey': 'Driftwood',
       'image': 'assets/images/compost/driftwood.png',
       'correctBin': 'compost',
-      'description': 'I\'m natural driftwood that floated to the beach! Alex picked me up because I can break down and enrich the earth.',
+      'descriptionKey': 'I\'m natural driftwood that floated to the beach! Alex picked me up because I can break down and enrich the earth.',
     },
     {
-      'name': 'Coconut Shells',
+      'nameKey': 'Coconut Shells',
       'image': 'assets/images/compost/coconut_shells.png',
       'correctBin': 'compost',
-      'description': 'I\'m coconut shells that fell naturally on the beach! Alex knows I can decompose and feed the soil with nutrients.',
+      'descriptionKey': 'I\'m coconut shells that fell naturally on the beach! Alex knows I can decompose and feed the soil with nutrients.',
     },
     
     // Recycle items (4 beach-specific items)
     {
-      'name': 'Ocean Plastic Bottles',
+      'nameKey': 'Ocean Plastic Bottles',
       'image': 'assets/images/recycle/ocean_plastic_bottles.png',
       'correctBin': 'recycle',
-      'description': 'Alex rescued me from the ocean waves! I was threatening sea turtles who might mistake me for food. I can be made into new products!',
+      'descriptionKey': 'Alex rescued me from the ocean waves! I was threatening sea turtles who might mistake me for food. I can be made into new products!',
     },
     {
-      'name': 'Beach Cans',
+      'nameKey': 'Beach Cans',
       'image': 'assets/images/recycle/beach_cans.png',
       'correctBin': 'recycle',
-      'description': 'I\'m aluminum cans left by beach visitors! Alex picked me up because I can be recycled into new cans forever.',
+      'descriptionKey': 'I\'m aluminum cans left by beach visitors! Alex picked me up because I can be recycled into new cans forever.',
     },
     {
-      'name': 'Glass Bottles',
+      'nameKey': 'Glass Bottles',
       'image': 'assets/images/recycle/glass_bottles.png',
       'correctBin': 'recycle',
-      'description': 'Alex found me buried in the beach sand! I\'m glass bottles that can be melted down and made into new glass products.',
+      'descriptionKey': 'Alex found me buried in the beach sand! I\'m glass bottles that can be melted down and made into new glass products.',
     },
     
     // Landfill items (5 beach-specific items)
     {
-      'name': 'Dangerous Plastic Bags',
+      'nameKey': 'Dangerous Plastic Bags',
       'image': 'assets/images/landfill/dangerous_plastic_bags.png',
       'correctBin': 'landfill',
-      'description': 'I\'m torn plastic bags that could harm sea turtles who mistake me for jellyfish! Alex wants to dispose of me safely.',
+      'descriptionKey': 'I\'m torn plastic bags that could harm sea turtles who mistake me for jellyfish! Alex wants to dispose of me safely.',
     },
     {
-      'name': 'Waterlogged Papers',
+      'nameKey': 'Waterlogged Papers',
       'image': 'assets/images/landfill/waterlogged_papers.png',
       'correctBin': 'landfill',
-      'description': 'I\'m papers that got soaked by seawater! Alex knows I\'m too damaged to recycle and need special disposal.',
+      'descriptionKey': 'I\'m papers that got soaked by seawater! Alex knows I\'m too damaged to recycle and need special disposal.',
     },
     {
-      'name': 'Styrofoam Containers',
+      'nameKey': 'Styrofoam Containers',
       'image': 'assets/images/landfill/styrofoam_containers.png',
       'correctBin': 'landfill',
-      'description': 'I\'m styrofoam food containers left by beachgoers! Alex picked me up because I don\'t break down naturally.',
+      'descriptionKey': 'I\'m styrofoam food containers left by beachgoers! Alex picked me up because I don\'t break down naturally.',
     },
     {
-      'name': 'Broken Flip Flops',
+      'nameKey': 'Broken Flip Flops',
       'image': 'assets/images/landfill/broken_flip_flops.png',
       'correctBin': 'landfill',
-      'description': 'I\'m old flip flops that washed up on shore! Alex found me and knows I need to go to landfill safely.',
+      'descriptionKey': 'I\'m old flip flops that washed up on shore! Alex found me and knows I need to go to landfill safely.',
     },
   ];
+
+  // Shuffled items list
+  List<Map<String, dynamic>> _shuffledItems = [];
+
+  // Get translated items
+  List<Map<String, dynamic>> get beachItems {
+    return _shuffledItems.map((item) => {
+      'name': _translationService.translate(item['nameKey']),
+      'image': item['image'],
+      'correctBin': item['correctBin'],
+      'description': _translationService.translate(item['descriptionKey']),
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -99,7 +115,8 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
     _initializeTts();
     _speakWelcomeMessage();
     // Randomize item order each session
-    beachItems.shuffle();
+    _shuffledItems = List.from(_baseBeachItems);
+    _shuffledItems.shuffle();
     _celebrationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
@@ -113,7 +130,7 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
   Future<void> _initializeTts() async {
     _tts = FlutterTts();
     try {
-      await _tts.setLanguage('en-US');
+      await _tts.setLanguage(_translationService.isSpanish ? 'es-ES' : 'en-US');
       await _tts.setSpeechRate(0.35);
       await _tts.setVolume(1.0);
       await _tts.setPitch(1.0);
@@ -131,6 +148,7 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
 
   Future<void> _speakText(String text) async {
     try {
+      await _tts.setLanguage(_translationService.isSpanish ? 'es-ES' : 'en-US');
       await _tts.speak(text);
     } catch (e) {
       print('Error speaking: $e');
@@ -147,11 +165,11 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
       if (isCorrectAnswer) {
         score++;
         showCelebration = true;
-        poppingMessage = 'Hurray right!';
+        poppingMessage = _translationService.translate('Hurray right!');
         _celebrationController.forward(from: 0.0);
       } else {
         showSad = true;
-        sadMessage = 'Oops wrong!!';
+        sadMessage = _translationService.translate('Oops wrong!!');
         _shakeController.forward(from: 0.0);
       }
     });
@@ -159,10 +177,10 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
     // Play sound and speak feedback
     if (isCorrectAnswer) {
       SystemSound.play(SystemSoundType.click);
-      _speakText('That\'s right!');
+      _speakText(_translationService.translate('That\'s right!'));
     } else {
       SystemSound.play(SystemSoundType.alert);
-      _speakText('Oops wrong!');
+      _speakText(_translationService.translate('Oops wrong!'));
     }
 
     // Move to next item after feedback
@@ -191,7 +209,7 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('🏖️ Beach Cleanup Complete!'),
+          title: Text(_translationService.translate('🏖️ Beach Cleanup Complete!')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -204,7 +222,7 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
               ),
               const SizedBox(height: 16),
               Text(
-                'Amazing! You helped Alex clean up the beach!\n\nScore: $score/${beachItems.length}',
+                '${_translationService.translate('Amazing! You helped Alex clean up the beach!')}\n\n${_translationService.translate('Score: ')}$score/${beachItems.length}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16),
               ),
@@ -216,14 +234,14 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
                 Navigator.of(context).pop();
                 Navigator.of(context).pop(); // Return to game selection
               },
-              child: const Text('Play Again'),
+              child: Text(_translationService.translate('Play Again')),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: const Text('Back to Games'),
+              child: Text(_translationService.translate('Back to Games')),
             ),
           ],
         );
@@ -306,13 +324,31 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          'Score: $score/${beachItems.length}',
+                          '${_translationService.translate('Score: ')}$score/${beachItems.length}',
                           style: const TextStyle(
                             fontSize: 16, 
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Language toggle button
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _translationService.toggleLanguage();
+                            _initializeTts(); // Reinitialize TTS with new language
+                          });
+                        },
+                        icon: Icon(
+                          _translationService.isSpanish ? Icons.language : Icons.translate,
+                          color: Colors.white,
+                        ),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.cyan.withOpacity(0.7),
+                        ),
+                        tooltip: _translationService.isSpanish ? 'Switch to English' : 'Cambiar a Español',
                       ),
                     ],
                   ),
@@ -404,11 +440,13 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
                                   ],
                                 ),
                                 child: Text(
-                                  showFeedback
-                                    ? (isCorrectAnswer 
-                                        ? "Hurray right! That's exactly where it belongs!" 
-                                        : "Sorry it is wrong! But don't worry, let's try the next one!")
-                                    : "Guess this one! Help me sort this item I found on the beach!",
+                                  _translationService.translate(
+                                    showFeedback
+                                      ? (isCorrectAnswer 
+                                          ? "Hurray right! That's exactly where it belongs!" 
+                                          : "Sorry it is wrong! But don't worry, let's try the next one!")
+                                      : "Guess this one! Help me sort this item I found on the beach!"
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -572,7 +610,9 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
-                                      binType == 'recycle' ? 'Recycle' : binType == 'compost' ? 'Compost' : 'Landfill',
+                                      _translationService.translate(
+                                        binType == 'recycle' ? 'Recycle' : binType == 'compost' ? 'Compost' : 'Landfill'
+                                      ),
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -670,9 +710,9 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
                                   ),
                                 ],
                               ),
-                              child: const Text(
-                                'Hurray right!',
-                                style: TextStyle(
+                              child: Text(
+                                _translationService.translate('Hurray right!'),
+                                style: const TextStyle(
                                   fontSize: 36,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -739,9 +779,9 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame> with Tick
                         repeat: false,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Oops wrong!!',
-                        style: TextStyle(
+                      Text(
+                        _translationService.translate('Oops wrong!!'),
+                        style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
