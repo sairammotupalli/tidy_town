@@ -261,6 +261,240 @@ class TranslationService {
     "Moral of the Story": "Moraleja de la Historia",
     "Tap to hear my story!": "¡Toca para escuchar mi historia!",
     "Stop Story": "Detener Historia",
+
+    // Game Selection Screen
+    "Choose Your Adventure 🌍": "Elige Tu Aventura 🌍",
+    "Select a theme for your waste sorting adventure!": "¡Selecciona un tema para tu aventura de clasificación de residuos!",
+    "Waste Sorting Game": "Juego de Clasificación de Residuos",
+    "Learn to sort waste into the right bins!": "¡Aprende a clasificar los residuos en los contenedores correctos!",
+    "Village Adventure": "Aventura en la Aldea",
+    "Help Farmer Sam keep the peaceful village clean!": "¡Ayuda al Granjero Sam a mantener limpia la aldea pacífica!",
+    "Town Explorer": "Explorador de la Ciudad",
+    "Help Maya sort waste in the busy town center!": "¡Ayuda a Maya a clasificar los residuos en el centro de la ciudad!",
+    "Space Mission": "Misión Espacial",
+    "Help Captain Luna clean up space debris!": "¡Ayuda a la Capitana Luna a limpiar los desechos espaciales!",
+    "Beach Cleanup with Alex": "Limpieza de Playa con Alex",
+    "Help Ocean Alex save marine life and discover beach waste!": "¡Ayuda a Alex del Océano a salvar la vida marina y descubrir los residuos de la playa!",
+
+    // Beach Game - General UI
+    "Score: ": "Puntuación: ",
+    "🏖️ Beach Cleanup Complete!": "🏖️ ¡Limpieza de Playa Completa!",
+    "Amazing! You helped Alex clean up the beach!": "¡Increíble! ¡Ayudaste a Alex a limpiar la playa!",
+    "Play Again": "Jugar de Nuevo",
+    "Back to Games": "Volver a los Juegos",
+
+    // Beach Game - Instructions & Feedback
+    "Guess this one! Help me sort this item I found on the beach!": "¡Adivina este! ¡Ayúdame a clasificar este artículo que encontré en la playa!",
+    "Hurray right! That's exactly where it belongs!": "¡Hurra correcto! ¡Exactamente donde pertenece!",
+    "Sorry it is wrong! But don't worry, let's try the next one!": "¡Lo siento, está mal! Pero no te preocupes, ¡probemos con el siguiente!",
+    "Hurray right!": "¡Hurra correcto!",
+    "Oops wrong!!": "¡Ups, incorrecto!!",
+    "That's right!": "¡Así es!",
+    "Oops wrong!": "¡Ups, incorrecto!",
+
+    // Beach Game - Item Names
+    "Fresh Seaweed": "Algas Frescas",
+    "Driftwood": "Madera a la Deriva",
+    "Coconut Shells": "Cáscaras de Coco",
+    "Ocean Plastic Bottles": "Botellas de Plástico del Océano",
+    "Beach Cans": "Latas de Playa",
+    "Glass Bottles": "Botellas de Vidrio",
+    "Dangerous Plastic Bags": "Bolsas de Plástico Peligrosas",
+    "Waterlogged Papers": "Papeles Empapados",
+    "Styrofoam Containers": "Contenedores de Espuma de Poliestireno",
+    "Broken Flip Flops": "Chanclas Rotas",
+
+    // Beach Game - Item Descriptions
+    "I'm natural seaweed that washed ashore! Alex knows I can decompose naturally and become rich soil for plants.": 
+    "¡Soy algas naturales que llegaron a la orilla! Alex sabe que puedo descomponerme naturalmente y convertirme en tierra rica para las plantas.",
+    
+    "I'm natural driftwood that floated to the beach! Alex picked me up because I can break down and enrich the earth.": 
+    "¡Soy madera natural que flotó hasta la playa! Alex me recogió porque puedo descomponerme y enriquecer la tierra.",
+    
+    "I'm coconut shells that fell naturally on the beach! Alex knows I can decompose and feed the soil with nutrients.": 
+    "¡Soy cáscaras de coco que cayeron naturalmente en la playa! Alex sabe que puedo descomponerme y alimentar el suelo con nutrientes.",
+    
+    "Alex rescued me from the ocean waves! I was threatening sea turtles who might mistake me for food. I can be made into new products!": 
+    "¡Alex me rescató de las olas del océano! Estaba amenazando a las tortugas marinas que podrían confundirme con comida. ¡Puedo convertirme en nuevos productos!",
+    
+    "I'm aluminum cans left by beach visitors! Alex picked me up because I can be recycled into new cans forever.": 
+    "¡Soy latas de aluminio dejadas por visitantes de la playa! Alex me recogió porque puedo reciclarse en nuevas latas para siempre.",
+    
+    "Alex found me buried in the beach sand! I'm glass bottles that can be melted down and made into new glass products.": 
+    "¡Alex me encontró enterrado en la arena de la playa! Soy botellas de vidrio que pueden derretirse y convertirse en nuevos productos de vidrio.",
+    
+    "I'm torn plastic bags that could harm sea turtles who mistake me for jellyfish! Alex wants to dispose of me safely.": 
+    "¡Soy bolsas de plástico rotas que podrían dañar a las tortugas marinas que me confunden con medusas! Alex quiere deshacerse de mí de manera segura.",
+    
+    "I'm papers that got soaked by seawater! Alex knows I'm too damaged to recycle and need special disposal.": 
+    "¡Soy papeles que se empaparon con agua de mar! Alex sabe que estoy demasiado dañado para reciclar y necesito una eliminación especial.",
+    
+    "I'm styrofoam food containers left by beachgoers! Alex picked me up because I don't break down naturally.": 
+    "¡Soy contenedores de comida de espuma dejados por los bañistas! Alex me recogió porque no me descompongo naturalmente.",
+    
+    "I'm old flip flops that washed up on shore! Alex found me and knows I need to go to landfill safely.": 
+    "¡Soy chanclas viejas que llegaron a la orilla! Alex me encontró y sabe que necesito ir al vertedero de manera segura.",
+
+    // Common Game Elements
+    "Score": "Puntuación",
+
+    // Original Waste Sorting Game Items (names already defined above, adding new ones)
+    "Plastic Bottle": "Botella de Plástico",
+    "Apple Core": "Corazón de Manzana",
+    "Newspaper": "Periódico",
+    "Broken Glass": "Vidrio Roto",
+    "Aluminum Can": "Lata de Aluminio",
+
+    // Original Game Item Descriptions
+    "I am a Plastic Bottle!": "¡Soy una Botella de Plástico!",
+    "hey! I am an apple core!": "¡Hola! ¡Soy un corazón de manzana!",
+    "I am a Newspaper!": "¡Soy un Periódico!",
+    "I am a broken glass!": "¡Soy vidrio roto!",
+    "I am a Banana Peel!": "¡Soy una Cáscara de Plátano!",
+    "I am a Plastic Bag! where do i go?": "¡Soy una Bolsa de Plástico! ¿a dónde voy?",
+    "I am an Aluminum Can!": "¡Soy una Lata de Aluminio!",
+    "I am a Coffee Grounds!": "¡Soy Café Molido!",
+
+    // === VILLAGE GAME ===
+    "Village Adventure 🏘️": "Aventura en la Aldea 🏘️",
+    "Meet Farmer Sam! He loves keeping the village clean and green. Help him sort the waste items he finds while tending to the village gardens!":
+      "¡Conoce al Granjero Sam! Le encanta mantener la aldea limpia y verde. ¡Ayúdalo a clasificar los residuos que encuentra mientras cuida los jardines de la aldea!",
+    
+    // Village Items
+    "Banana Peels": "Cáscaras de Plátano",
+    "Animal Waste": "Residuos de Animales",
+    "Orchard Apple Cores": "Corazones de Manzana del Huerto",
+    "Café Coffee Grounds": "Café Molido del Café",
+    "Village Newsletter": "Boletín de la Aldea",
+    "Grandma's Jam Jars": "Frascos de Mermelada de la Abuela",
+    "Delivery Cardboard": "Cartón de Entregas",
+    "Metal Farm Tools": "Herramientas de Granja de Metal",
+    "Store Plastic Bags": "Bolsas de Plástico de la Tienda",
+    "Workshop Pottery Shards": "Fragmentos de Cerámica del Taller",
+    "Old Paint Cans": "Latas de Pintura Viejas",
+    "Worn Out Rubber Boots": "Botas de Goma Desgastadas",
+    
+    // Village Item Descriptions
+    "I'm banana peels from the village market! Farmer Sam knows I can enrich the soil for vegetables!":
+      "¡Soy cáscaras de plátano del mercado de la aldea! ¡El Granjero Sam sabe que puedo enriquecer el suelo para las verduras!",
+    "I'm animal manure from the village farm! Farmer Sam uses me as natural fertilizer for the crops!":
+      "¡Soy estiércol animal de la granja de la aldea! ¡El Granjero Sam me usa como fertilizante natural para los cultivos!",
+    "Farmer Sam found me under the old apple tree! I can help grow more fruit in the village garden!":
+      "¡El Granjero Sam me encontró bajo el viejo manzano! ¡Puedo ayudar a cultivar más fruta en el jardín de la aldea!",
+    "I'm coffee grounds from the village café! Farmer Sam uses me to help his tomatoes grow big and strong!":
+      "¡Soy café molido del café de la aldea! ¡El Granjero Sam me usa para ayudar a que sus tomates crezcan grandes y fuertes!",
+    "I'm the weekly village newsletter Sam collected from mailboxes! I can become new paper for the community!":
+      "¡Soy el boletín semanal de la aldea que Sam recogió de los buzones! ¡Puedo convertirme en papel nuevo para la comunidad!",
+    "I'm empty jam jars from Grandma's kitchen! Sam can recycle me into new containers for the village!":
+      "¡Soy frascos de mermelada vacíos de la cocina de la Abuela! ¡Sam puede reciclarme en nuevos recipientes para la aldea!",
+    "I'm cardboard boxes from village deliveries! Farmer Sam can recycle me into new packaging!":
+      "¡Soy cajas de cartón de las entregas de la aldea! ¡El Granjero Sam puede reciclarme en nuevos empaques!",
+    "I'm old metal tools from the farm! Sam can recycle me into new farming equipment for the village!":
+      "¡Soy herramientas de metal viejas de la granja! ¡Sam puede reciclarme en nuevos equipos agrícolas para la aldea!",
+    "I'm plastic bags that blew away from the village store! Sam knows I need special disposal to protect animals!":
+      "¡Soy bolsas de plástico que volaron de la tienda de la aldea! ¡Sam sabe que necesito eliminación especial para proteger a los animales!",
+    "I'm broken pottery from the village craft workshop! I'm too sharp to recycle, so I need safe disposal!":
+      "¡Soy cerámica rota del taller de artesanía de la aldea! ¡Soy demasiado afilado para reciclar, así que necesito eliminación segura!",
+    "I'm old paint cans from village house repairs! I contain toxic chemicals that need hazardous waste disposal!":
+      "¡Soy latas de pintura viejas de las reparaciones de casas de la aldea! ¡Contengo químicos tóxicos que necesitan eliminación de residuos peligrosos!",
+    "I'm old rubber boots from farm work! I'm too worn and mixed materials to recycle properly!":
+      "¡Soy botas de goma viejas del trabajo de granja! ¡Estoy demasiado desgastado y materiales mixtos para reciclar correctamente!",
+
+    // === TOWN GAME ===
+    "Town Explorer 🏙️": "Explorador de la Ciudad 🏙️",
+    "Meet Maya the Urban Explorer! She's passionate about keeping the town clean and sustainable. Help her sort the waste items she discovers around the busy streets!":
+      "¡Conoce a Maya la Exploradora Urbana! Le apasiona mantener la ciudad limpia y sostenible. ¡Ayúdala a clasificar los residuos que descubre en las calles concurridas!",
+    
+    // Town Items
+    "Restaurant Food Scraps": "Restos de Comida de Restaurante",
+    "Market Vegetable Peels": "Cáscaras de Verduras del Mercado",
+    "Coffee Shop Grounds": "Café Molido de la Cafetería",
+    "Park Fallen Leaves": "Hojas Caídas del Parque",
+    "Plastic Bottles": "Botellas de Plástico",
+    "Bus Stop Soda Can": "Lata de Refresco de la Parada de Autobús",
+    "Town Hall Documents": "Documentos del Ayuntamiento",
+    "Chocolate Covers": "Envolturas de Chocolate",
+    "Broken Phone": "Teléfono Roto",
+    "Disposable Coffee Cups": "Tazas de Café Desechables",
+    "Cigarette Butts": "Colillas de Cigarrillos",
+    
+    // Town Item Descriptions
+    "I'm leftover food from the busy town restaurant! Maya knows I can become rich soil for urban gardens!":
+      "¡Soy sobras de comida del ajetreado restaurante de la ciudad! ¡Maya sabe que puedo convertirme en tierra rica para jardines urbanos!",
+    "I'm vegetable peels from the farmers market! Maya can compost me to support urban agriculture!":
+      "¡Soy cáscaras de verduras del mercado de agricultores! ¡Maya puede compostarme para apoyar la agricultura urbana!",
+    "I'm used coffee grounds from the town café! Maya can compost me to enrich urban garden soil!":
+      "¡Soy café molido usado de la cafetería de la ciudad! ¡Maya puede compostarme para enriquecer el suelo del jardín urbano!",
+    "I'm fallen leaves from the town park! Maya can compost me to create natural fertilizer for city plants!":
+      "¡Soy hojas caídas del parque de la ciudad! ¡Maya puede compostarme para crear fertilizante natural para las plantas de la ciudad!",
+    "I'm plastic bottles Maya found around town! I can be recycled into new bottles for the community!":
+      "¡Soy botellas de plástico que Maya encontró por la ciudad! ¡Puedo reciclarse en nuevas botellas para la comunidad!",
+    "I'm an aluminum can Maya spotted at the bus stop! I can be recycled endlessly into new cans!":
+      "¡Soy una lata de aluminio que Maya vio en la parada de autobús! ¡Puedo reciclarse infinitamente en nuevas latas!",
+    "I'm old office paper from the town hall! Maya collected me to become new paper for city planning!":
+      "¡Soy papel viejo de oficina del ayuntamiento! ¡Maya me recogió para convertirme en papel nuevo para la planificación de la ciudad!",
+    "I'm glass bottles from town restaurants! Maya can recycle me into new glass containers!":
+      "¡Soy botellas de vidrio de restaurantes de la ciudad! ¡Maya puede reciclarme en nuevos recipientes de vidrio!",
+    "I'm chocolate wrappers Maya found on the street! I'm made of mixed materials that can't be recycled!":
+      "¡Soy envolturas de chocolate que Maya encontró en la calle! ¡Estoy hecho de materiales mixtos que no se pueden reciclar!",
+    "I'm a broken phone from the electronics district! Maya knows I need special e-waste disposal!":
+      "¡Soy un teléfono roto del distrito de electrónica! ¡Maya sabe que necesito eliminación especial de residuos electrónicos!",
+    "I'm disposable cups from the town café! Maya wishes I was compostable, but I have plastic lining!":
+      "¡Soy tazas desechables de la cafetería de la ciudad! ¡Maya desearía que fuera compostable, pero tengo revestimiento de plástico!",
+    "I'm cigarette butts Maya found on busy streets! I contain toxic chemicals that need proper disposal!":
+      "¡Soy colillas de cigarrillos que Maya encontró en calles concurridas! ¡Contengo químicos tóxicos que necesitan eliminación adecuada!",
+
+    // === SPACE GAME ===
+    "Space Mission 🚀": "Misión Espacial 🚀",
+    "Meet Captain Luna! She's on a mission to clean up space debris around Earth. Help her sort the items she finds during her cosmic journey!":
+      "¡Conoce a la Capitana Luna! Está en una misión para limpiar los desechos espaciales alrededor de la Tierra. ¡Ayúdala a clasificar los artículos que encuentra durante su viaje cósmico!",
+    
+    // Space Items
+    "Space Garden Scraps": "Restos del Jardín Espacial",
+    "Astronaut Food Waste": "Residuos de Comida de Astronauta",
+    "Space Coffee Grounds": "Café Molido Espacial",
+    "Hydroponic Plant Waste": "Residuos de Plantas Hidropónicas",
+    "Satellite Metal Piece": "Pieza de Metal de Satélite",
+    "Fuel Container": "Contenedor de Combustible",
+    "Mission Reports": "Informes de Misión",
+    "Space Station Metal Scraps": "Chatarra de Metal de la Estación Espacial",
+    "Rocket Waste": "Residuos de Cohete",
+    "Space Jet Waste": "Residuos de Jet Espacial",
+    "Damaged Solar Panel": "Panel Solar Dañado",
+    "Contaminated Lab Equipment": "Equipo de Laboratorio Contaminado",
+    
+    // Space Item Descriptions
+    "I'm leftover food from the space station garden! Captain Luna can compost me to grow more plants in space!":
+      "¡Soy sobras de comida del jardín de la estación espacial! ¡La Capitana Luna puede compostarme para cultivar más plantas en el espacio!",
+    "I'm food scraps from Captain Luna's space meals! I can become soil for space farming!":
+      "¡Soy restos de comida de las comidas espaciales de la Capitana Luna! ¡Puedo convertirme en tierra para la agricultura espacial!",
+    "I'm coffee grounds from Captain Luna's morning brew! I can help grow plants in the space garden!":
+      "¡Soy café molido del café matutino de la Capitana Luna! ¡Puedo ayudar a cultivar plantas en el jardín espacial!",
+    "I'm old plant matter from the space station's hydroponic farm! Captain Luna can compost me for new crops!":
+      "¡Soy materia vegetal vieja de la granja hidropónica de la estación espacial! ¡La Capitana Luna puede compostarme para nuevos cultivos!",
+    "Captain Luna found me floating from an old satellite! I can be recycled into new space equipment!":
+      "¡La Capitana Luna me encontró flotando de un satélite viejo! ¡Puedo reciclarse en nuevo equipo espacial!",
+    "Captain Luna discovered me drifting near the space station! I held rocket fuel and can be recycled!":
+      "¡La Capitana Luna me descubrió a la deriva cerca de la estación espacial! ¡Contenía combustible de cohete y puedo reciclarse!",
+    "I'm old space mission documents Captain Luna collected! I can be recycled into new paper!":
+      "¡Soy documentos viejos de misión espacial que la Capitana Luna recopiló! ¡Puedo reciclarse en papel nuevo!",
+    "I'm metal pieces from space station maintenance! Captain Luna can recycle me into new parts!":
+      "¡Soy piezas de metal del mantenimiento de la estación espacial! ¡La Capitana Luna puede reciclarme en nuevas piezas!",
+    "I'm damaged rocket components Captain Luna found! I'm too contaminated with fuel to recycle safely!":
+      "¡Soy componentes de cohete dañados que la Capitana Luna encontró! ¡Estoy demasiado contaminado con combustible para reciclar de manera segura!",
+    "I'm debris from old space jets! Captain Luna knows I contain hazardous materials that need special disposal!":
+      "¡Soy escombros de viejos jets espaciales! ¡La Capitana Luna sabe que contengo materiales peligrosos que necesitan eliminación especial!",
+    "I'm a broken solar panel Captain Luna found! I'm too damaged and contain toxic materials for safe recycling!":
+      "¡Soy un panel solar roto que la Capitana Luna encontró! ¡Estoy demasiado dañado y contengo materiales tóxicos para el reciclaje seguro!",
+    "I'm lab equipment from space experiments! Captain Luna knows I'm contaminated and need hazardous waste disposal!":
+      "¡Soy equipo de laboratorio de experimentos espaciales! ¡La Capitana Luna sabe que estoy contaminado y necesito eliminación de residuos peligrosos!",
+
+    // Common Game UI
+    "Correct!": "¡Correcto!",
+    "Oops, try again!": "¡Ups, inténtalo de nuevo!",
+    "🎉 Congratulations! 🎉": "🎉 ¡Felicitaciones! 🎉",
+    "You've successfully sorted all the waste items!": "¡Has clasificado exitosamente todos los residuos!",
+    "Back to Home": "Volver al Inicio",
   };
 
   String translate(String text) {
