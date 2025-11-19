@@ -92,6 +92,15 @@ flutter:
     - assets/images/compost/CompostLearning5.png
     - assets/images/compost/CompostLearning6.png
     - assets/images/compost/whatisc.gif
+    - assets/images/compost/mira1.png
+    - assets/images/compost/mira2.png
+    - assets/images/compost/mira3.png
+    - assets/images/compost/mira4.png
+    - assets/images/compost/mira5.png
+    - assets/images/compost/mira6.png
+    - assets/images/compost/mira7.png
+    - assets/images/compost/wally1.png
+    - assets/images/compost/wally2.png
 
     # Landfill images
     - assets/images/landfill/whatisl.gif
