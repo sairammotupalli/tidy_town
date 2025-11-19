@@ -27,14 +27,14 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
   bool isPlaying = false;
   late final TranslationService _translationService;
 
-  final List<String> storyContent = [
-    "Once upon a time, in a cozy kitchen, lived a little apple core named Mira. She had just been munched by a kid and was about to be thrown in the trash.",
-    "But wait! \"I can still help the Earth!",
-    "If we go into the trash, we'll be stuck in a stinky bin forever!",
-    "Hello there! Don’t be sad… Come with me and I’ll turn you into magic soil!",
-    "Magic soil? Really?",
-    "Yes! You’ll help flowers grow and make the Earth happy again!",
-    "Mira and her friends turned into rich, dark compost—superfood for plants!"
+  List<String> get storyContent => [
+    _translationService.translate("Once upon a time, in a cozy kitchen, lived a little apple core named Mira. She had just been munched by a kid and was about to be thrown in the trash."),
+    _translationService.translate("But wait! \"I can still help the Earth!"),
+    _translationService.translate("If we go into the trash, we'll be stuck in a stinky bin forever!"),
+    _translationService.translate("Hello there! Don't be sad… Come with me and I'll turn you into magic soil!"),
+    _translationService.translate("Magic soil? Really?"),
+    _translationService.translate("Yes! You'll help flowers grow and make the Earth happy again!"),
+    _translationService.translate("Mira and her friends turned into rich, dark compost—superfood for plants!")
   ];
 
  

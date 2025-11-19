@@ -19,7 +19,10 @@ class _LandfillScreenState extends State<LandfillScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LandfillDetailScreen(pageIndex: index),
+        builder: (context) => LandfillDetailScreen(
+          pageIndex: index,
+          translationService: _translationService,
+        ),
       ),
     ).then((_) {
       setState(() {}); // Trigger rebuild when returning from detail screen
@@ -69,7 +72,7 @@ class _LandfillScreenState extends State<LandfillScreen> {
                 _translationService.translate(subtitle),
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontFamily: 'ComicNeue',
                 ),
                 textAlign: TextAlign.center,
@@ -178,8 +181,13 @@ class _LandfillScreenState extends State<LandfillScreen> {
 
 class LandfillDetailScreen extends StatefulWidget {
   final int pageIndex;
+  final TranslationService translationService;
 
-  const LandfillDetailScreen({super.key, required this.pageIndex});
+  const LandfillDetailScreen({
+    super.key,
+    required this.pageIndex,
+    required this.translationService,
+  });
 
   @override
   State<LandfillDetailScreen> createState() => _LandfillDetailScreenState();
@@ -193,7 +201,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
 
   late final PageController pageController;
   late final ValueNotifier<int> currentPageNotifier;
-  final TranslationService _translationService = TranslationService();
+  late final TranslationService _translationService;
 
   final List<Map<String, dynamic>> landfillItems = [
     {
@@ -243,6 +251,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
   @override
   void initState() {
     super.initState();
+    _translationService = widget.translationService;
     _setupTts();
     _setupAudio();
     pageController = PageController();

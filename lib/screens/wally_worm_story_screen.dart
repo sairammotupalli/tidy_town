@@ -26,21 +26,21 @@ class _WallyWormStoryScreenState extends State<WallyWormStoryScreen> {
   bool isPlaying = false;
   late final TranslationService _translationService;
 
-  final List<String> storyContent = [
-    "Deep under the garden, in a cozy pile of leaves and peels, lived a wiggly little worm named Wally. Wally wasn't just any worm—he was a Compost Explorer!",
-    "Oh no! So much yummy food is being thrown away into the trash!",
-    "He wiggled and wriggled his way toward the kitchen window and saw a banana peel, carrot tops, and a sad slice of bread all being dumped in the garbage bin.",
-    "\"They don't belong there,\" said Wally. \"They could join our compost party and become soil superheroes!\"",
-    "🪱💬 Wally shouted, \"Hey friends! Want to help flowers grow? Follow me!\"",
-    "The banana peel blinked. \"We can help plants grow?\"",
-    "Wally nodded. \"Absolutely! When we compost together, we turn into magic soil that makes gardens bloom!\"",
-    "So one by one, the food scraps jumped out of the trash and followed Wally into the compost pile. It was warm, squishy, and full of other friendly worms.",
-    "Wally led them on a journey deep into the pile, where they met dancing microbes and giggling bugs working together to turn everything into dark, rich compost.",
-    "After a few days of wiggling, munching, and mixing…",
-    "✨POOF!✨ The banana peel and all her new friends had transformed into super soil!",
-    "🌼 They were spread across a garden, helping sunflowers grow tall, strawberries turn sweet, and trees grow strong.",
-    "Wally smiled proudly. \"Another compost mission complete!\"",
-    "And off he went, ready for his next big adventure…"
+  List<String> get storyContent => [
+    _translationService.translate("Deep under the garden, in a cozy pile of leaves and peels, lived a wiggly little worm named Wally. Wally wasn't just any worm—he was a Compost Explorer!"),
+    _translationService.translate("Oh no! So much yummy food is being thrown away into the trash!"),
+    _translationService.translate("He wiggled and wriggled his way toward the kitchen window and saw a banana peel, carrot tops, and a sad slice of bread all being dumped in the garbage bin."),
+    _translationService.translate("\"They don't belong there,\" said Wally. \"They could join our compost party and become soil superheroes!\""),
+    _translationService.translate("🪱💬 Wally shouted, \"Hey friends! Want to help flowers grow? Follow me!\""),
+    _translationService.translate("The banana peel blinked. \"We can help plants grow?\""),
+    _translationService.translate("Wally nodded. \"Absolutely! When we compost together, we turn into magic soil that makes gardens bloom!\""),
+    _translationService.translate("So one by one, the food scraps jumped out of the trash and followed Wally into the compost pile. It was warm, squishy, and full of other friendly worms."),
+    _translationService.translate("Wally led them on a journey deep into the pile, where they met dancing microbes and giggling bugs working together to turn everything into dark, rich compost."),
+    _translationService.translate("After a few days of wiggling, munching, and mixing…"),
+    _translationService.translate("✨POOF!✨ The banana peel and all her new friends had transformed into super soil!"),
+    _translationService.translate("🌼 They were spread across a garden, helping sunflowers grow tall, strawberries turn sweet, and trees grow strong."),
+    _translationService.translate("Wally smiled proudly. \"Another compost mission complete!\""),
+    _translationService.translate("And off he went, ready for his next big adventure…")
   ];
 
   final List<String> speakers = [

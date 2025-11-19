@@ -21,7 +21,10 @@ class _CompostScreenState extends State<CompostScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CompostDetailScreen(pageIndex: index),
+        builder: (context) => CompostDetailScreen(
+          pageIndex: index,
+          translationService: _translationService,
+        ),
       ),
     ).then((_) {
       setState(() {}); // Trigger rebuild when returning from detail screen
@@ -71,7 +74,7 @@ class _CompostScreenState extends State<CompostScreen> {
                 _translationService.translate(subtitle),
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontFamily: 'ComicNeue',
                 ),
                 textAlign: TextAlign.center,
@@ -103,7 +106,7 @@ class _CompostScreenState extends State<CompostScreen> {
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Colors.green.shade900,
+              color: Colors.black,
             ),
             onPressed: () {
               _translationService.toggleLanguage();
@@ -180,8 +183,13 @@ class _CompostScreenState extends State<CompostScreen> {
 
 class CompostDetailScreen extends StatefulWidget {
   final int pageIndex;
+  final TranslationService translationService;
 
-  const CompostDetailScreen({super.key, required this.pageIndex});
+  const CompostDetailScreen({
+    super.key,
+    required this.pageIndex,
+    required this.translationService,
+  });
 
   @override
   State<CompostDetailScreen> createState() => _CompostDetailScreenState();
@@ -195,7 +203,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
 
   late final PageController pageController;
   late final ValueNotifier<int> currentPageNotifier;
-  final TranslationService _translationService = TranslationService();
+  late final TranslationService _translationService;
 
   final List<Map<String, dynamic>> compostableItems = [
     {
@@ -245,6 +253,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
   @override
   void initState() {
     super.initState();
+    _translationService = widget.translationService;
     _setupTts();
     _setupAudio();
     pageController = PageController();

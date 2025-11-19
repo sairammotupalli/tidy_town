@@ -410,7 +410,7 @@ class TranslationService {
     "Market Vegetable Peels": "Cáscaras de Verduras del Mercado",
     "Coffee Shop Grounds": "Café Molido de la Cafetería",
     "Park Fallen Leaves": "Hojas Caídas del Parque",
-    "Plastic Bottles": "Botellas de Plástico",
+    // "Plastic Bottles" already defined above (line 51)
     "Bus Stop Soda Can": "Lata de Refresco de la Parada de Autobús",
     "Town Hall Documents": "Documentos del Ayuntamiento",
     "Chocolate Covers": "Envolturas de Chocolate",
@@ -495,6 +495,111 @@ class TranslationService {
     "🎉 Congratulations! 🎉": "🎉 ¡Felicitaciones! 🎉",
     "You've successfully sorted all the waste items!": "¡Has clasificado exitosamente todos los residuos!",
     "Back to Home": "Volver al Inicio",
+
+    // Home Screen
+    "Tidy Town": "Ciudad Limpia",
+    "Welcome": "Bienvenidos",
+    "PLAY": "JUGAR",
+    "LEARN": "APRENDER",
+    "Your Learning Progress": "Tu Progreso de Aprendizaje",
+    "completed": "completados",
+    "Start": "Comenzar",
+    "🎮 Choose a Game 🎮": "🎮 Elige un Juego 🎮",
+    "Waste Sorting\nGame": "Juego de\nClasificación",
+    "Memory Match\nGame": "Juego de\nMemoria",
+    "Reset": "Reiniciar",
+
+    // Compost Screen Cards
+    "What is Composting?": "¿Qué es el Compostaje?",
+    "Learn about composting in a fun way! 🌟": "¡Aprende sobre el compostaje de manera divertida! 🌟",
+    "What Can Be Composted?": "¿Qué se Puede Compostar?",
+    "Discover compostable items! 🔍": "¡Descubre artículos compostables! 🔍",
+    "Why Should We Compost?": "¿Por Qué Debemos Compostar?",
+    "Meet Wally the Worm! 🐛": "¡Conoce a Wally el Gusano! 🐛",
+    "Compost Quiz": "Cuestionario de Compostaje",
+    // "Test your knowledge! 🎯" already defined at line 34
+    "Composting 🌱": "Compostaje 🌱",
+
+    // Landfill Screen Cards
+    "Landfill Education 🏭": "Educación sobre Vertederos 🏭",
+    "What is a Landfill?": "¿Qué es un Vertedero?",
+    "Learn about landfills! 🌟": "¡Aprende sobre los vertederos! 🌟",
+    "What Goes to Landfill?": "¿Qué Va al Vertedero?",
+    // "Discover landfill items! 🔍" - similar to compost
+    "Why Reduce Landfill?": "¿Por Qué Reducir el Vertedero?",
+    "Meet Larry the Landfill! 🏭": "¡Conoce a Larry el Vertedero! 🏭",
+    "Landfill Quiz": "Cuestionario de Vertedero",
+
+    // Compost Story Titles
+    "Mira the Apple Core's Magic": "La Magia de Mira el Corazón de Manzana",
+    "Wally the Worm's Adventure": "La Aventura de Wally el Gusano",
+    "The Magic Garden": "El Jardín Mágico",
+    "Choose a story to learn why composting is important!": "¡Elige una historia para aprender por qué el compostaje es importante!",
+
+    // Mira Story Content
+    "Once upon a time, in a cozy kitchen, lived a little apple core named Mira. She had just been munched by a kid and was about to be thrown in the trash.":
+      "Había una vez, en una acogedora cocina, vivía un pequeño corazón de manzana llamado Mira. Acababa de ser mordido por un niño y estaba a punto de ser tirado a la basura.",
+    
+    "But wait! \"I can still help the Earth!":
+      "¡Pero espera! \"¡Todavía puedo ayudar a la Tierra!",
+    
+    "If we go into the trash, we'll be stuck in a stinky bin forever!":
+      "¡Si vamos a la basura, estaremos atrapados en un contenedor apestoso para siempre!",
+    
+    "Hello there! Don't be sad… Come with me and I'll turn you into magic soil!":
+      "¡Hola! No estés triste... ¡Ven conmigo y te convertiré en tierra mágica!",
+    
+    "Magic soil? Really?":
+      "¿Tierra mágica? ¿De verdad?",
+    
+    "Yes! You'll help flowers grow and make the Earth happy again!":
+      "¡Sí! ¡Ayudarás a que crezcan las flores y harás feliz a la Tierra de nuevo!",
+    
+    "Mira and her friends turned into rich, dark compost—superfood for plants!":
+      "¡Mira y sus amigos se convirtieron en composta rica y oscura, superalimento para las plantas!",
+
+    // Wally Worm Story Content
+    "Deep under the garden, in a cozy pile of leaves and peels, lived a wiggly little worm named Wally. Wally wasn't just any worm—he was a Compost Explorer!":
+      "Profundo bajo el jardín, en un acogedor montón de hojas y cáscaras, vivía un pequeño gusano llamado Wally. ¡Wally no era un gusano cualquiera, era un Explorador de Composta!",
+    
+    "Oh no! So much yummy food is being thrown away into the trash!":
+      "¡Oh no! ¡Tanta comida deliciosa está siendo tirada a la basura!",
+    
+    "He wiggled and wriggled his way toward the kitchen window and saw a banana peel, carrot tops, and a sad slice of bread all being dumped in the garbage bin.":
+      "Se movió y retorció hacia la ventana de la cocina y vio una cáscara de plátano, puntas de zanahoria y una triste rebanada de pan siendo tiradas al cubo de basura.",
+    
+    "\"They don't belong there,\" said Wally. \"They could join our compost party and become soil superheroes!\"":
+      "\"No pertenecen allí\", dijo Wally. \"¡Podrían unirse a nuestra fiesta de composta y convertirse en superhéroes del suelo!\"",
+    
+    "🪱💬 Wally shouted, \"Hey friends! Want to help flowers grow? Follow me!\"":
+      "🪱💬 Wally gritó, \"¡Oigan amigos! ¿Quieren ayudar a que crezcan las flores? ¡Síganme!\"",
+    
+    "The banana peel blinked. \"We can help plants grow?\"":
+      "La cáscara de plátano parpadeó. \"¿Podemos ayudar a que crezcan las plantas?\"",
+    
+    "Wally nodded. \"Absolutely! When we compost together, we turn into magic soil that makes gardens bloom!\"":
+      "Wally asintió. \"¡Absolutamente! Cuando hacemos composta juntos, ¡nos convertimos en tierra mágica que hace florecer los jardines!\"",
+    
+    "So one by one, the food scraps jumped out of the trash and followed Wally into the compost pile. It was warm, squishy, and full of other friendly worms.":
+      "Así que uno por uno, los restos de comida saltaron de la basura y siguieron a Wally al montón de composta. Era cálido, blando y lleno de otros gusanos amigables.",
+    
+    "Wally led them on a journey deep into the pile, where they met dancing microbes and giggling bugs working together to turn everything into dark, rich compost.":
+      "Wally los guió en un viaje profundo en el montón, donde conocieron microbios bailarines e insectos risueños trabajando juntos para convertir todo en composta oscura y rica.",
+    
+    "After a few days of wiggling, munching, and mixing…":
+      "Después de unos días de moverse, masticar y mezclar...",
+    
+    "✨POOF!✨ The banana peel and all her new friends had transformed into super soil!":
+      "✨¡POOF!✨ ¡La cáscara de plátano y todos sus nuevos amigos se habían transformado en súper tierra!",
+    
+    "🌼 They were spread across a garden, helping sunflowers grow tall, strawberries turn sweet, and trees grow strong.":
+      "🌼 Se extendieron por un jardín, ayudando a los girasoles a crecer altos, a las fresas a volverse dulces y a los árboles a fortalecerse.",
+    
+    "Wally smiled proudly. \"Another compost mission complete!\"":
+      "Wally sonrió orgulloso. \"¡Otra misión de composta completada!\"",
+    
+    "And off he went, ready for his next big adventure…":
+      "Y se fue, listo para su próxima gran aventura...",
   };
 
   String translate(String text) {
