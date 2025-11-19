@@ -3,6 +3,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/translation_service.dart';
 import '../services/progress_service.dart';
+import 'compost_story_screen.dart';
+import 'wally_worm_story_screen.dart';
 
 class CompostScreen extends StatefulWidget {
   const CompostScreen({super.key});
@@ -744,6 +746,16 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                     child: Column(
                       children: [
                         _buildStoryCard(
+                          title: "Mira the Apple Core's Magic",
+                          icon: Icons.apple,
+                          colors: [
+                            Colors.red.shade300,
+                            Colors.red.shade600,
+                          ],
+                          onTap: () => _showMiraStory(),
+                        ),
+                        const SizedBox(height: 30),
+                        _buildStoryCard(
                           title: "Wally the Worm's Adventure",
                           icon: Icons.eco,
                           colors: [
@@ -959,8 +971,26 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
     );
   }
 
+  void _showMiraStory() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CompostStoryScreen(
+          translationService: _translationService,
+        ),
+      ),
+    );
+  }
+
   void _showWallyStory() {
-    // Implement Wally's story dialog
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WallyWormStoryScreen(
+          translationService: _translationService,
+        ),
+      ),
+    );
   }
 
   void _showMagicGardenStory() {
