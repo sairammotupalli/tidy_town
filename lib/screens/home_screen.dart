@@ -6,6 +6,7 @@ import 'landfill_screen.dart';
 import 'waste_sorting_game_selection.dart';
 import 'memory_match_game.dart';
 import '../services/progress_service.dart';
+import '../services/translation_service.dart';
 import 'package:lottie/lottie.dart';
 
 class CategoryProgress {
@@ -35,6 +36,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FlutterTts flutterTts = FlutterTts();
+  final TranslationService _translationService = TranslationService();
   
   @override
   void initState() {
@@ -45,13 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _speakWelcome() async {
     await flutterTts.setSpeechRate(0.3); // slow
     await flutterTts.setPitch(1.3); // kid-friendly pitch (1.0–2.0 is allowed)
-    await flutterTts.setLanguage("en-US");
-    await flutterTts.speak("Welcome");
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    await flutterTts.setLanguage("es-ES");
-    await flutterTts.speak("Bienvenidos");
+    await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
+    await flutterTts.speak(_translationService.translate("Welcome"));
   }
 
   void _showLogoutDialog(BuildContext context) {
@@ -71,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            title: const Text('😢 Logout?'),
+            title: Text(_translationService.translate('😢 Logout?')),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -80,10 +77,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundImage: AssetImage('assets/images/avatar.png'),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Hey Western! Are you sure you want to logout?',
+                Text(
+                  _translationService.translate('Hey Western! Are you sure you want to logout?'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
@@ -92,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.of(context).pop(); // Close dialog
                 },
-                child: const Text('Cancel'),
+                child: Text(_translationService.translate('Cancel')),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -105,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     '/',
                   ); // Back to welcome
                 },
-                child: const Text('Logout'),
+                child: Text(_translationService.translate('Logout')),
               ),
             ],
           ),
@@ -129,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Icon(category.icon, color: category.color),
             ),
             title: Text(
-              category.name,
+              _translationService.translate(category.name),
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -150,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${category.completedQuestions}/${category.totalQuestions} completed',
+                  '${category.completedQuestions}/${category.totalQuestions} ${_translationService.translate('completed')}',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 12,
@@ -187,9 +184,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
-              child: const Text(
-                'Start',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                _translationService.translate('Start'),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ),
@@ -240,9 +237,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                '🎮 Choose a Game 🎮',
-                style: TextStyle(
+              Text(
+                _translationService.translate('🎮 Choose a Game 🎮'),
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF4A3728),
@@ -270,9 +267,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         elevation: 5,
                       ),
-                      child: const Text(
-                        'Waste Sorting\nGame',
-                        style: TextStyle(
+                      child: Text(
+                        _translationService.translate('Waste Sorting\nGame'),
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'ComicNeue',
@@ -302,9 +299,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         elevation: 5,
                       ),
-                      child: const Text(
-                        'Memory Match\nGame',
-                        style: TextStyle(
+                      child: Text(
+                        _translationService.translate('Memory Match\nGame'),
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'ComicNeue',
@@ -339,9 +336,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Your Learning Progress',
-                style: TextStyle(
+              Text(
+                _translationService.translate('Your Learning Progress'),
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF4A3728),
@@ -362,15 +359,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          'Tidy Town',
-          style: TextStyle(
+        title: Text(
+          _translationService.translate('Tidy Town'),
+          style: const TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.green.shade100,
         actions: [
+          IconButton(
+            icon: Icon(
+              _translationService.isSpanish ? Icons.language : Icons.translate,
+              color: Colors.green.shade900,
+            ),
+            onPressed: () {
+              setState(() {
+                _translationService.toggleLanguage();
+              });
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => _showLogoutDialog(context),
@@ -416,9 +424,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             elevation: 8,
                           ),
-                          child: const Text(
-                            'PLAY',
-                            style: TextStyle(
+                          child: Text(
+                            _translationService.translate('PLAY'),
+                            style: const TextStyle(
                               fontSize: 42,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'ComicNeue',
@@ -441,9 +449,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             elevation: 8,
                           ),
-                          child: const Text(
-                            'LEARN',
-                            style: TextStyle(
+                          child: Text(
+                            _translationService.translate('LEARN'),
+                            style: const TextStyle(
                               fontSize: 42,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'ComicNeue',
