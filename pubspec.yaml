@@ -74,6 +74,18 @@ flutter:
     - assets/images/recycle/learning.png
     - assets/images/recycle/whatcanbe.png
     - assets/images/recycle/newb.gif
+    - assets/images/maya_neutral.png
+    - assets/images/maya_happy.png
+    - assets/images/maya_sad.png
+    - assets/images/maya_town_background.png
+    - assets/images/maya_walking_to_park.png
+    - assets/images/maya_walking_to_bustand.png
+    - assets/images/maya_walking_to_grocery.png
+    - assets/images/maya_seeing_cat.png
+    - assets/images/maya_petting_cat.png
+    - assets/images/maya_questioning.png
+    - assets/images/maya_disappointed.png
+    - assets/images/maya_intro.png
     
     # Compost images
     - assets/images/compost/background.jpeg
@@ -114,6 +126,7 @@ flutter:
     - assets/images/landfill/LandfillLearning6.png
 
     # Game images - Bins
+    - assets/images/game/
     - assets/images/game/bin_green.png
     - assets/images/game/bin_yellow.png
     - assets/images/game/bin_red.png

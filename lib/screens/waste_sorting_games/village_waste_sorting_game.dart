@@ -1,118 +1,807 @@
 import 'package:flutter/material.dart';
-import 'base_waste_sorting_game.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
+import '../../services/translation_service.dart';
 
-class VillageWasteSortingGame extends BaseWasteSortingGame {
+class VillageWasteSortingGame extends StatefulWidget {
   const VillageWasteSortingGame({super.key});
 
   @override
   State<VillageWasteSortingGame> createState() => _VillageWasteSortingGameState();
 }
 
-class _VillageWasteSortingGameState extends BaseWasteSortingGameState<VillageWasteSortingGame> {
-  @override
-  String get gameTitle => 'Village Adventure 🏘️';
-
-  @override
-  String get welcomeMessage => 'Meet Farmer Sam! He loves keeping the village clean and green. Help him sort the waste items he finds while tending to the village gardens!';
-
-  @override
-  Color get primaryColor => Colors.green;
-
-  @override
-  Color get secondaryColor => Colors.lightGreen;
-
-  @override
-  List<Color> get backgroundGradient => [
-    Colors.green.withOpacity(0.3),
-    Colors.lightGreen.withOpacity(0.2),
+class _VillageWasteSortingGameState extends State<VillageWasteSortingGame> with TickerProviderStateMixin {
+  FlutterTts _tts = FlutterTts();
+  final TranslationService _translationService = TranslationService();
+  int score = 0;
+  int currentItemIndex = 0;
+  bool isGameComplete = false;
+  bool showFeedback = false;
+  bool isCorrectAnswer = false;
+  bool showCelebration = false;
+  bool showSad = false;
+  String? poppingMessage;
+  String? sadMessage;
+  late final AnimationController _celebrationController;
+  late final AnimationController _shakeController;
+  
+  // Beach waste items using your actual beach-specific images
+  // Keys are used for translation lookup
+  final List<Map<String, dynamic>> _baseBeachItems = [
+    // Compost items (3 beach-specific items)
+    {
+      'nameKey': 'Fresh Seaweed',
+      'image': 'assets/images/compost/fresh_seaweed.png',
+      'correctBin': 'compost',
+      'descriptionKey': 'I\'m natural seaweed that washed ashore! Alex knows I can decompose naturally and become rich soil for plants.',
+    },
+    {
+      'nameKey': 'Driftwood',
+      'image': 'assets/images/compost/driftwood.png',
+      'correctBin': 'compost',
+      'descriptionKey': 'I\'m natural driftwood that floated to the beach! Alex picked me up because I can break down and enrich the earth.',
+    },
+    {
+      'nameKey': 'Coconut Shells',
+      'image': 'assets/images/compost/coconut_shells.png',
+      'correctBin': 'compost',
+      'descriptionKey': 'I\'m coconut shells that fell naturally on the beach! Alex knows I can decompose and feed the soil with nutrients.',
+    },
+    
+    // Recycle items (4 beach-specific items)
+    {
+      'nameKey': 'Ocean Plastic Bottles',
+      'image': 'assets/images/recycle/ocean_plastic_bottles.png',
+      'correctBin': 'recycle',
+      'descriptionKey': 'Alex rescued me from the ocean waves! I was threatening sea turtles who might mistake me for food. I can be made into new products!',
+    },
+    {
+      'nameKey': 'Beach Cans',
+      'image': 'assets/images/recycle/beach_cans.png',
+      'correctBin': 'recycle',
+      'descriptionKey': 'I\'m aluminum cans left by beach visitors! Alex picked me up because I can be recycled into new cans forever.',
+    },
+    {
+      'nameKey': 'Glass Bottles',
+      'image': 'assets/images/recycle/glass_bottles.png',
+      'correctBin': 'recycle',
+      'descriptionKey': 'Alex found me buried in the beach sand! I\'m glass bottles that can be melted down and made into new glass products.',
+    },
+    
+    // Landfill items (5 beach-specific items)
+    {
+      'nameKey': 'Dangerous Plastic Bags',
+      'image': 'assets/images/landfill/dangerous_plastic_bags.png',
+      'correctBin': 'landfill',
+      'descriptionKey': 'I\'m torn plastic bags that could harm sea turtles who mistake me for jellyfish! Alex wants to dispose of me safely.',
+    },
+    {
+      'nameKey': 'Waterlogged Papers',
+      'image': 'assets/images/landfill/waterlogged_papers.png',
+      'correctBin': 'landfill',
+      'descriptionKey': 'I\'m papers that got soaked by seawater! Alex knows I\'m too damaged to recycle and need special disposal.',
+    },
+    {
+      'nameKey': 'Styrofoam Containers',
+      'image': 'assets/images/landfill/styrofoam_containers.png',
+      'correctBin': 'landfill',
+      'descriptionKey': 'I\'m styrofoam food containers left by beachgoers! Alex picked me up because I don\'t break down naturally.',
+    },
+    {
+      'nameKey': 'Broken Flip Flops',
+      'image': 'assets/images/landfill/broken_flip_flops.png',
+      'correctBin': 'landfill',
+      'descriptionKey': 'I\'m old flip flops that washed up on shore! Alex found me and knows I need to go to landfill safely.',
+    },
   ];
 
-  @override
-  Map<String, String> get binImages => {
-    'compost': 'assets/images/game/bin_green.png',
-    'recycle': 'assets/images/game/bin_yellow.png',
-    'landfill': 'assets/images/game/bin_red.png',
-  };
+  // Shuffled items list
+  List<Map<String, dynamic>> _shuffledItems = [];
+
+  // Get translated items
+  List<Map<String, dynamic>> get beachItems {
+    return _shuffledItems.map((item) => {
+      'name': _translationService.translate(item['nameKey']),
+      'image': item['image'],
+      'correctBin': item['correctBin'],
+      'description': _translationService.translate(item['descriptionKey']),
+    }).toList();
+  }
 
   @override
-  List<String> get binOrder => ['compost', 'recycle', 'landfill'];
+  void initState() {
+    super.initState();
+    _initializeTts();
+    _speakWelcomeMessage();
+    // Randomize item order each session
+    _shuffledItems = List.from(_baseBeachItems);
+    _shuffledItems.shuffle();
+    _celebrationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _shakeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  Future<void> _initializeTts() async {
+    _tts = FlutterTts();
+    try {
+      await _tts.setLanguage(_translationService.isSpanish ? 'es-ES' : 'en-US');
+      await _tts.setSpeechRate(0.35);
+      await _tts.setVolume(1.0);
+      await _tts.setPitch(1.0);
+      try {
+        await _tts.awaitSpeakCompletion(true);
+      } catch (_) {}
+    } catch (e) {
+      print('Error initializing TTS: $e');
+    }
+  }
+
+  void _speakWelcomeMessage() {
+    _speakText("");
+  }
+
+  Future<void> _speakText(String text) async {
+    try {
+      await _tts.setLanguage(_translationService.isSpanish ? 'es-ES' : 'en-US');
+      await _tts.speak(text);
+    } catch (e) {
+      print('Error speaking: $e');
+    }
+  }
+
+  void _handleAnswer(String selectedBin) {
+    final currentItem = beachItems[currentItemIndex];
+    final correctBin = currentItem['correctBin'];
+    
+    setState(() {
+      showFeedback = true;
+      isCorrectAnswer = selectedBin == correctBin;
+      if (isCorrectAnswer) {
+        score++;
+        showCelebration = true;
+        poppingMessage = _translationService.translate('Hurray right!');
+        _celebrationController.forward(from: 0.0);
+      } else {
+        showSad = true;
+        sadMessage = _translationService.translate('Oops wrong!!');
+        _shakeController.forward(from: 0.0);
+      }
+    });
+
+    // Play sound and speak feedback
+    if (isCorrectAnswer) {
+      SystemSound.play(SystemSoundType.click);
+      _speakText(_translationService.translate('That\'s right!'));
+    } else {
+      SystemSound.play(SystemSoundType.alert);
+      _speakText(_translationService.translate('Oops wrong!'));
+    }
+
+    // Move to next item after feedback
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      setState(() {
+        showFeedback = false;
+        showCelebration = false;
+        showSad = false;
+        poppingMessage = null;
+        sadMessage = null;
+        currentItemIndex++;
+        
+        if (currentItemIndex >= beachItems.length) {
+          isGameComplete = true;
+          _showCompletionDialog();
+        }
+      });
+    });
+  }
+
+  void _showCompletionDialog() {
+    _speakText("");
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_translationService.translate('🏖️ Beach Cleanup Complete!')),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/beach_alex_happy.png',
+                height: 100,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.sentiment_very_satisfied, size: 60, color: Colors.green);
+                },
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '${_translationService.translate('Amazing! You helped Alex clean up the beach!')}\n\n${_translationService.translate('Score: ')}$score/${beachItems.length}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Return to game selection
+              },
+              child: Text(_translationService.translate('Play Again')),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: Text(_translationService.translate('Back to Games')),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
-  List<Map<String, dynamic>> get wasteItems => [
-    // COMPOST ITEMS (4+) - Including your specified items
-    {
-      'name': 'Banana Peels',
-      'image': 'assets/images/game/banana_peel.png',
-      'correctBin': 'compost',
-      'description': 'I\'m banana peels from the village market! Farmer Sam knows I can enrich the soil for vegetables!',
-    },
-    {
-      'name': 'Animal Waste',
-      'image': 'assets/images/game/coffee_grounds.png',
-      'correctBin': 'compost',
-      'description': 'I\'m animal manure from the village farm! Farmer Sam uses me as natural fertilizer for the crops!',
-    },
-    {
-      'name': 'Orchard Apple Cores',
-      'image': 'assets/images/game/apple_core.png',
-      'correctBin': 'compost',
-      'description': 'Farmer Sam found me under the old apple tree! I can help grow more fruit in the village garden!',
-    },
-    {
-      'name': 'Café Coffee Grounds',
-      'image': 'assets/images/game/coffee_grounds.png',
-      'correctBin': 'compost',
-      'description': 'I\'m coffee grounds from the village café! Farmer Sam uses me to help his tomatoes grow big and strong!',
-    },
-    // RECYCLE ITEMS (4+)
-    {
-      'name': 'Village Newsletter',
-      'image': 'assets/images/game/newspaper.png',
-      'correctBin': 'recycle',
-      'description': 'I\'m the weekly village newsletter Sam collected from mailboxes! I can become new paper for the community!',
-    },
-    {
-      'name': 'Grandma\'s Jam Jars',
-      'image': 'assets/images/game/aluminum_can.png',
-      'correctBin': 'recycle',
-      'description': 'I\'m empty jam jars from Grandma\'s kitchen! Sam can recycle me into new containers for the village!',
-    },
-    {
-      'name': 'Delivery Cardboard',
-      'image': 'assets/images/game/plastic_bottle.png',
-      'correctBin': 'recycle',
-      'description': 'I\'m cardboard boxes from village deliveries! Farmer Sam can recycle me into new packaging!',
-    },
-    {
-      'name': 'Metal Farm Tools',
-      'image': 'assets/images/game/aluminum_can.png',
-      'correctBin': 'recycle',
-      'description': 'I\'m old metal tools from the farm! Sam can recycle me into new farming equipment for the village!',
-    },
-    // LANDFILL ITEMS (4+)
-    {
-      'name': 'Store Plastic Bags',
-      'image': 'assets/images/game/plastic_bag.png',
-      'correctBin': 'landfill',
-      'description': 'I\'m plastic bags that blew away from the village store! Sam knows I need special disposal to protect animals!',
-    },
-    {
-      'name': 'Workshop Pottery Shards',
-      'image': 'assets/images/game/broken_glass.png',
-      'correctBin': 'landfill',
-      'description': 'I\'m broken pottery from the village craft workshop! I\'m too sharp to recycle, so I need safe disposal!',
-    },
-    {
-      'name': 'Old Paint Cans',
-      'image': 'assets/images/game/plastic_bag.png',
-      'correctBin': 'landfill',
-      'description': 'I\'m old paint cans from village house repairs! I contain toxic chemicals that need hazardous waste disposal!',
-    },
-    {
-      'name': 'Worn Out Rubber Boots',
-      'image': 'assets/images/game/broken_glass.png',
-      'correctBin': 'landfill',
-      'description': 'I\'m old rubber boots from farm work! I\'m too worn and mixed materials to recycle properly!',
-    },
-  ];
+  void dispose() {
+    _tts.stop();
+    _celebrationController.dispose();
+    _shakeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isGameComplete) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final currentItem = beachItems[currentItemIndex];
+    // Bin images and order (match original game sizes/logic)
+    final binImages = {
+      'compost': 'assets/images/game/bin_green.png',
+      'recycle': 'assets/images/game/bin_yellow.png',
+      'landfill': 'assets/images/game/bin_red.png',
+    };
+    final binOrder = ['compost', 'recycle', 'landfill'];
+    
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              // Beach background image covering full screen
+              image: DecorationImage(
+                image: AssetImage('assets/images/background.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Container(
+              // Semi-transparent overlay for better text readability
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.cyan.withOpacity(0.1),
+                    Colors.blue.withOpacity(0.2),
+                  ],
+                ),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                // Top bar with score and progress
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      // Back button
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.black.withOpacity(0.3),
+                        ),
+                      ),
+                      const Spacer(),
+                      // Score
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '${_translationService.translate('Score: ')}$score/${beachItems.length}',
+                          style: const TextStyle(
+                            fontSize: 16, 
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Language toggle button
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _translationService.toggleLanguage();
+                            _initializeTts(); // Reinitialize TTS with new language
+                          });
+                        },
+                        icon: Icon(
+                          _translationService.isSpanish ? Icons.language : Icons.translate,
+                          color: Colors.white,
+                        ),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.cyan.withOpacity(0.7),
+                        ),
+                        tooltip: _translationService.isSpanish ? 'Switch to English' : 'Cambiar a Español',
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Progress indicator
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child: LinearProgressIndicator(
+                    value: currentItemIndex / beachItems.length,
+                    backgroundColor: Colors.white.withOpacity(0.3),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                    minHeight: 6,
+                  ),
+                ),
+                
+                // Main game area - Alex on left, item on right
+                Expanded(
+                  child: Row(
+                    children: [
+                      // Left side - Alex character
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              // Alex image
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                      showFeedback 
+                                        ? (isCorrectAnswer 
+                                            ? 'assets/images/beach_alex_happy.png' 
+                                            : 'assets/images/beach_alex_sad.png')
+                                        : 'assets/images/beach_alex_neutral.png',
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: showFeedback 
+                                              ? (isCorrectAnswer ? Colors.green : Colors.orange)
+                                              : Colors.cyan,
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: Icon(
+                                            showFeedback 
+                                              ? (isCorrectAnswer ? Icons.sentiment_very_satisfied : Icons.sentiment_dissatisfied)
+                                              : Icons.person,
+                                            size: 80,
+                                            color: Colors.white,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              
+                              const SizedBox(height: 16),
+                              
+                              // Alex's speech bubble
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.95),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  _translationService.translate(
+                                    showFeedback
+                                      ? (isCorrectAnswer 
+                                          ? "Hurray right! That's exactly where it belongs!" 
+                                          : "Sorry it is wrong! But don't worry, let's try the next one!")
+                                      : "Guess this one! Help me sort this item I found on the beach!"
+                                  ),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      
+                      // Right side - Current item
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.95),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                // Item image (Draggable)
+                                Expanded(
+                                  flex: 4,
+                                  child: Draggable<Map<String, dynamic>>(
+                                    data: currentItem,
+                                    dragAnchorStrategy: pointerDragAnchorStrategy,
+                                    feedback: Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Container(
+                                        width: 200,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Image.asset(
+                                            currentItem['image'],
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    childWhenDragging: Opacity(
+                                      opacity: 0.3,
+                                      child: Container(
+                                        width: 320,
+                                        height: 320,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade100,
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(color: Colors.grey.shade300),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Image.asset(
+                                            currentItem['image'],
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    child: Container(
+                                      width: 320,
+                                      height: 320,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(color: Colors.grey.shade300),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Image.asset(
+                                          currentItem['image'],
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.eco,
+                                                  size: 60,
+                                                  color: Colors.grey.shade400,
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  currentItem['name'],
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade600,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                
+                                const SizedBox(height: 8),
+                                
+                                // Item name
+                                Text(
+                                  currentItem['name'],
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                
+                                // No extra content below: removed description and feedback block
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Bottom - Three bins as DragTargets (match original sizes)
+                if (!showFeedback) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0, left: 16, right: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: binOrder.map((binType) {
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                            child: DragTarget<Map<String, dynamic>>(
+                              builder: (context, candidateItems, rejectedItems) {
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      binImages[binType]!,
+                                      width: 250,
+                                      height: 380,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      _translationService.translate(
+                                        binType == 'recycle' ? 'Recycle' : binType == 'compost' ? 'Compost' : 'Landfill'
+                                      ),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                              onWillAccept: (item) => true,
+                              onAccept: (item) {
+                                // Delegate scoring and progression to _handleAnswer
+                                _handleAnswer(binType);
+                              },
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Fullscreen celebration overlay
+          if (showCelebration && poppingMessage != null)
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                color: Colors.white,
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Cheering animation
+                      AnimatedScale(
+                        scale: showCelebration ? 1.2 : 0.0,
+                        duration: const Duration(milliseconds: 8000),
+                        curve: Curves.elasticOut,
+                        child: SizedBox.expand(
+                          child: Lottie.asset(
+                            'assets/animations/confetti.json',
+                            fit: BoxFit.cover,
+                            repeat: false,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+                        ),
+                      ),
+                      // Alex happy + popping message
+                      AnimatedScale(
+                        scale: showCelebration ? 1.2 : 0.0,
+                        duration: const Duration(milliseconds: 8000),
+                        curve: Curves.elasticOut,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Alex happy image
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(12),
+                              child: Image.asset(
+                                'assets/images/beach_alex_happy.png',
+                                width: 380,
+                                height: 380,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            // Message
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade400.withOpacity(0.95),
+                                borderRadius: BorderRadius.circular(32),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                _translationService.translate('Hurray right!'),
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontFamily: 'ComicNeue',
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(2, 2),
+                                      blurRadius: 4,
+                                      color: Colors.black26,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          // Fullscreen sad overlay
+          if (showSad && sadMessage != null)
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                color: Colors.red.shade400.withOpacity(0.95),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Alex sad image
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: Image.asset(
+                          'assets/images/beach_alex_sad.png',
+                          width: 380,
+                          height: 380,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Sad animation
+                      Lottie.asset(
+                        'assets/animations/sad.json',
+                        width: 300,
+                        height: 300,
+                        fit: BoxFit.contain,
+                        repeat: false,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _translationService.translate('Oops wrong!!'),
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'ComicNeue',
+                          shadows: [
+                            Shadow(
+                              offset: Offset(2, 2),
+                              blurRadius: 4,
+                              color: Colors.black26,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }

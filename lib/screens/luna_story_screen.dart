@@ -63,9 +63,17 @@ class _LunaStoryScreenState extends State<LunaStoryScreen> {
 
   @override
   void dispose() {
+    isPlaying = false;
     flutterTts.stop();
+    audioPlayer.stop();
     audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _stopNarration() async {
+    isPlaying = false;
+    await flutterTts.stop();
+    await audioPlayer.stop();
   }
 
   Future<void> _setupTts() async {
@@ -158,6 +166,9 @@ class _LunaStoryScreenState extends State<LunaStoryScreen> {
       lastSpeaker = speaker;
     }
 
+    if (!mounted) {
+      return;
+    }
     setState(() {
       isPlaying = false;
     });
@@ -184,7 +195,7 @@ class _LunaStoryScreenState extends State<LunaStoryScreen> {
     
     return WillPopScope(
       onWillPop: () async {
-        await flutterTts.stop();
+        await _stopNarration();
         return true;
       },
       child: Scaffold(
@@ -199,7 +210,13 @@ class _LunaStoryScreenState extends State<LunaStoryScreen> {
           backgroundColor: Colors.green.shade100,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () async {
+              await _stopNarration();
+              if (!mounted) {
+                return;
+              }
+              Navigator.pop(context);
+            },
           ),
           actions: [
             IconButton(

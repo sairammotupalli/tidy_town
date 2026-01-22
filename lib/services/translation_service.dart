@@ -62,6 +62,17 @@ class TranslationService {
     "Styrofoam": "Poliestireno",
     "Plastic Bags": "Bolsas de Plástico",
 
+    // === TOWN GAME (ITEM NAMES USED IN town_waste_sorting_game.dart) ===
+    "Plastic Water Bottle": "Botella de Agua de Plástico",
+    "Candy Wrapper": "Envoltura de Dulce",
+    "Paper Napkin": "Servilleta de Papel",
+    "Plastic Straw": "Pajita de Plástico",
+    "Vegetable Scraps": "Restos de Verduras",
+    "Fruit Peels": "Cáscaras de Fruta",
+    "Cardboard Box": "Caja de Cartón",
+    "Glass Bottle": "Botella de Vidrio",
+    "Plastic Carry Bag": "Bolsa de Plástico",
+
     // Item descriptions
     "Flatten cardboard boxes and keep paper clean and dry": "Aplana las cajas de cartón y mantén el papel limpio y seco",
     "Rinse bottles and remove caps before recycling": "Enjuaga las botellas y quita las tapas antes de reciclar",
@@ -404,6 +415,109 @@ class TranslationService {
     "Town Explorer 🏙️": "Explorador de la Ciudad 🏙️",
     "Meet Maya the Urban Explorer! She's passionate about keeping the town clean and sustainable. Help her sort the waste items she discovers around the busy streets!":
       "¡Conoce a Maya la Exploradora Urbana! Le apasiona mantener la ciudad limpia y sostenible. ¡Ayúdala a clasificar los residuos que descubre en las calles concurridas!",
+
+    // === TOWN GAME (NEW STORY + QUIZ UI) ===
+    "Story": "Historia",
+    "Question": "Pregunta",
+    "(Tap anywhere to continue)": "(Toca la pantalla para continuar)",
+    "Let's clean the park first!": "¡Primero limpiemos el parque!",
+    "Let's clean the park first!\nDrag each item into the right bin.":
+      "¡Primero limpiemos el parque!\nArrastra cada objeto al contenedor correcto.",
+
+    "People wait here every day.\nLet's keep the bus stand clean!":
+      "La gente espera aquí todos los días.\n¡Mantengamos limpia la parada de autobús!",
+
+    "Great job so far!\nLet's finish strong!":
+      "¡Buen trabajo hasta ahora!\n¡Terminemos con fuerza!",
+
+    // Town story slides
+    "Hi kids! 👋\nI’m Maya.\n\nTap the screen to start our town adventure! ✨":
+      "¡Hola niños! 👋\nSoy Maya.\n\n¡Toca la pantalla para empezar nuestra aventura en la ciudad! ✨",
+
+    "School is over, and I’m walking back home through my town.\n\nCome along with me… let’s keep our town clean and happy! ✨":
+      "La escuela terminó y voy caminando a casa por mi ciudad.\n\nVen conmigo… ¡mantengamos nuestra ciudad limpia y feliz! ✨",
+    "Hi! I’m Maya 👋\nSchool is over, and I’m walking back home through my town.\n\nCome along with me… let’s travel to my home together and keep our town clean and happy! ✨":
+      "¡Hola! Soy Maya 👋\nLa escuela terminó y voy caminando a casa por mi ciudad.\n\nVen conmigo… ¡vamos a mi casa y mantengamos nuestra ciudad limpia y feliz! ✨",
+    "I love passing through the park… it’s my favorite place in town! 🌳":
+      "Me encanta pasar por el parque… ¡es mi lugar favorito de la ciudad! 🌳",
+    "This is the park we have in our town.\nIt’s famous for its big green trees, colorful flowers, and a fun play area.\n\nOn holidays and weekends, kids gather here to laugh, run, and play together!":
+      "Este es el parque de nuestra ciudad.\nEs famoso por sus árboles grandes y verdes, flores de colores y un área divertida para jugar.\n\nEn días libres y fines de semana, los niños vienen aquí a reír, correr y jugar juntos.",
+    "Oh no! Look… there’s some waste on the ground.\n\nSo sad to see trash in such a beautiful place.":
+      "¡Oh no! Mira… hay basura en el suelo.\n\nQué tristeza ver basura en un lugar tan bonito.",
+    "But don’t worry — we can help!\n\nLet’s sort these items into the correct bins. Ready? ✅":
+      "Pero no te preocupes — ¡podemos ayudar!\n\nClasifiquemos estos objetos en los contenedores correctos. ¿Listos? ✅",
+
+    "Next stop… the bus stand! 🚏\n\nPeople wait here every day to go to school, work, and visit friends.":
+      "Siguiente parada… ¡la parada de autobús! 🚏\n\nLa gente espera aquí todos los días para ir a la escuela, al trabajo y a visitar amigos.",
+    "Next stop… the bus stand! 🚏\n\nLots of people wait here for the bus.":
+      "Siguiente parada… ¡la parada de autobús! 🚏\n\nMucha gente espera aquí el autobús.",
+    "I see trash near the bus stop bench and signboard.\n\nOh no… it looks messy.":
+      "Veo basura cerca del banco y el letrero.\n\nOh no… se ve desordenado.",
+    "Trash can make this place dirty and unsafe.\n\nLet’s help keep the bus stand clean!":
+      "La basura puede ensuciar este lugar y hacerlo peligroso.\n\n¡Ayudemos a mantener limpia la parada de autobús!",
+    "People wait here every day.\nLet’s keep it clean!\n\nSort each item into the right bin ✅":
+      "La gente espera aquí todos los días.\n¡Mantengámoslo limpio!\n\nClasifica cada objeto en el contenedor correcto ✅",
+    "Let’s keep this place clean!\n\nSort each item into the right bin ✅":
+      "¡Mantengamos este lugar limpio!\n\nClasifica cada objeto en el contenedor correcto ✅",
+
+    "Meow! 🐱\nA small cat walks up.":
+      "¡Miau! 🐱\nUn gatito se acerca.",
+    "Hi kitty! I’ll call you Coco 🐱\n\nCoco is my friend.\nCoco wants a clean town too! 💛":
+      "¡Hola gatito! Te llamaré Coco 🐱\n\nCoco es mi amigo.\n¡Coco también quiere una ciudad limpia! 💛",
+    "Hi kitty! I’ll call you Coco 🐱\n\nCoco is my friend.\nLet’s go together! 💛":
+      "¡Hola gatito! Te llamaré Coco 🐱\n\nCoco es mi amigo.\n¡Vamos juntos! 💛",
+    "Now Maya and Coco reach the grocery store. 🏪\n\nThis is the last place to clean!":
+      "Ahora Maya y Coco llegan a la tienda. 🏪\n\n¡Este es el último lugar para limpiar!",
+    "Now we reach the grocery store. 🏪\n\nThis is our last stop!":
+      "Ahora llegamos a la tienda. 🏪\n\n¡Esta es nuestra última parada!",
+    "Oh no… there is more waste near the entrance.\n\nLet’s help and make it clean!":
+      "Oh no… hay más basura cerca de la entrada.\n\n¡Ayudemos y dejémoslo limpio!",
+    "Oh no… more waste near the entrance.\n\nLet’s put it in the right bin!":
+      "Oh no… más basura cerca de la entrada.\n\n¡Pongámosla en el contenedor correcto!",
+    "Uh oh… more waste near the entrance.\n\nLet’s put it in the right bin!":
+      "Uy… más basura cerca de la entrada.\n\n¡Pongámosla en el contenedor correcto!",
+    "Great job so far!\nLet’s finish strong!\n\nSort the final items ✅":
+      "¡Buen trabajo hasta ahora!\n¡Vamos a terminar con fuerza!\n\nClasifica los últimos objetos ✅",
+    "Great job!\nLet’s finish strong!\n\nSort the last items ✅":
+      "¡Buen trabajo!\n¡Vamos a terminar con fuerza!\n\nClasifica los últimos objetos ✅",
+
+    // Town questions + feedback
+    "🌱 Which of these can turn into soil and help plants grow?":
+      "🌱 ¿Cuál de estos puede convertirse en tierra y ayudar a las plantas a crecer?",
+    "Plastic bottle": "Botella de plástico",
+    "Banana peel": "Cáscara de plátano",
+    "Candy wrapper": "Envoltura de dulce",
+    "🎉 Awesome!\nBanana peels are food waste. They can turn into compost and help plants grow.":
+      "🎉 ¡Genial!\nLas cáscaras de plátano son restos de comida.\nPueden convertirse en composta y ayudar a las plantas a crecer.",
+    "❌ Oops!\nThe correct answer is banana peel 🍌\nFood waste breaks down naturally and becomes compost for plants.":
+      "❌ ¡Ups!\nLa respuesta correcta es cáscara de plátano 🍌\nLos restos de comida se descomponen y se vuelven composta para las plantas.",
+
+    "♻️ Why should we recycle bottles and cans?":
+      "♻️ ¿Por qué debemos reciclar botellas y latas?",
+    "To make the trash heavier": "Para hacer la basura más pesada",
+    "To reuse materials and save resources": "Para reutilizar materiales y ahorrar recursos",
+    "To throw them on the road": "Para tirarlos en la calle",
+    "🌟 Correct!\nRecycling helps reuse materials and saves energy and natural resources.":
+      "🌟 ¡Correcto!\nReciclar ayuda a reutilizar materiales y ahorra energía y recursos naturales.",
+    "❌ Sorry!\nThe correct answer is: to reuse materials and save resources.\nRecycling protects our planet 🌍":
+      "❌ Lo siento.\nLa respuesta correcta es: reutilizar materiales y ahorrar recursos.\nReciclar protege nuestro planeta 🌍",
+
+    // Town questions (extra pool)
+    "🧻 Where does a paper napkin go?": "🧻 ¿Dónde va una servilleta de papel?",
+    "✅ Correct!\nPaper napkins can go in compost.": "✅ ¡Correcto!\nLas servilletas de papel pueden ir al compost.",
+    "❌ Not this one.\nPaper napkins go in compost.": "❌ No es esta.\nLas servilletas de papel van al compost.",
+
+    "🍬 Where does a candy wrapper go?": "🍬 ¿Dónde va una envoltura de dulce?",
+    "✅ Correct!\nCandy wrappers go to landfill.": "✅ ¡Correcto!\nLas envolturas van al vertedero.",
+    "❌ Not this one.\nCandy wrappers go to landfill.": "❌ No es esta.\nLas envolturas van al vertedero.",
+
+    "🍾 Where does a glass bottle go?": "🍾 ¿Dónde va una botella de vidrio?",
+    "✅ Correct!\nGlass bottles go in recycle.": "✅ ¡Correcto!\nLas botellas de vidrio van al reciclaje.",
+    "❌ Not this one.\nGlass bottles go in recycle.": "❌ No es esta.\nLas botellas de vidrio van al reciclaje.",
+
+    "🛍️ Where does a plastic carry bag go?": "🛍️ ¿Dónde va una bolsa de plástico?",
+    "✅ Correct!\nPlastic carry bags go to landfill.": "✅ ¡Correcto!\nLas bolsas de plástico van al vertedero.",
+    "❌ Not this one.\nPlastic carry bags go to landfill.": "❌ No es esta.\nLas bolsas de plástico van al vertedero.",
     
     // Town Items
     "Restaurant Food Scraps": "Restos de Comida de Restaurante",
