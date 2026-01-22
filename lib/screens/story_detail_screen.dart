@@ -29,6 +29,16 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     _setupTts();
   }
 
+  @override
+  void dispose() {
+    flutterTts.stop();
+    super.dispose();
+  }
+
+  Future<void> _stopTts() async {
+    await flutterTts.stop();
+  }
+
   Future<void> _setupTts() async {
     await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
     await flutterTts.setSpeechRate(0.3);
@@ -94,10 +104,25 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     final title = _translationService.translate(widget.title);
     final body = _translationService.translate(widget.body);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
+    return WillPopScope(
+      onWillPop: () async {
+        await _stopTts();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              await _stopTts();
+              if (!mounted) {
+                return;
+              }
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
           IconButton(
             onPressed: () {
               setState(() {
@@ -134,6 +159,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
               ],
             ),
           ],
+        ),
         ),
       ),
     );

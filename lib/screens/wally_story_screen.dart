@@ -76,9 +76,17 @@ class _WallyStoryScreenState extends State<WallyStoryScreen> {
 
   @override
   void dispose() {
+    isPlaying = false;
     flutterTts.stop();
+    audioPlayer.stop();
     audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _stopNarration() async {
+    isPlaying = false;
+    await flutterTts.stop();
+    await audioPlayer.stop();
   }
 
   Future<void> _setupTts() async {
@@ -207,6 +215,9 @@ class _WallyStoryScreenState extends State<WallyStoryScreen> {
       lastSpeaker = speaker;
     }
 
+    if (!mounted) {
+      return;
+    }
     setState(() {
       isPlaying = false;
     });
@@ -236,7 +247,7 @@ class _WallyStoryScreenState extends State<WallyStoryScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        await flutterTts.stop();
+        await _stopNarration();
         return true;
       },
       child: Scaffold(
@@ -253,7 +264,13 @@ class _WallyStoryScreenState extends State<WallyStoryScreen> {
           backgroundColor: Colors.blue.shade100,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () async {
+              await _stopNarration();
+              if (!mounted) {
+                return;
+              }
+              Navigator.pop(context);
+            },
           ),
           actions: [
             IconButton(

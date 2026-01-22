@@ -350,6 +350,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
     // Add completion handler for TTS
     flutterTts.setCompletionHandler(() {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         isPlaying = false;
       });
@@ -367,7 +370,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
   @override
   void dispose() {
+    isPlaying = false;
     flutterTts.stop();
+    audioPlayer.stop();
     audioPlayer.dispose();
     pageController.dispose();
     currentPageNotifier.dispose();
@@ -461,6 +466,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
       await Future.delayed(Duration(milliseconds: charPause + basePause));
     }
 
+    if (!mounted) {
+      return;
+    }
     setState(() {
       isPlaying = false;
     });
@@ -1327,9 +1335,17 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
   @override
   void dispose() {
+    isPlaying = false;
     flutterTts.stop();
+    audioPlayer.stop();
     audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _stopNarration() async {
+    isPlaying = false;
+    await flutterTts.stop();
+    await audioPlayer.stop();
   }
 
   Future<void> _setupTts() async {
@@ -1461,6 +1477,9 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       lastSpeaker = speaker;
     }
 
+    if (!mounted) {
+      return;
+    }
     setState(() {
       isPlaying = false;
     });
@@ -1489,7 +1508,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        await flutterTts.stop();
+        await _stopNarration();
         return true;
       },
       child: Scaffold(
@@ -1504,7 +1523,13 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
           backgroundColor: Colors.blue.shade100,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () async {
+              await _stopNarration();
+              if (!mounted) {
+                return;
+              }
+              Navigator.pop(context);
+            },
           ),
           actions: [
             IconButton(

@@ -132,6 +132,14 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
     moves = 0;
     isGameComplete = false;
     showCelebration = false;
+    isProcessing = false;
+    celebrationMessage = null;
+  }
+
+  void _resetGame() {
+    setState(() {
+      _initializeGame();
+    });
   }
 
   @override
@@ -250,7 +258,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
                   ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      _initializeGame();
+                      _resetGame();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
@@ -419,7 +427,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _initializeGame,
+            onPressed: _resetGame,
           ),
         ],
       ),
