@@ -4,6 +4,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:lottie/lottie.dart';
 import 'dart:math';
 import '../../services/translation_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
 enum _TownView { story, sorting, question }
 
@@ -24,7 +25,8 @@ class TownWasteSortingGame extends StatefulWidget {
   State<TownWasteSortingGame> createState() => _TownWasteSortingGameState();
 }
 
-class _TownWasteSortingGameState extends State<TownWasteSortingGame> with TickerProviderStateMixin {
+class _TownWasteSortingGameState extends State<TownWasteSortingGame>
+    with TickerProviderStateMixin, RouteAware {
   FlutterTts _tts = FlutterTts();
   final TranslationService _translationService = TranslationService();
   final Random _random = Random();
@@ -39,6 +41,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
   bool showSad = false;
   String? poppingMessage;
   String? sadMessage;
+  bool _isDraggingItem = false;
   late final AnimationController _celebrationController;
   late final AnimationController _shakeController;
 
@@ -328,6 +331,20 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
     );
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    _tts.stop();
+  }
+
   Future<void> _initializeTts() async {
     _tts = FlutterTts();
     try {
@@ -349,6 +366,19 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
       await _tts.speak(text);
     } catch (_) {
       // Ignore speak errors
+    }
+  }
+
+  Future<void> _speakTapText(String text) async {
+    final wasSpanish = _translationService.isSpanish;
+    await _speakText(text);
+    if (!mounted) {
+      return;
+    }
+    if (wasSpanish) {
+      setState(() {
+        _translationService.toggleLanguage();
+      });
     }
   }
 
@@ -419,6 +449,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
   }
 
   void _handleAnswer(String selectedBin) {
+    final wasSpanish = _translationService.isSpanish;
     final currentItem = currentItems[currentItemIndex];
     final correctBin = currentItem['correctBin'];
 
@@ -457,6 +488,9 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
         poppingMessage = null;
         sadMessage = null;
         currentItemIndex++;
+        if (wasSpanish) {
+          _translationService.toggleLanguage();
+        }
       });
 
       if (currentItemIndex >= currentItems.length) {
@@ -636,6 +670,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _tts.stop();
     _celebrationController.dispose();
     _shakeController.dispose();
@@ -864,6 +899,21 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
                                         child: Draggable<Map<String, dynamic>>(
                                           data: currentItems[currentItemIndex],
                                           dragAnchorStrategy: pointerDragAnchorStrategy,
+                                          onDragStarted: () {
+                                            setState(() {
+                                              _isDraggingItem = true;
+                                            });
+                                          },
+                                          onDragEnd: (_) {
+                                            setState(() {
+                                              _isDraggingItem = false;
+                                            });
+                                          },
+                                          onDraggableCanceled: (_, __) {
+                                            setState(() {
+                                              _isDraggingItem = false;
+                                            });
+                                          },
                                           feedback: Material(
                                             elevation: 4,
                                             borderRadius: BorderRadius.circular(16),
@@ -902,40 +952,45 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
                                               ),
                                             ),
                                           ),
-                                          child: Container(
-                                            width: 320,
-                                            height: 320,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade100,
-                                              borderRadius: BorderRadius.circular(16),
-                                              border: Border.all(color: Colors.grey.shade300),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(12.0),
-                                              child: Image.asset(
-                                                currentItems[currentItemIndex]['image'],
-                                                fit: BoxFit.contain,
-                                                errorBuilder: (context, error, stackTrace) {
-                                                  return Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.eco,
-                                                        size: 60,
-                                                        color: Colors.grey.shade400,
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        currentItems[currentItemIndex]['name'],
-                                                        style: TextStyle(
-                                                          color: Colors.grey.shade600,
-                                                          fontWeight: FontWeight.bold,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              _speakTapText(currentItems[currentItemIndex]['name']);
+                                            },
+                                            child: Container(
+                                              width: 320,
+                                              height: 320,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade100,
+                                                borderRadius: BorderRadius.circular(16),
+                                                border: Border.all(color: Colors.grey.shade300),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(12.0),
+                                                child: Image.asset(
+                                                  currentItems[currentItemIndex]['image'],
+                                                  fit: BoxFit.contain,
+                                                  errorBuilder: (context, error, stackTrace) {
+                                                    return Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.eco,
+                                                          size: 60,
+                                                          color: Colors.grey.shade400,
                                                         ),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
+                                                        const SizedBox(height: 8),
+                                                        Text(
+                                                          currentItems[currentItemIndex]['name'],
+                                                          style: TextStyle(
+                                                            color: Colors.grey.shade600,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -981,47 +1036,50 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame> with Ticker
                                                 : 'Landfill',
                                       );
 
-                                      return Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Image.asset(
-                                            binImages[binType]!,
-                                            width: 250,
-                                            height: 380,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          Positioned(
-                                            bottom: 14,
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                horizontal: 14,
-                                                vertical: 8,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white.withOpacity(0.9),
-                                                borderRadius: BorderRadius.circular(14),
-                                                border: Border.all(
-                                                  color: Colors.black.withOpacity(0.15),
+                                      return GestureDetector(
+                                        onTap: _isDraggingItem ? null : () => _speakTapText(label),
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Image.asset(
+                                              binImages[binType]!,
+                                              width: 250,
+                                              height: 380,
+                                              fit: BoxFit.contain,
+                                            ),
+                                            Positioned(
+                                              bottom: 14,
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 14,
+                                                  vertical: 8,
                                                 ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black.withOpacity(0.12),
-                                                    blurRadius: 6,
-                                                    offset: const Offset(0, 3),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white.withOpacity(0.9),
+                                                  borderRadius: BorderRadius.circular(14),
+                                                  border: Border.all(
+                                                    color: Colors.black.withOpacity(0.15),
                                                   ),
-                                                ],
-                                              ),
-                                              child: Text(
-                                                label,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 18,
-                                                  color: Colors.black87,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withOpacity(0.12),
+                                                      blurRadius: 6,
+                                                      offset: const Offset(0, 3),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Text(
+                                                  label,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 18,
+                                                    color: Colors.black87,
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       );
                                     },
                                     onWillAccept: (item) => true,

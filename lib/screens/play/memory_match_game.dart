@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
 class MemoryMatchGame extends StatefulWidget {
   const MemoryMatchGame({super.key});
@@ -9,7 +10,8 @@ class MemoryMatchGame extends StatefulWidget {
   State<MemoryMatchGame> createState() => _MemoryMatchGameState();
 }
 
-class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderStateMixin {
+class _MemoryMatchGameState extends State<MemoryMatchGame>
+    with TickerProviderStateMixin, RouteAware {
   late FlutterTts _tts;
   int score = 0;
   int moves = 0;
@@ -101,6 +103,20 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
     _playWelcomeInstructions();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    _stopAudio();
+  }
+
   Future<void> _initializeTts() async {
     _tts = FlutterTts();
     try {
@@ -112,6 +128,12 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
     } catch (e) {
       // Error initializing TTS
     }
+  }
+
+  Future<void> _stopAudio() async {
+    try {
+      await _tts.stop();
+    } catch (_) {}
   }
 
   void _initializeGame() {
@@ -144,6 +166,8 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
+    _stopAudio();
     _celebrationController.dispose();
     _flipController.dispose();
     super.dispose();
@@ -410,28 +434,39 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Memory Match Game',
-          style: TextStyle(
-            fontFamily: 'ComicNeue',
-            fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        _stopAudio();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Memory Match Game',
+            style: TextStyle(
+              fontFamily: 'ComicNeue',
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        backgroundColor: Colors.purple.shade100,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _resetGame,
+          backgroundColor: Colors.purple.shade100,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              await _stopAudio();
+              if (!context.mounted) {
+                return;
+              }
+              Navigator.of(context).pop();
+            },
           ),
-        ],
-      ),
-      body: Stack(
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: _resetGame,
+            ),
+          ],
+        ),
+        body: Stack(
         children: [
           Container(
             width: double.infinity,
@@ -558,6 +593,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> with TickerProviderSt
               ),
             ),
         ],
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
 class LearningCenterScreen extends StatefulWidget {
   const LearningCenterScreen({super.key});
@@ -8,7 +9,8 @@ class LearningCenterScreen extends StatefulWidget {
   State<LearningCenterScreen> createState() => _LearningCenterScreenState();
 }
 
-class _LearningCenterScreenState extends State<LearningCenterScreen> {
+class _LearningCenterScreenState extends State<LearningCenterScreen>
+    with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   int _currentIndex = 0;
 
@@ -59,6 +61,27 @@ class _LearningCenterScreenState extends State<LearningCenterScreen> {
     await flutterTts.setPitch(1.3);
     await flutterTts.setSpeechRate(0.4);
     await flutterTts.speak(text);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    flutterTts.stop();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    flutterTts.stop();
+    super.dispose();
   }
 
   @override

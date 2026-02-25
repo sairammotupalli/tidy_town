@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../services/translation_service.dart';
-import '../services/progress_service.dart';
+import 'package:tidy_town/services/translation_service.dart';
+import 'package:tidy_town/services/progress_service.dart';
 
 class LandfillScreen extends StatefulWidget {
   const LandfillScreen({super.key});
@@ -19,10 +19,7 @@ class _LandfillScreenState extends State<LandfillScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LandfillDetailScreen(
-          pageIndex: index,
-          translationService: _translationService,
-        ),
+        builder: (context) => LandfillDetailScreen(pageIndex: index),
       ),
     ).then((_) {
       setState(() {}); // Trigger rebuild when returning from detail screen
@@ -72,7 +69,7 @@ class _LandfillScreenState extends State<LandfillScreen> {
                 _translationService.translate(subtitle),
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.black,
+                  color: Colors.white,
                   fontFamily: 'ComicNeue',
                 ),
                 textAlign: TextAlign.center,
@@ -181,13 +178,8 @@ class _LandfillScreenState extends State<LandfillScreen> {
 
 class LandfillDetailScreen extends StatefulWidget {
   final int pageIndex;
-  final TranslationService translationService;
 
-  const LandfillDetailScreen({
-    super.key,
-    required this.pageIndex,
-    required this.translationService,
-  });
+  const LandfillDetailScreen({super.key, required this.pageIndex});
 
   @override
   State<LandfillDetailScreen> createState() => _LandfillDetailScreenState();
@@ -201,7 +193,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
 
   late final PageController pageController;
   late final ValueNotifier<int> currentPageNotifier;
-  late final TranslationService _translationService;
+  final TranslationService _translationService = TranslationService();
 
   final List<Map<String, dynamic>> landfillItems = [
     {
@@ -251,7 +243,6 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _translationService = widget.translationService;
     _setupTts();
     _setupAudio();
     pageController = PageController();
@@ -474,7 +465,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
           children: [
             Positioned.fill(
               child: Image.asset(
-                'assets/images/recycle/whatcanbe.png',
+                'assets/images/landfill/whatgoes.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -500,26 +491,9 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                             ),
                             child: SizedBox(
                               height: 350,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  String itemName = _translationService
-                                      .translate(landfillItems[index]['name']);
-                                  if (isSpeaking) {
-                                    await flutterTts.stop();
-                                    setState(() {
-                                      isSpeaking = false;
-                                    });
-                                  } else {
-                                    await flutterTts.speak('I am $itemName');
-                                    setState(() {
-                                      isSpeaking = true;
-                                    });
-                                  }
-                                },
-                                child: Image.asset(
-                                  landfillItems[index]['image'],
-                                  fit: BoxFit.contain,
-                                ),
+                              child: Image.asset(
+                                landfillItems[index]['image'],
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
@@ -710,35 +684,6 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
                 ),
               ],
             ),
-            // Bottom volume button
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: ValueListenableBuilder<int>(
-                valueListenable: currentPageNotifier,
-                builder: (context, currentPage, _) {
-                  return _buildGradientButton(
-                    icon: isSpeaking ? Icons.stop : Icons.volume_up,
-                    onPressed: () async {
-                      if (isSpeaking) {
-                        await flutterTts.stop();
-                        setState(() {
-                          isSpeaking = false;
-                        });
-                      } else {
-                        String itemName = _translationService.translate(
-                          landfillItems[currentPage]['name'],
-                        );
-                        await flutterTts.speak('I am $itemName');
-                        setState(() {
-                          isSpeaking = true;
-                        });
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
           ],
         );
       },
@@ -752,7 +697,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
         children: [
           SizedBox.expand(
             child: Image.asset(
-              'assets/images/recycle/learning.png',
+              'assets/images/landfill/learning.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -1006,31 +951,7 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen> {
   }
 
   void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(
-            _translationService.translate(
-              'Hey Western! Are you sure you want to logout?',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(_translationService.translate('Cancel')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(_translationService.translate('Logout')),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/'); // Back to welcome
-              },
-            ),
-          ],
-        );
-      },
-    );
+    // Implement logout dialog
   }
 
   Future<void> _speakLines(int pageIndex) async {

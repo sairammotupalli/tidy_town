@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'recycle_screen.dart';
-import 'compost_screen.dart';
-import 'landfill_screen.dart';
-import 'waste_sorting_game_selection.dart';
-import 'memory_match_game.dart';
-import '../services/progress_service.dart';
-import '../services/translation_service.dart';
+import 'package:tidy_town/screens/learn/recycle/recycle_screen.dart';
+import 'package:tidy_town/screens/learn/compost/compost_screen.dart';
+import 'package:tidy_town/screens/learn/landfill/landfill_screen.dart';
+import 'package:tidy_town/screens/play/waste_sorting_game_selection.dart';
+import 'package:tidy_town/screens/play/memory_match_game.dart';
+import 'package:tidy_town/services/progress_service.dart';
+import 'package:tidy_town/services/translation_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 import 'package:lottie/lottie.dart';
 
 class CategoryProgress {
@@ -34,7 +35,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   final TranslationService _translationService = TranslationService();
   
@@ -44,11 +45,32 @@ class _HomeScreenState extends State<HomeScreen> {
     _speakWelcome();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    flutterTts.stop();
+  }
+
   Future<void> _speakWelcome() async {
     await flutterTts.setSpeechRate(0.3); // slow
     await flutterTts.setPitch(1.3); // kid-friendly pitch (1.0–2.0 is allowed)
     await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
     await flutterTts.speak(_translationService.translate("Welcome"));
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    flutterTts.stop();
+    super.dispose();
   }
 
   void _showLogoutDialog(BuildContext context) {

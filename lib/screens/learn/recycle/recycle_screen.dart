@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../services/translation_service.dart';
-import '../services/progress_service.dart';
+import 'package:tidy_town/services/translation_service.dart';
+import 'package:tidy_town/services/progress_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 import 'luna_story_screen.dart';
 import 'wally_story_screen.dart';
 
@@ -283,7 +284,8 @@ class RecycleDetailScreen extends StatefulWidget {
   State<RecycleDetailScreen> createState() => _RecycleDetailScreenState();
 }
 
-class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
+class _RecycleDetailScreenState extends State<RecycleDetailScreen>
+    with RouteAware {
   late final TranslationService _translationService;
   final FlutterTts flutterTts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -331,11 +333,11 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
           "Oops! I'm a pizza box, and I'm too greasy to be recycled! I'm like a party guest who spilled food everywhere!",
     },
     {
-      'name': 'Plastic Bags',
-      'image': 'assets/images/recycle/plastic.png',
+      'name': 'Banana Peel',
+      'image': 'assets/images/recycle/banana.jpeg',
       'isRecyclable': false,
       'story':
-          "Hey! I'm a plastic bag, and I'm too thin to be recycled in regular bins! I need special recycling centers to handle me!",
+          "Hi! I'm a banana peel. I don't go in the recycle bin. I belong in compost, where I can break down and help plants grow!",
     },
   ];
 
@@ -348,7 +350,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
     pageController = PageController();
     currentPageNotifier = ValueNotifier<int>(0);
 
-    // Add completion handler for TTS
     flutterTts.setCompletionHandler(() {
       if (!mounted) {
         return;
@@ -357,6 +358,21 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
         isPlaying = false;
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    flutterTts.stop();
+    audioPlayer.stop();
   }
 
   @override
@@ -370,6 +386,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     isPlaying = false;
     flutterTts.stop();
     audioPlayer.stop();
@@ -380,48 +397,68 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Future<void> _setupTts() async {
+    await flutterTts.awaitSpeakCompletion(true);
     await flutterTts.setLanguage(
       _translationService.isSpanish ? "es-ES" : "en-US",
     );
     await flutterTts.setSpeechRate(0.3);
 
-    // Get available voices
-    final voices = await flutterTts.getVoices;
+    String _nameOf(dynamic voice) {
+      if (voice is Map && voice['name'] is String) {
+        return (voice['name'] as String);
+      }
+      return (voice?.name?.toString() ?? '');
+    }
 
-    // Find appropriate voices for characters
-    if (voices != null) {
-      // Look for a deep male voice for Tommy
-      final tommyVoiceData = voices.firstWhere(
-        (voice) =>
-            voice.name.toLowerCase().contains('male') ||
-            voice.name.toLowerCase().contains('man') ||
-            voice.name.toLowerCase().contains('michael') ||
-            voice.name.toLowerCase().contains('daniel') ||
-            voice.name.toLowerCase().contains('david'),
-        orElse: () => voices.first,
+    String _localeOf(dynamic voice) {
+      if (voice is Map && voice['locale'] is String) {
+        return (voice['locale'] as String);
+      }
+      return (voice?.locale?.toString() ?? '');
+    }
+
+    try {
+      final voices = await flutterTts.getVoices;
+      if (voices == null || voices.isEmpty) {
+        return;
+      }
+
+      dynamic _pickVoice(bool Function(String lowerName) matches) {
+        for (final v in voices) {
+          final lower = _nameOf(v).toLowerCase();
+          if (matches(lower)) {
+            return v;
+          }
+        }
+        return voices.first;
+      }
+
+      final tommyVoiceData = _pickVoice(
+        (n) =>
+            n.contains('male') ||
+            n.contains('man') ||
+            n.contains('michael') ||
+            n.contains('daniel') ||
+            n.contains('david'),
       );
       tommyVoice = {
-        'name': tommyVoiceData.name,
-        'locale': tommyVoiceData.locale,
+        'name': _nameOf(tommyVoiceData),
+        'locale': _localeOf(tommyVoiceData),
       };
-      await flutterTts.setPitch(0.8); // Lower pitch for deeper male voice
-      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
 
-      // Look for a higher pitched female voice for the bottle
-      final bottleVoiceData = voices.firstWhere(
-        (voice) =>
-            voice.name.toLowerCase().contains('female') ||
-            voice.name.toLowerCase().contains('woman') ||
-            voice.name.toLowerCase().contains('samantha') ||
-            voice.name.toLowerCase().contains('karen'),
-        orElse: () => voices.first,
+      final bottleVoiceData = _pickVoice(
+        (n) =>
+            n.contains('female') ||
+            n.contains('woman') ||
+            n.contains('samantha') ||
+            n.contains('karen'),
       );
       bottleVoice = {
-        'name': bottleVoiceData.name,
-        'locale': bottleVoiceData.locale,
+        'name': _nameOf(bottleVoiceData),
+        'locale': _localeOf(bottleVoiceData),
       };
-      await flutterTts.setPitch(1.3); // Higher pitch for female voice
-      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
+    } catch (_) {
+      // Best-effort voice setup; ignore failures.
     }
   }
 
@@ -455,15 +492,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
 
       await flutterTts.setVoice(tommyVoice);
       await flutterTts.speak(translatedName);
-
-      // Wait for the speech to complete plus a pause
-      final length = translatedName.length;
-      final basePause = 1000; // Base pause of 1 second
-      final charPause = (length * 50).clamp(
-        500,
-        2000,
-      ); // Additional pause based on text length
-      await Future.delayed(Duration(milliseconds: charPause + basePause));
+      await Future.delayed(const Duration(milliseconds: 250));
     }
 
     if (!mounted) {
@@ -532,8 +561,12 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-              _translationService.toggleLanguage();
-              setState(() {});
+              flutterTts.stop();
+              setState(() {
+                _translationService.toggleLanguage();
+                isPlaying = false;
+              });
+              _setupTts();
             },
           ),
         ],
@@ -543,65 +576,82 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
   }
 
   Widget _buildWhatIsRecyclingContent() {
-    return Stack(
-      children: [
-        // Background Image
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/recycle/newb.gif',
-            fit: BoxFit.cover,
-          ),
-        ),
-        // Content in white paper
-        Positioned(
-          top: 250,
-          left: 80,
-          right: 40,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                _translationService.translate(
-                  "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!",
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const top = 250.0;
+        const left = 80.0;
+        const right = 40.0;
+        const bottomReserved = 140.0; // space for bottom buttons
+        final availableHeight = (constraints.maxHeight - top - bottomReserved)
+            .clamp(140.0, constraints.maxHeight);
+
+        final text = _translationService.translate(
+          "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!",
+        );
+
+        final fontSize = (constraints.maxWidth * 0.045).clamp(22.0, 34.0);
+
+        return Stack(
+          children: [
+            // Background Image
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/recycle/newb.gif',
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Text area (bounded + scrollable so it never spills out)
+            Positioned(
+              top: top,
+              left: left,
+              right: right,
+              child: SizedBox(
+                height: availableHeight,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        height: 1.5,
+                        fontFamily: 'ComicNeue',
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-                style: const TextStyle(
-                  fontSize: 39,
-                  height: 1.5,
-                  fontFamily: 'ComicNeue',
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
-            ],
-          ),
-        ),
-        // Menu buttons at bottom
-        Positioned(
-          bottom: 20,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildGradientButton(
-                icon: Icons.person,
-                onPressed: () => _showLogoutDialog(),
+            ),
+            // Menu buttons at bottom
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildGradientButton(
+                    icon: Icons.person,
+                    onPressed: () => _showLogoutDialog(),
+                  ),
+                  _buildGradientButton(
+                    icon: Icons.home,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  _buildGradientButton(icon: Icons.settings, onPressed: () {}),
+                  _buildGradientButton(
+                    icon: Icons.volume_up,
+                    onPressed: () => _speakLines(0),
+                  ),
+                ],
               ),
-              _buildGradientButton(
-                icon: Icons.home,
-                onPressed: () => Navigator.pop(context),
-              ),
-              _buildGradientButton(icon: Icons.settings, onPressed: () {}),
-              _buildGradientButton(
-                icon: Icons.volume_up,
-                onPressed: () => _speakLines(0),
-              ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -686,10 +736,29 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                                         isPlaying = false;
                                       });
                                     } else {
-                                      await flutterTts.speak(story);
                                       setState(() {
                                         isPlaying = true;
                                       });
+                                      try {
+                                        await flutterTts.setLanguage(
+                                          _translationService.isSpanish
+                                              ? "es-ES"
+                                              : "en-US",
+                                        );
+                                        await flutterTts.setSpeechRate(
+                                          _translationService.isSpanish
+                                              ? 0.34
+                                              : 0.4,
+                                        );
+                                        flutterTts.speak(story);
+                                      } catch (_) {
+                                        if (!mounted) {
+                                          return;
+                                        }
+                                        setState(() {
+                                          isPlaying = false;
+                                        });
+                                      }
                                     }
                                   },
                                   child: Container(
@@ -898,42 +967,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
                       children: [
-                        _buildStoryCard(
-                          title: "Tommy and the Talking Bottle",
-                          icon: Icons.eco,
-                          colors: [Colors.blue.shade300, Colors.blue.shade600],
-                          onTap:
-                              () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => StoryDetailScreen(
-                                        storyTitle:
-                                            "Tommy and the Talking Bottle",
-                                        storyContent: [
-                                          "Whoa! What's that shiny thing in the sand?",
-                                          "Hi Tommy! I'm a lonely bottle. I got thrown away and ended up here!",
-                                          "Oh no! Aren't you supposed to go in the recycling bin?",
-                                          "Yes! If someone had recycled me, I could've become a toy or even a t-shirt!",
-                                          "Kids, did you hear that? Recycling helps me keep the beach clean!",
-                                          "And it gives me a chance to be useful again! Let's all recycle!",
-                                          "Bye! Have a good day kids! 👋",
-                                        ],
-                                        speakers: [
-                                          "tommy",
-                                          "bottle",
-                                          "tommy",
-                                          "bottle",
-                                          "tommy",
-                                          "bottle",
-                                          "both",
-                                        ],
-                                        translationService: _translationService,
-                                      ),
-                                ),
-                              ),
-                        ),
-                        const SizedBox(height: 30),
                         _buildStoryCard(
                           title: "Luna the Leaf's Big Idea",
                           icon: Icons.forest,
@@ -1305,7 +1338,7 @@ class StoryDetailScreen extends StatefulWidget {
   State<StoryDetailScreen> createState() => _StoryDetailScreenState();
 }
 
-class _StoryDetailScreenState extends State<StoryDetailScreen> {
+class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   int currentPage = 0;
@@ -1324,6 +1357,20 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    _stopNarration();
+  }
+
+  @override
   void didUpdateWidget(StoryDetailScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.translationService != widget.translationService) {
@@ -1335,6 +1382,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     isPlaying = false;
     flutterTts.stop();
     audioPlayer.stop();
@@ -1354,43 +1402,62 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     );
     await flutterTts.setSpeechRate(0.3);
 
-    // Get available voices
-    final voices = await flutterTts.getVoices;
+    String _nameOf(dynamic voice) {
+      if (voice is Map && voice['name'] is String) {
+        return (voice['name'] as String);
+      }
+      return (voice?.name?.toString() ?? '');
+    }
 
-    // Find appropriate voices for characters
-    if (voices != null) {
-      // Look for a deep male voice for Tommy
-      final tommyVoiceData = voices.firstWhere(
-        (voice) =>
-            voice.name.toLowerCase().contains('male') ||
-            voice.name.toLowerCase().contains('man') ||
-            voice.name.toLowerCase().contains('michael') ||
-            voice.name.toLowerCase().contains('daniel') ||
-            voice.name.toLowerCase().contains('david'),
-        orElse: () => voices.first,
+    String _localeOf(dynamic voice) {
+      if (voice is Map && voice['locale'] is String) {
+        return (voice['locale'] as String);
+      }
+      return (voice?.locale?.toString() ?? '');
+    }
+
+    try {
+      final voices = await flutterTts.getVoices;
+      if (voices == null || voices.isEmpty) {
+        return;
+      }
+
+      dynamic _pickVoice(bool Function(String lowerName) matches) {
+        for (final v in voices) {
+          final lower = _nameOf(v).toLowerCase();
+          if (matches(lower)) {
+            return v;
+          }
+        }
+        return voices.first;
+      }
+
+      final tommyVoiceData = _pickVoice(
+        (n) =>
+            n.contains('male') ||
+            n.contains('man') ||
+            n.contains('michael') ||
+            n.contains('daniel') ||
+            n.contains('david'),
       );
       tommyVoice = {
-        'name': tommyVoiceData.name,
-        'locale': tommyVoiceData.locale,
+        'name': _nameOf(tommyVoiceData),
+        'locale': _localeOf(tommyVoiceData),
       };
-      await flutterTts.setPitch(0.8); // Lower pitch for deeper male voice
-      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
 
-      // Look for a higher pitched female voice for the bottle
-      final bottleVoiceData = voices.firstWhere(
-        (voice) =>
-            voice.name.toLowerCase().contains('female') ||
-            voice.name.toLowerCase().contains('woman') ||
-            voice.name.toLowerCase().contains('samantha') ||
-            voice.name.toLowerCase().contains('karen'),
-        orElse: () => voices.first,
+      final bottleVoiceData = _pickVoice(
+        (n) =>
+            n.contains('female') ||
+            n.contains('woman') ||
+            n.contains('samantha') ||
+            n.contains('karen'),
       );
       bottleVoice = {
-        'name': bottleVoiceData.name,
-        'locale': bottleVoiceData.locale,
+        'name': _nameOf(bottleVoiceData),
+        'locale': _localeOf(bottleVoiceData),
       };
-      await flutterTts.setPitch(1.3); // Higher pitch for female voice
-      await flutterTts.setSpeechRate(0.3); // Slower speech rate for clarity
+    } catch (_) {
+      // Best-effort voice setup; ignore failures.
     }
   }
 
@@ -1429,9 +1496,9 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       final speaker = widget.speakers[i];
       final translatedLine = _translationService.translate(line);
 
-      // Add a longer pause when switching speakers
+      // Short pause when switching speakers
       if (lastSpeaker != "" && lastSpeaker != speaker) {
-        await Future.delayed(const Duration(milliseconds: 1500));
+        await Future.delayed(const Duration(milliseconds: 450));
       }
 
       // Set appropriate voice based on character
@@ -1465,14 +1532,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
       await flutterTts.speak(translatedLine);
 
-      // Wait for the speech to complete plus a pause
-      final length = translatedLine.length;
-      final basePause = 1000; // Base pause of 1 second
-      final charPause = (length * 50).clamp(
-        500,
-        2000,
-      ); // Additional pause based on text length
-      await Future.delayed(Duration(milliseconds: charPause + basePause));
+      await Future.delayed(const Duration(milliseconds: 250));
 
       lastSpeaker = speaker;
     }

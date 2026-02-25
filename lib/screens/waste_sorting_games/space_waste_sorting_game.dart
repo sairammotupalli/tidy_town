@@ -3,6 +3,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import '../../services/translation_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
 class SpaceWasteSortingGame extends StatefulWidget {
   const SpaceWasteSortingGame({super.key});
@@ -11,7 +12,8 @@ class SpaceWasteSortingGame extends StatefulWidget {
   State<SpaceWasteSortingGame> createState() => _SpaceWasteSortingGameState();
 }
 
-class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with TickerProviderStateMixin {
+class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame>
+    with TickerProviderStateMixin, RouteAware {
   FlutterTts _tts = FlutterTts();
   final TranslationService _translationService = TranslationService();
   int score = 0;
@@ -23,6 +25,7 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
   bool showSad = false;
   String? poppingMessage;
   String? sadMessage;
+  bool _isDraggingItem = false;
   late final AnimationController _celebrationController;
   late final AnimationController _shakeController;
 
@@ -127,6 +130,20 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
     );
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    _tts.stop();
+  }
+
   Future<void> _initializeTts() async {
     _tts = FlutterTts();
     try {
@@ -155,7 +172,22 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
     }
   }
 
+  Future<void> _speakTapText(String text) async {
+    final wasSpanish = _translationService.isSpanish;
+    await _speakText(text);
+    if (!mounted) {
+      return;
+    }
+    if (wasSpanish) {
+      setState(() {
+        _translationService.toggleLanguage();
+        _initializeTts();
+      });
+    }
+  }
+
   void _handleAnswer(String selectedBin) {
+    final wasSpanish = _translationService.isSpanish;
     final currentItem = beachItems[currentItemIndex];
     final correctBin = currentItem['correctBin'];
 
@@ -185,6 +217,9 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
 
     // Move to next item after feedback
     Future.delayed(const Duration(milliseconds: 2000), () {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         showFeedback = false;
         showCelebration = false;
@@ -192,12 +227,19 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
         poppingMessage = null;
         sadMessage = null;
         currentItemIndex++;
+        if (wasSpanish) {
+          _translationService.toggleLanguage();
+        }
 
         if (currentItemIndex >= beachItems.length) {
           isGameComplete = true;
           _showCompletionDialog();
         }
       });
+
+      if (wasSpanish) {
+        _initializeTts();
+      }
     });
   }
 
@@ -251,6 +293,7 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _tts.stop();
     _celebrationController.dispose();
     _shakeController.dispose();
@@ -486,6 +529,21 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
                                   child: Draggable<Map<String, dynamic>>(
                                     data: currentItem,
                                     dragAnchorStrategy: pointerDragAnchorStrategy,
+                                    onDragStarted: () {
+                                      setState(() {
+                                        _isDraggingItem = true;
+                                      });
+                                    },
+                                    onDragEnd: (_) {
+                                      setState(() {
+                                        _isDraggingItem = false;
+                                      });
+                                    },
+                                    onDraggableCanceled: (_, __) {
+                                      setState(() {
+                                        _isDraggingItem = false;
+                                      });
+                                    },
                                     feedback: Material(
                                       elevation: 4,
                                       borderRadius: BorderRadius.circular(16),
@@ -524,40 +582,45 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
                                         ),
                                       ),
                                     ),
-                                    child: Container(
-                                      width: 320,
-                                      height: 320,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: Colors.grey.shade300),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Image.asset(
-                                          currentItem['image'],
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.eco,
-                                                  size: 60,
-                                                  color: Colors.grey.shade400,
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  currentItem['name'],
-                                                  style: TextStyle(
-                                                    color: Colors.grey.shade600,
-                                                    fontWeight: FontWeight.bold,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _speakTapText(currentItem['name']);
+                                      },
+                                      child: Container(
+                                        width: 320,
+                                        height: 320,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade100,
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(color: Colors.grey.shade300),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Image.asset(
+                                            currentItem['image'],
+                                            fit: BoxFit.contain,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.eco,
+                                                    size: 60,
+                                                    color: Colors.grey.shade400,
                                                   ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    currentItem['name'],
+                                                    style: TextStyle(
+                                                      color: Colors.grey.shade600,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -599,26 +662,34 @@ class _SpaceWasteSortingGameState extends State<SpaceWasteSortingGame> with Tick
                             padding: const EdgeInsets.symmetric(horizontal: 6.0),
                             child: DragTarget<Map<String, dynamic>>(
                               builder: (context, candidateItems, rejectedItems) {
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      binImages[binType]!,
-                                      width: 250,
-                                      height: 380,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      _translationService.translate(
-                                        binType == 'recycle' ? 'Recycle' : binType == 'compost' ? 'Compost' : 'Landfill'
+                                final label = _translationService.translate(
+                                  binType == 'recycle'
+                                      ? 'Recycle'
+                                      : binType == 'compost'
+                                          ? 'Compost'
+                                          : 'Landfill',
+                                );
+                                return GestureDetector(
+                                  onTap: _isDraggingItem ? null : () => _speakTapText(label),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        binImages[binType]!,
+                                        width: 250,
+                                        height: 380,
+                                        fit: BoxFit.contain,
                                       ),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        label,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 );
                               },
                               onWillAccept: (item) => true,
