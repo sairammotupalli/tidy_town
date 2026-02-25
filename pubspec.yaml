@@ -43,6 +43,7 @@ flutter:
     - assets/images/recycle/metal.png
     - assets/images/recycle/pizza.jpg
     - assets/images/recycle/banana.jpeg
+    - assets/images/recycle/batteries.png
     # - assets/images/recycle/background.jpeg
     - assets/images/recycle/story1.jpeg
     - assets/images/recycle/story2.png
@@ -147,6 +148,7 @@ flutter:
     - assets/images/landfill/waterlogged_papers.png
     - assets/images/landfill/styrofoam_containers.png
     - assets/images/landfill/broken_flip_flops.png
+    - assets/images/landfill/food_waste.png
 
     # Thumbnail images for game selection
     - assets/images/village_thumbnail.png

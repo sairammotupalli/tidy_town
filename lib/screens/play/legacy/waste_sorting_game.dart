@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../services/translation_service.dart';
+import 'package:tidy_town/services/translation_service.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'package:lottie/lottie.dart';
-import 'waste_sorting_game_selection.dart';
+import 'package:tidy_town/screens/play/waste_sorting_game_selection.dart';
 
 class WasteSortingGame extends StatefulWidget {
   final GameTheme? theme;

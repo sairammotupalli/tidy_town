@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'screens/welcome_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/core/welcome_screen.dart';
+import 'screens/core/home_screen.dart';
 import 'services/redis_cache_service.dart';
 import 'services/api_service.dart';
 import 'services/cicd_service.dart';
+import 'services/route_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
+      navigatorObservers: [routeObserver],
       initialRoute: '/',
       routes: {
         '/': (context) => const WelcomeScreen(), // 🏁 App starts here

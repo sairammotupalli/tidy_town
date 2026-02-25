@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tidy_town/screens/home_screen.dart';
-import '../utils/transitions.dart';
+import 'package:tidy_town/screens/core/home_screen.dart';
+import 'package:tidy_town/utils/transitions.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

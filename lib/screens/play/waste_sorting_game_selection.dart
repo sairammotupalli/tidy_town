@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'waste_sorting_game.dart'; // Original game
-import 'waste_sorting_games/village_waste_sorting_game.dart';
-import 'waste_sorting_games/town_waste_sorting_game.dart';
-import 'waste_sorting_games/space_waste_sorting_game.dart';
-import 'waste_sorting_games/beach_waste_sorting_game.dart';
-import '../services/translation_service.dart';
+import 'package:tidy_town/screens/waste_sorting_games/village_waste_sorting_game.dart';
+import 'package:tidy_town/screens/waste_sorting_games/town_waste_sorting_game.dart';
+import 'package:tidy_town/screens/waste_sorting_games/space_waste_sorting_game.dart';
+import 'package:tidy_town/screens/waste_sorting_games/beach_waste_sorting_game.dart';
+import 'package:tidy_town/services/translation_service.dart';
 
 class GameTheme {
   final String id;
@@ -35,14 +34,6 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
   final TranslationService _translationService = TranslationService();
 
   final List<GameTheme> gameThemes = [
-    GameTheme(
-      id: 'original',
-      name: 'Waste Sorting Game',
-      description: 'Learn to sort waste into the right bins!',
-      thumbnailImage: 'assets/images/1.png', // Original game thumbnail
-      primaryColor: Colors.orange,
-      secondaryColor: Colors.deepOrange,
-    ),
     GameTheme(
       id: 'village',
       name: 'Village Adventure',
@@ -159,9 +150,6 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
       onTap: () {
         Widget gameScreen;
         switch (theme.id) {
-          case 'original':
-            gameScreen = const WasteSortingGame();
-            break;
           case 'village':
             gameScreen = const VillageWasteSortingGame();
             break;
@@ -175,7 +163,7 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
             gameScreen = const BeachWasteSortingGame();
             break;
           default:
-            gameScreen = const WasteSortingGame();
+            gameScreen = const BeachWasteSortingGame();
         }
         
         Navigator.push(

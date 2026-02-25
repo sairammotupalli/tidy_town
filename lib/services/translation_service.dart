@@ -36,6 +36,8 @@ class TranslationService {
     // Captain Recycle's Message
     "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy! 🌍✨": 
     "¡Hola! ¡Soy el Capitán Reciclaje! ¡Reciclar es como darle superpoderes a la basura! Tomamos cosas viejas como botellas y papel y las convertimos en cosas nuevas. ¡Es como magia que ayuda a mantener nuestra Tierra limpia y feliz! 🌍✨",
+    "Hi! I'm Captain Recycle! Recycling is like giving trash super powers! We take old things like bottles and paper and turn them into new things. It's like magic that helps keep our Earth clean and happy!":
+    "¡Hola! ¡Soy el Capitán Reciclaje! ¡Reciclar es como darle superpoderes a la basura! Tomamos cosas viejas como botellas y papel y las convertimos en cosas nuevas. ¡Es como magia que ayuda a mantener nuestra Tierra limpia y feliz!",
 
     // Tommy's Message
     "Meet Tommy the Turtle! He wants to tell you why recycling is important:\n\n🌊 It keeps our oceans clean for sea animals\n🌳 Saves trees and forests\n⚡ Helps save energy\n🌍 Makes Earth happy and healthy!":
@@ -45,6 +47,8 @@ class TranslationService {
     "Tap the items that can be recycled!": "¡Toca los artículos que se pueden reciclar!",
     "Yes! This can be recycled! ⭐": "¡Sí! ¡Esto se puede reciclar! ⭐",
     "Oops! This cannot be recycled. Try again! 💫": "¡Ups! Esto no se puede reciclar. ¡Inténtalo de nuevo! 💫",
+    "Yes! This should go to landfill! ⭐": "¡Sí! ¡Esto debe ir al vertedero! ⭐",
+    "Oops! This does NOT go to landfill! 💫": "¡Ups! ¡Esto NO va al vertedero! 💫",
 
     // Common items
     "Paper and Cardboard": "Papel y Cartón",
@@ -61,6 +65,50 @@ class TranslationService {
     "Used Tissues": "Pañuelos Usados",
     "Styrofoam": "Poliestireno",
     "Plastic Bags": "Bolsas de Plástico",
+    "Zap! I'm a battery. I should NOT go in the landfill! I can leak harmful chemicals. Please take me to a special recycling drop-off! 🔋":
+      "¡Zap! Soy una batería. ¡NO debo ir al vertedero! Puedo filtrar químicos dañinos. ¡Llévame a un punto especial de reciclaje! 🔋",
+
+    // === LEARN: RECYCLE (What can be recycled? stories) ===
+    "Hey! I'm paper, and I'm like a superhero that can transform! I can be recycled up to 7 times before I retire!":
+      "¡Hola! Soy papel, ¡y soy como un superhéroe que puede transformarse! ¡Me pueden reciclar hasta 7 veces antes de retirarme!",
+    "Hi there! I'm glass, and I'm practically immortal! I can be recycled forever without losing my quality!":
+      "¡Hola! Soy vidrio, ¡y casi soy inmortal! ¡Me pueden reciclar para siempre sin perder mi calidad!",
+    "Yo! I'm metal, and I'm like a phoenix! I can be melted down and reborn into something new over and over!":
+      "¡Ey! Soy metal, ¡y soy como un fénix! ¡Me pueden derretir y renacer en algo nuevo una y otra vez!",
+    "Hello! I'm plastic, and I'm on a mission! When recycled, I can become new bottles, toys, or even clothes!":
+      "¡Hola! Soy plástico y estoy en una misión. ¡Cuando me reciclan, puedo convertirme en botellas nuevas, juguetes o hasta ropa!",
+    "Oops! I'm a pizza box, and I'm too greasy to be recycled! I'm like a party guest who spilled food everywhere!":
+      "¡Uy! Soy una caja de pizza y estoy demasiado grasosa para reciclarme. ¡Soy como un invitado que derramó comida por todos lados!",
+    "Hi! I'm a banana peel. I don't go in the recycle bin. I belong in compost, where I can break down and help plants grow!":
+      "¡Hola! Soy una cáscara de plátano. No voy en el contenedor de reciclaje. Voy al compost, ¡donde puedo descomponerme y ayudar a que las plantas crezcan!",
+
+    // === LEARN: COMPOST (What can be composted? stories) ===
+    "Wheee! I'm a banana peel and I love joining my veggie and fruit friends in the compost pot! Together, we turn into super soil that helps new plants grow. Composting is our happy dance for the Earth!":
+      "¡Wiii! Soy una cáscara de plátano y me encanta unirme a mis amigos de frutas y verduras en el compost. Juntos nos convertimos en súper tierra que ayuda a que crezcan nuevas plantas. ¡Compostar es nuestro baile feliz para la Tierra!",
+    "Hey there! I'm coffee grounds, and I'm not just for making you energetic! I'm full of nitrogen that makes worms dance with joy!":
+      "¡Hola! Soy café molido, y no solo sirvo para darte energía. ¡Estoy lleno de nitrógeno que hace bailar felices a los lombrices!",
+    "Crack! I'm an eggshell, and I'm not just a breakfast leftover! I add calcium to the soil, making plants grow as strong as superheroes!":
+      "¡Crac! Soy una cáscara de huevo, y no soy solo un sobrante del desayuno. ¡Agrego calcio a la tierra y ayudo a que las plantas crezcan fuertes como superhéroes!",
+    "Yo! I'm yard trimmings, and I'm not just garden waste! I'm like a cozy blanket for worms and a buffet for helpful bacteria! ":
+      "¡Ey! Soy recortes del jardín, ¡y no soy solo basura! Soy como una mantita para las lombrices y un buffet para las bacterias buenas.",
+    "Oops! I'm a plastic bag, and I'm not compostable! I'm like a party crasher at the compost party - I just don't belong here!":
+      "¡Ups! Soy una bolsa de plástico y no soy compostable. ¡Soy como alguien que se cuela en la fiesta del compost: no pertenezco aquí!",
+    "Hey! I'm meat and dairy, and I'm not compostable! I'm like a stinky guest that nobody wants at the compost party!":
+      "¡Hola! Soy carne y lácteos, y no soy compostable. ¡Soy como un invitado apestoso que nadie quiere en la fiesta del compost!",
+
+    // === LEARN: LANDFILL (What goes to landfill? stories) ===
+    "Hi! I'm a plastic bag, and I'm one of the biggest problems in landfills! I take hundreds of years to break down and can harm wildlife. Please reuse me or use cloth bags instead! 🛍️":
+      "¡Hola! Soy una bolsa de plástico y soy un gran problema en los vertederos. Tardo cientos de años en descomponerme y puedo dañar a los animales. ¡Por favor reutilízame o usa bolsas de tela! 🛍️",
+    "Hey there! I'm Styrofoam, and I'm not biodegradable! I take up lots of space in landfills and can break into tiny pieces that harm animals. Try to avoid using me! 🚫":
+      "¡Hola! Soy unicel (Styrofoam) y no soy biodegradable. Ocupo mucho espacio en los vertederos y puedo romperme en pedacitos que dañan a los animales. ¡Trata de evitar usarme! 🚫",
+    "Yum! I'm food waste, and I don't belong in landfills! I can be composted to make rich soil for plants! 🍎":
+      "¡Mmm! Soy restos de comida y no debo ir al vertedero. ¡Puedo ir al compost para hacer tierra rica para las plantas! 🍎",
+    "Hi! I'm paper, and I can be recycled many times! Please put me in the recycling bin instead of the landfill! 📄":
+      "¡Hola! Soy papel y puedo reciclarme muchas veces. ¡Ponme en el contenedor de reciclaje y no en el vertedero! 📄",
+    "Clink! I'm glass, and I can be recycled forever! Please recycle me instead of sending me to the landfill! 🍶":
+      "¡Clin! Soy vidrio y puedo reciclarme para siempre. ¡Recíclame en lugar de mandarme al vertedero! 🍶",
+    "Zap! I'm a battery, and I'm dangerous in landfills! I can leak harmful chemicals. Please recycle me at special collection points! 🔋":
+      "¡Zap! Soy una batería y soy peligrosa en los vertederos. Puedo filtrar químicos dañinos. ¡Por favor recíclame en puntos especiales de recolección! 🔋",
 
     // === TOWN GAME (ITEM NAMES USED IN town_waste_sorting_game.dart) ===
     "Plastic Water Bottle": "Botella de Agua de Plástico",
@@ -633,6 +681,10 @@ class TranslationService {
     "Compost Quiz": "Cuestionario de Compostaje",
     // "Test your knowledge! 🎯" already defined at line 34
     "Composting 🌱": "Compostaje 🌱",
+    "Hi! I'm Captain Compost! Composting is like making a special recipe for the Earth! We take food scraps and yard waste and turn them into rich soil that helps plants grow. It's like magic that helps our Earth stay healthy and happy!":
+    "¡Hola! ¡Soy el Capitán Composta! ¡Compostar es como preparar una receta especial para la Tierra! Tomamos restos de comida y desechos del jardín y los convertimos en tierra rica que ayuda a las plantas a crecer. ¡Es como magia que mantiene nuestra Tierra sana y feliz!",
+    "Hi! I'm Captain Compost! Composting is like making a special recipe for the Earth! We take food scraps and yard waste and turn them into rich soil that helps plants grow. It's like magic that helps our Earth stay healthy and happy! 🌍✨":
+    "¡Hola! ¡Soy el Capitán Composta! ¡Compostar es como preparar una receta especial para la Tierra! Tomamos restos de comida y desechos del jardín y los convertimos en tierra rica que ayuda a las plantas a crecer. ¡Es como magia que mantiene nuestra Tierra sana y feliz! 🌍✨",
 
     // Landfill Screen Cards
     "Landfill Education 🏭": "Educación sobre Vertederos 🏭",
@@ -643,6 +695,14 @@ class TranslationService {
     "Why Reduce Landfill?": "¿Por Qué Reducir el Vertedero?",
     "Meet Larry the Landfill! 🏭": "¡Conoce a Larry el Vertedero! 🏭",
     "Landfill Quiz": "Cuestionario de Vertedero",
+    "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle!":
+    "¡Hola! ¡Soy Larry el Vertedero! Un vertedero es un lugar donde va nuestra basura cuando no se puede reciclar ni compostar. Pero los vertederos pueden dañar el medio ambiente, así que es importante reducir, reutilizar y reciclar.",
+    "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle! 🌍":
+    "¡Hola! ¡Soy Larry el Vertedero! Un vertedero es un lugar donde va nuestra basura cuando no se puede reciclar ni compostar. Pero los vertederos pueden dañar el medio ambiente, así que es importante reducir, reutilizar y reciclar. 🌍",
+    "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle! 🌍✨":
+    "¡Hola! ¡Soy Larry el Vertedero! Un vertedero es un lugar donde va nuestra basura cuando no se puede reciclar ni compostar. Pero los vertederos pueden dañar el medio ambiente, así que es importante reducir, reutilizar y reciclar. 🌍✨",
+    "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle! 🌍🌱":
+    "¡Hola! ¡Soy Larry el Vertedero! Un vertedero es un lugar donde va nuestra basura cuando no se puede reciclar ni compostar. Pero los vertederos pueden dañar el medio ambiente, así que es importante reducir, reutilizar y reciclar. 🌍🌱",
 
     // Compost Story Titles
     "Mira the Apple Core's Magic": "La Magia de Mira el Corazón de Manzana",

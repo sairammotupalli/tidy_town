@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../services/translation_service.dart';
-import '../services/progress_service.dart';
-import 'compost_story_screen.dart';
-import 'wally_worm_story_screen.dart';
+import 'package:tidy_town/services/translation_service.dart';
+import 'package:tidy_town/services/progress_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
-class CompostScreen extends StatefulWidget {
-  const CompostScreen({super.key});
+class LandfillScreen extends StatefulWidget {
+  const LandfillScreen({super.key});
 
   @override
-  State<CompostScreen> createState() => _CompostScreenState();
+  State<LandfillScreen> createState() => _LandfillScreenState();
 }
 
-class _CompostScreenState extends State<CompostScreen> {
+class _LandfillScreenState extends State<LandfillScreen> {
   final FlutterTts flutterTts = FlutterTts();
   final TranslationService _translationService = TranslationService();
 
@@ -21,7 +20,7 @@ class _CompostScreenState extends State<CompostScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CompostDetailScreen(
+        builder: (context) => LandfillDetailScreen(
           pageIndex: index,
           translationService: _translationService,
         ),
@@ -91,13 +90,13 @@ class _CompostScreenState extends State<CompostScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _translationService.translate('Composting 🌱'),
+          _translationService.translate('Landfill Education 🏭'),
           style: const TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.green.shade100,
+        backgroundColor: Colors.grey.shade100,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -106,7 +105,7 @@ class _CompostScreenState extends State<CompostScreen> {
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Colors.black,
+              color: Colors.grey.shade900,
             ),
             onPressed: () {
               _translationService.toggleLanguage();
@@ -137,31 +136,31 @@ class _CompostScreenState extends State<CompostScreen> {
                         children: [
                           _buildCard(
                             context,
-                            title: "What is Composting?",
-                            subtitle: "Learn about composting in a fun way! 🌟",
-                            icon: Icons.eco_outlined,
-                            color: Colors.green,
+                            title: "What is a Landfill?",
+                            subtitle: "Learn about landfills! 🌟",
+                            icon: Icons.delete_outline,
+                            color: Colors.grey,
                             index: 0,
                           ),
                           _buildCard(
                             context,
-                            title: "What Can Be Composted?",
-                            subtitle: "Discover compostable items! 🔍",
+                            title: "What Goes to Landfill?",
+                            subtitle: "Discover landfill items! 🔍",
                             icon: Icons.category_outlined,
                             color: Colors.brown,
                             index: 1,
                           ),
                           _buildCard(
                             context,
-                            title: "Why Should We Compost?",
-                            subtitle: "Meet Wally the Worm! 🐛",
+                            title: "Why Reduce Landfill?",
+                            subtitle: "Meet Larry the Landfill! 🏭",
                             icon: Icons.eco_outlined,
                             color: Colors.orange,
                             index: 2,
                           ),
                           _buildCard(
                             context,
-                            title: "Compost Quiz",
+                            title: "Landfill Quiz",
                             subtitle: "Test your knowledge! 🎯",
                             icon: Icons.quiz_outlined,
                             color: Colors.purple,
@@ -181,21 +180,22 @@ class _CompostScreenState extends State<CompostScreen> {
   }
 }
 
-class CompostDetailScreen extends StatefulWidget {
+class LandfillDetailScreen extends StatefulWidget {
   final int pageIndex;
   final TranslationService translationService;
 
-  const CompostDetailScreen({
+  const LandfillDetailScreen({
     super.key,
     required this.pageIndex,
     required this.translationService,
   });
 
   @override
-  State<CompostDetailScreen> createState() => _CompostDetailScreenState();
+  State<LandfillDetailScreen> createState() => _LandfillDetailScreenState();
 }
 
-class _CompostDetailScreenState extends State<CompostDetailScreen> {
+class _LandfillDetailScreenState extends State<LandfillDetailScreen>
+    with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
@@ -205,48 +205,48 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
   late final ValueNotifier<int> currentPageNotifier;
   late final TranslationService _translationService;
 
-  final List<Map<String, dynamic>> compostableItems = [
-    {
-      'name': 'Fruit and Vegetable Scraps',
-      'image': 'assets/images/compost/CompostLearning1.png',
-      'isCompostable': true,
-      'story':
-          "Wheee! I'm a banana peel and I love joining my veggie and fruit friends in the compost pot! Together, we turn into super soil that helps new plants grow. Composting is our happy dance for the Earth!",
-    },
-    {
-      'name': 'Coffee Grounds',
-      'image': 'assets/images/compost/CompostLearning2.png',
-      'isCompostable': true,
-      'story':
-          "Hey there! I'm coffee grounds, and I'm not just for making you energetic! I'm full of nitrogen that makes worms dance with joy!",
-    },
-    {
-      'name': 'Eggshells',
-      'image': 'assets/images/compost/CompostLearning3.png',
-      'isCompostable': true,
-      'story':
-          "Crack! I'm an eggshell, and I'm not just a breakfast leftover! I add calcium to the soil, making plants grow as strong as superheroes!",
-    },
-    {
-      'name': 'Yard Trimmings',
-      'image': 'assets/images/compost/CompostLearning4.png',
-      'isCompostable': true,
-      'story':
-          "Yo! I'm yard trimmings, and I'm not just garden waste! I'm like a cozy blanket for worms and a buffet for helpful bacteria! ",
-    },
+  final List<Map<String, dynamic>> landfillItems = [
     {
       'name': 'Plastic Bags',
-      'image': 'assets/images/compost/CompostLearning5.png',
-      'isCompostable': false,
+      'image': 'assets/images/landfill/dangerous_plastic_bags.png',
+      'isLandfill': true,
       'story':
-          "Oops! I'm a plastic bag, and I'm not compostable! I'm like a party crasher at the compost party - I just don't belong here!",
+          "Hi! I'm a plastic bag, and I'm one of the biggest problems in landfills! I take hundreds of years to break down and can harm wildlife. Please reuse me or use cloth bags instead! 🛍️",
     },
     {
-      'name': 'Meat and Dairy',
-      'image': 'assets/images/compost/CompostLearning6.png',
-      'isCompostable': false,
+      'name': 'Styrofoam',
+      'image': 'assets/images/landfill/styrofoam_containers.png',
+      'isLandfill': true,
       'story':
-          "Hey! I'm meat and dairy, and I'm not compostable! I'm like a stinky guest that nobody wants at the compost party!",
+          "Hey there! I'm Styrofoam, and I'm not biodegradable! I take up lots of space in landfills and can break into tiny pieces that harm animals. Try to avoid using me! 🚫",
+    },
+    {
+      'name': 'Batteries',
+      'image': 'assets/images/recycle/batteries.png',
+      'isLandfill': false,
+      'story':
+          "Zap! I'm a battery. I should NOT go in the landfill! I can leak harmful chemicals. Please take me to a special recycling drop-off! 🔋",
+    },
+    {
+      'name': 'Food Waste',
+      'image': 'assets/images/landfill/food_waste.png',
+      'isLandfill': false,
+      'story':
+          "Yum! I'm food waste, and I don't belong in landfills! I can be composted to make rich soil for plants! 🍎",
+    },
+    {
+      'name': 'Paper',
+      'image': 'assets/images/recycle/paper.png',
+      'isLandfill': false,
+      'story':
+          "Hi! I'm paper, and I can be recycled many times! Please put me in the recycling bin instead of the landfill! 📄",
+    },
+    {
+      'name': 'Glass',
+      'image': 'assets/images/recycle/glass.png',
+      'isLandfill': false,
+      'story':
+          "Clink! I'm glass, and I can be recycled forever! Please recycle me instead of sending me to the landfill! 🍶",
     },
   ];
 
@@ -259,12 +259,26 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
     pageController = PageController();
     currentPageNotifier = ValueNotifier<int>(0);
 
-    // Add completion handler for TTS
     flutterTts.setCompletionHandler(() {
       setState(() {
         isSpeaking = false;
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    flutterTts.stop();
+    audioPlayer.stop();
   }
 
   Future<void> _setupTts() async {
@@ -281,7 +295,9 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     flutterTts.stop();
+    audioPlayer.stop();
     audioPlayer.dispose();
     pageController.dispose();
     currentPageNotifier.dispose();
@@ -331,23 +347,23 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
 
     switch (widget.pageIndex) {
       case 0:
-        title = "What is Composting?";
-        content = _buildWhatIsCompostingContent();
+        title = "What is a Landfill?";
+        content = _buildWhatIsLandfillContent();
         break;
       case 1:
-        title = "What Can Be Composted?";
-        content = _buildWhatCanBeCompostedContent();
+        title = "What Goes to Landfill?";
+        content = _buildWhatGoesToLandfillContent();
         break;
       case 2:
-        title = "Why Should We Compost?";
-        content = _buildWhyCompostContent();
+        title = "Why Reduce Landfill?";
+        content = _buildWhyReduceLandfillContent();
         break;
       case 3:
-        title = "Compost Quiz";
-        content = _buildCompostQuizContent();
+        title = "Landfill Quiz";
+        content = _buildLandfillQuizContent();
         break;
       default:
-        title = "Composting";
+        title = "Landfill";
         content = const Center(child: Text("Content not found"));
     }
 
@@ -374,7 +390,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: Color.fromARGB(255, 117, 113, 113),
+            color: Color.fromARGB(255, 73, 72, 72),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -382,11 +398,15 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
           IconButton(
             icon: Icon(
               _translationService.isSpanish ? Icons.language : Icons.translate,
-              color: Color.fromARGB(255, 117, 113, 113),
+              color: Color.fromARGB(255, 73, 72, 72),
             ),
             onPressed: () {
-              _translationService.toggleLanguage();
-              setState(() {});
+              flutterTts.stop();
+              setState(() {
+                _translationService.toggleLanguage();
+                isSpeaking = false;
+              });
+              _setupTts();
             },
           ),
         ],
@@ -395,85 +415,100 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
     );
   }
 
-  Widget _buildWhatIsCompostingContent() {
-    return Stack(
-      children: [
-        // Background Image
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/compost/whatisc.gif',
-            fit: BoxFit.cover,
-          ),
-        ),
-        // Content in white paper
-        Positioned(
-          top: 200,
-          left: 80,
-          right: 40,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                _translationService.translate(
-                  "Hi! I'm Captain Compost! Composting is like making a special recipe for the Earth! We take food scraps and yard waste and turn them into rich soil that helps plants grow. It's like magic that helps our Earth stay healthy and happy!",
+  Widget _buildWhatIsLandfillContent() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const top = 200.0;
+        const left = 80.0;
+        const right = 40.0;
+        const bottomReserved = 140.0; // space for bottom buttons
+        final availableHeight = (constraints.maxHeight - top - bottomReserved)
+            .clamp(140.0, constraints.maxHeight);
+
+        final text = _translationService.translate(
+          "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle!",
+        );
+
+        final fontSize = (constraints.maxWidth * 0.045).clamp(22.0, 34.0);
+
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/landfill/whatisl.gif',
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Text area (bounded + scrollable so it never spills out)
+            Positioned(
+              top: top,
+              left: left,
+              right: right,
+              child: SizedBox(
+                height: availableHeight,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        height: 1.5,
+                        fontFamily: 'ComicNeue',
+                        color: const Color.fromARGB(255, 250, 249, 249),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-                style: const TextStyle(
-                  fontSize: 39,
-                  height: 1.5,
-                  fontFamily: 'ComicNeue',
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
-            ],
-          ),
-        ),
-        // Menu buttons at bottom
-        Positioned(
-          bottom: 20,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildGradientButton(
-                icon: Icons.person,
-                onPressed: () => _showLogoutDialog(),
+            ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildGradientButton(
+                    icon: Icons.person,
+                    onPressed: () => _showLogoutDialog(),
+                  ),
+                  _buildGradientButton(
+                    icon: Icons.home,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  _buildGradientButton(icon: Icons.settings, onPressed: () {}),
+                  _buildGradientButton(
+                    icon: isSpeaking ? Icons.stop : Icons.volume_up,
+                    onPressed: () async {
+                      if (isSpeaking) {
+                        await flutterTts.stop();
+                        setState(() {
+                          isSpeaking = false;
+                        });
+                      } else {
+                        String ttsText = _translationService.translate(
+                          "Hi! I'm Larry the Landfill! A landfill is a place where our trash goes when it can't be recycled or composted. But landfills can be harmful to our environment, so it's important to reduce, reuse, and recycle! 🌍",
+                        );
+                        await flutterTts.speak(ttsText);
+                        setState(() {
+                          isSpeaking = true;
+                        });
+                      }
+                    },
+                  ),
+                ],
               ),
-              _buildGradientButton(
-                icon: Icons.home,
-                onPressed: () => Navigator.pop(context),
-              ),
-              _buildGradientButton(icon: Icons.settings, onPressed: () {}),
-              _buildGradientButton(
-                icon: isSpeaking ? Icons.stop : Icons.volume_up,
-                onPressed: () async {
-                  if (isSpeaking) {
-                    await flutterTts.stop();
-                    setState(() {
-                      isSpeaking = false;
-                    });
-                  } else {
-                    String text = _translationService.translate(
-                      "Hi! I'm Captain Compost! Composting is like making a special recipe for the Earth! We take food scraps and yard waste and turn them into rich soil that helps plants grow. It's like magic that helps our Earth stay healthy and happy! 🌍✨",
-                    );
-                    await flutterTts.speak(text);
-                    setState(() {
-                      isSpeaking = true;
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildWhatCanBeCompostedContent() {
+  Widget _buildWhatGoesToLandfillContent() {
     return StatefulBuilder(
       builder: (context, setState) {
         return Stack(
@@ -489,7 +524,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                 Expanded(
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: compostableItems.length,
+                    itemCount: landfillItems.length,
                     onPageChanged: (index) {
                       currentPageNotifier.value = index;
                       setState(() {});
@@ -506,9 +541,26 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                             ),
                             child: SizedBox(
                               height: 350,
-                              child: Image.asset(
-                                compostableItems[index]['image'],
-                                fit: BoxFit.contain,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  String itemName = _translationService
+                                      .translate(landfillItems[index]['name']);
+                                  if (isSpeaking) {
+                                    await flutterTts.stop();
+                                    setState(() {
+                                      isSpeaking = false;
+                                    });
+                                  } else {
+                                    await flutterTts.speak('I am $itemName');
+                                    setState(() {
+                                      isSpeaking = true;
+                                    });
+                                  }
+                                },
+                                child: Image.asset(
+                                  landfillItems[index]['image'],
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                           ),
@@ -520,7 +572,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                               children: [
                                 Text(
                                   _translationService.translate(
-                                    compostableItems[index]['name'],
+                                    landfillItems[index]['name'],
                                   ),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
@@ -534,7 +586,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                                   onTap: () async {
                                     String story = _translationService
                                         .translate(
-                                          compostableItems[index]['story'],
+                                          landfillItems[index]['story'],
                                         );
                                     if (isSpeaking) {
                                       await flutterTts.stop();
@@ -542,10 +594,29 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                                         isSpeaking = false;
                                       });
                                     } else {
-                                      await flutterTts.speak(story);
                                       setState(() {
                                         isSpeaking = true;
                                       });
+                                      try {
+                                        await flutterTts.setLanguage(
+                                          _translationService.isSpanish
+                                              ? 'es-ES'
+                                              : 'en-US',
+                                        );
+                                        await flutterTts.setSpeechRate(
+                                          _translationService.isSpanish
+                                              ? 0.34
+                                              : 0.4,
+                                        );
+                                        flutterTts.speak(story);
+                                      } catch (_) {
+                                        if (!mounted) {
+                                          return;
+                                        }
+                                        setState(() {
+                                          isSpeaking = false;
+                                        });
+                                      }
                                     }
                                   },
                                   child: Container(
@@ -554,10 +625,10 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                                       vertical: 10,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.green.shade100,
+                                      color: Colors.grey.shade100,
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                        color: Colors.green.shade300,
+                                        color: Colors.grey.shade300,
                                         width: 2,
                                       ),
                                     ),
@@ -568,7 +639,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                                           isSpeaking
                                               ? Icons.stop
                                               : Icons.volume_up,
-                                          color: Colors.green.shade700,
+                                          color: Colors.grey.shade700,
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
@@ -580,7 +651,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontFamily: 'ComicNeue',
-                                            color: Colors.green.shade700,
+                                            color: Colors.grey.shade700,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -597,7 +668,6 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                     },
                   ),
                 ),
-                // Page Indicator
                 ValueListenableBuilder<int>(
                   valueListenable: currentPageNotifier,
                   builder: (context, currentPage, _) {
@@ -605,9 +675,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(compostableItems.length, (
-                          index,
-                        ) {
+                        children: List.generate(landfillItems.length, (index) {
                           return Container(
                             width: 12,
                             height: 12,
@@ -616,8 +684,8 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                               shape: BoxShape.circle,
                               color:
                                   currentPage == index
-                                      ? Colors.green.shade700
-                                      : Colors.green.shade200,
+                                      ? Colors.grey.shade700
+                                      : Colors.grey.shade200,
                             ),
                           );
                         }),
@@ -625,7 +693,6 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                     );
                   },
                 ),
-                // Navigation Buttons
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 80,
@@ -654,7 +721,12 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                               _translationService.translate('Previous'),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green.shade300,
+                              backgroundColor: const Color.fromARGB(
+                                255,
+                                62,
+                                61,
+                                61,
+                              ),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
@@ -667,7 +739,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                           ),
                           ElevatedButton.icon(
                             onPressed:
-                                currentPage < compostableItems.length - 1
+                                currentPage < landfillItems.length - 1
                                     ? () {
                                       pageController.nextPage(
                                         duration: const Duration(
@@ -680,7 +752,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                             icon: const Icon(Icons.arrow_forward),
                             label: Text(_translationService.translate('Next')),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green.shade300,
+                              backgroundColor: Colors.grey.shade300,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
@@ -698,37 +770,63 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                 ),
               ],
             ),
+            // Bottom volume button
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: ValueListenableBuilder<int>(
+                valueListenable: currentPageNotifier,
+                builder: (context, currentPage, _) {
+                  return _buildGradientButton(
+                    icon: isSpeaking ? Icons.stop : Icons.volume_up,
+                    onPressed: () async {
+                      if (isSpeaking) {
+                        await flutterTts.stop();
+                        setState(() {
+                          isSpeaking = false;
+                        });
+                      } else {
+                        String itemName = _translationService.translate(
+                          landfillItems[currentPage]['name'],
+                        );
+                        await flutterTts.speak('I am $itemName');
+                        setState(() {
+                          isSpeaking = true;
+                        });
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         );
       },
     );
   }
 
-  Widget _buildWhyCompostContent() {
+  Widget _buildWhyReduceLandfillContent() {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Background Image
           SizedBox.expand(
             child: Image.asset(
               'assets/images/recycle/learning.png',
               fit: BoxFit.cover,
             ),
           ),
-          // Content
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 30),
-                  // Subtitle
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Text(
                       _translationService.translate(
-                        "Choose a story to learn why composting is important!",
+                        "Choose a story to learn why reducing landfill waste is important!",
                       ),
                       style: const TextStyle(
                         fontSize: 24,
@@ -749,39 +847,15 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  // Story Cards
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
                       children: [
                         _buildStoryCard(
-                          title: "Mira the Apple Core's Magic",
-                          icon: Icons.apple,
-                          colors: [
-                            Colors.red.shade300,
-                            Colors.red.shade600,
-                          ],
-                          onTap: () => _showMiraStory(),
-                        ),
-                        const SizedBox(height: 30),
-                        _buildStoryCard(
-                          title: "Wally the Worm's Adventure",
-                          icon: Icons.eco,
-                          colors: [
-                            Colors.green.shade300,
-                            Colors.green.shade600,
-                          ],
-                          onTap: () => _showWallyStory(),
-                        ),
-                        const SizedBox(height: 30),
-                        _buildStoryCard(
-                          title: "The Magic Garden",
-                          icon: Icons.forest,
-                          colors: [
-                            Colors.brown.shade300,
-                            Colors.brown.shade600,
-                          ],
-                          onTap: () => _showMagicGardenStory(),
+                          title: "Larry's Landfill Adventure",
+                          icon: Icons.delete_outline,
+                          colors: [Colors.grey.shade300, Colors.grey.shade600],
+                          onTap: () => _showLarryStory(),
                         ),
                       ],
                     ),
@@ -795,14 +869,14 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
     );
   }
 
-  Widget _buildCompostQuizContent() {
+  Widget _buildLandfillQuizContent() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(80),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           Text(
             _translationService.translate(
-              "Tap the items that can be composted!",
+              "Tap the items that should go to landfill!",
             ),
             style: const TextStyle(
               fontSize: 18,
@@ -821,7 +895,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemCount: compostableItems.length,
+            itemCount: landfillItems.length,
             itemBuilder: (context, index) {
               return Card(
                 elevation: 4,
@@ -830,52 +904,48 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                 ),
                 child: InkWell(
                   onTap: () async {
-                    final isCorrect = compostableItems[index]['isCompostable'];
+                    final isCorrect = landfillItems[index]['isLandfill'];
 
-                    // Get current progress
                     int currentProgress = await ProgressService.getProgress(
-                      'Compost',
+                      'Landfill',
                     );
 
                     if (isCorrect) {
-                      // Only increment progress if answer is correct and item hasn't been correctly identified before
                       if (currentProgress < index + 1) {
                         await ProgressService.updateProgress(
-                          'Compost',
+                          'Landfill',
                           index + 1,
                         );
                       }
                     }
 
-                    // Show feedback
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
                           _translationService.translate(
                             isCorrect
-                                ? "Yes! This can be composted! ⭐"
-                                : "Oops! This cannot be composted. Try again! 💫",
+                                ? "Yes! This should go to landfill! ⭐"
+                                : "Oops! This does NOT go to landfill! 💫",
                           ),
                           style: const TextStyle(fontSize: 16),
                         ),
                         backgroundColor:
-                            isCorrect ? Colors.green : Colors.orange,
+                            isCorrect ? Colors.grey : Colors.orange,
                         duration: const Duration(seconds: 2),
                       ),
                     );
 
-                    // If all compostable items have been correctly identified
                     if (isCorrect && currentProgress < index + 1) {
-                      int totalCompostableItems =
-                          compostableItems
-                              .where((item) => item['isCompostable'])
+                      int totalLandfillItems =
+                          landfillItems
+                              .where((item) => item['isLandfill'])
                               .length;
                       int newProgress = await ProgressService.getProgress(
-                        'Compost',
+                        'Landfill',
                       );
 
-                      if (newProgress >= totalCompostableItems) {
+                      if (newProgress >= totalLandfillItems) {
                         if (!mounted) return;
                         showDialog(
                           context: context,
@@ -884,7 +954,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                                 title: const Text('🎉 Congratulations! 🎉'),
                                 content: Text(
                                   _translationService.translate(
-                                    'You\'ve successfully identified all compostable items!',
+                                    'You\'ve successfully identified all landfill items!',
                                   ),
                                 ),
                                 actions: [
@@ -907,7 +977,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Image.asset(
-                            compostableItems[index]['image'],
+                            landfillItems[index]['image'],
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -916,7 +986,7 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           _translationService.translate(
-                            compostableItems[index]['name'],
+                            landfillItems[index]['name'],
                           ),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -980,34 +1050,36 @@ class _CompostDetailScreenState extends State<CompostDetailScreen> {
     );
   }
 
-  void _showMiraStory() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CompostStoryScreen(
-          translationService: _translationService,
-        ),
-      ),
-    );
-  }
-
-  void _showWallyStory() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WallyWormStoryScreen(
-          translationService: _translationService,
-        ),
-      ),
-    );
-  }
-
-  void _showMagicGardenStory() {
-    // Implement Magic Garden story dialog
+  void _showLarryStory() {
+    // Implement Larry's story dialog
   }
 
   void _showLogoutDialog() {
-    // Implement logout dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_translationService.translate('😢 Logout?')),
+          content: Text(
+            _translationService.translate(
+              'Hey Western! Are you sure you want to logout?',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(_translationService.translate('Cancel')),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text(_translationService.translate('Logout')),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/'); // Back to welcome
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _speakLines(int pageIndex) async {

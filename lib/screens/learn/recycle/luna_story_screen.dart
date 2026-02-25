@@ -1,55 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../services/translation_service.dart';
+import 'package:tidy_town/services/translation_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
-class CompostStoryScreen extends StatefulWidget {
+class LunaStoryScreen extends StatefulWidget {
   final TranslationService translationService;
 
-  const CompostStoryScreen({
+  const LunaStoryScreen({
     super.key,
     required this.translationService,
   });
 
   @override
-  State<CompostStoryScreen> createState() => _CompostStoryScreenState();
+  State<LunaStoryScreen> createState() => _LunaStoryScreenState();
 }
 
-class _CompostStoryScreenState extends State<CompostStoryScreen> {
+class _LunaStoryScreenState extends State<LunaStoryScreen> with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   final AudioPlayer audioPlayer = AudioPlayer();
   int currentPage = 0;
   int conversationsPerPage = 1;  // One dialogue per page
-  Map<String, String> miraVoice = {'name': 'default', 'locale': 'en-US'};
-  Map<String, String> bananaVoice = {'name': 'default', 'locale': 'en-US'};
-  Map<String, String> wigglesVoice = {'name': 'default', 'locale': 'en-US'};
-  Map<String, String> narratorVoice = {'name': 'default', 'locale': 'en-US'};
+  Map<String, String> lunaVoice = {'name': 'default', 'locale': 'en-US'};
+  Map<String, String> bobbyVoice = {'name': 'default', 'locale': 'en-US'};
   bool isPlaying = false;
   late final TranslationService _translationService;
 
-  List<String> get storyContent => [
-    _translationService.translate("Once upon a time, in a cozy kitchen, lived a little apple core named Mira. She had just been munched by a kid and was about to be thrown in the trash."),
-    _translationService.translate("But wait! \"I can still help the Earth!"),
-    _translationService.translate("If we go into the trash, we'll be stuck in a stinky bin forever!"),
-    _translationService.translate("Hello there! Don't be sad… Come with me and I'll turn you into magic soil!"),
-    _translationService.translate("Magic soil? Really?"),
-    _translationService.translate("Yes! You'll help flowers grow and make the Earth happy again!"),
-    _translationService.translate("Mira and her friends turned into rich, dark compost—superfood for plants!")
+  final List<String> storyContent = [
+    "Hi friends! I'm Luna. I live in a big, happy forest.",
+    "But my forest friends are in danger because too many trees are being cut down.",
+    "Hey Luna! If kids recycle paper, we don't need to cut so many trees!",
+    "That's right! Recycling paper saves homes for birds, bugs, and bears too!",
+    "Plus, it saves energy and keeps our Earth cool and clean.",
+    "Let's be Earth heroes and recycle every day!"
   ];
-
- 
 
   final List<String> speakers = [
-    "narrator",
-    "mira",
-    "banana",
-    "wiggles",
-    "mira",
-    "wiggles",
-    "narrator"
+    "luna",
+    "luna",
+    "bobby",
+    "luna",
+    "bobby",
+    "luna"
   ];
-
-  final List<String> moralSpeakers = ["narrator"];
 
   @override
   void initState() {
@@ -60,7 +53,21 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
   }
 
   @override
-  void didUpdateWidget(CompostStoryScreen oldWidget) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    _stopNarration();
+  }
+
+  @override
+  void didUpdateWidget(LunaStoryScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.translationService != widget.translationService) {
       _translationService = widget.translationService;
@@ -71,6 +78,7 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     isPlaying = false;
     flutterTts.stop();
     audioPlayer.stop();
@@ -85,14 +93,15 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
   }
 
   Future<void> _setupTts() async {
+    await flutterTts.awaitSpeakCompletion(true);
     await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
-    await flutterTts.setSpeechRate(0.3);
+    await flutterTts.setSpeechRate(0.42);
     
     final voices = await flutterTts.getVoices;
     
     if (voices != null) {
-      // Look for a gentle female voice for Mira
-      final miraVoiceData = voices.firstWhere(
+      // Look for a gentle female voice for Luna
+      final lunaVoiceData = voices.firstWhere(
         (voice) => voice.name.toLowerCase().contains('female') || 
                    voice.name.toLowerCase().contains('woman') ||
                    voice.name.toLowerCase().contains('samantha') ||
@@ -101,29 +110,21 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
                    voice.name.toLowerCase().contains('girl'),
         orElse: () => voices.first,
       );
-      miraVoice = {'name': miraVoiceData.name, 'locale': miraVoiceData.locale};
+      lunaVoice = {'name': lunaVoiceData.name, 'locale': lunaVoiceData.locale};
+      await flutterTts.setPitch(1.2); // Higher pitch for kid-like voice
+      await flutterTts.setSpeechRate(0.4); // Slightly faster for more energetic kid voice
 
-      // Look for a friendly voice for banana peel
-      final bananaVoiceData = voices.firstWhere(
+      // Look for a friendly male voice for Bobby
+      final bobbyVoiceData = voices.firstWhere(
         (voice) => voice.name.toLowerCase().contains('male') || 
                    voice.name.toLowerCase().contains('man') ||
                    voice.name.toLowerCase().contains('michael') ||
                    voice.name.toLowerCase().contains('daniel'),
         orElse: () => voices.first,
       );
-      bananaVoice = {'name': bananaVoiceData.name, 'locale': bananaVoiceData.locale};
-
-      // Look for a magical voice for Wiggles
-      final wigglesVoiceData = voices.firstWhere(
-        (voice) => voice.name.toLowerCase().contains('male') || 
-                   voice.name.toLowerCase().contains('man') ||
-                   voice.name.toLowerCase().contains('david'),
-        orElse: () => voices.first,
-      );
-      wigglesVoice = {'name': wigglesVoiceData.name, 'locale': wigglesVoiceData.locale};
-
-      // Default narrator voice
-      narratorVoice = {'name': 'default', 'locale': _translationService.isSpanish ? 'es-ES' : 'en-US'};
+      bobbyVoice = {'name': bobbyVoiceData.name, 'locale': bobbyVoiceData.locale};
+      await flutterTts.setPitch(0.1); // Slightly lower pitch for Bobby
+      await flutterTts.setSpeechRate(0.38);
     }
   }
 
@@ -150,47 +151,31 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
       isPlaying = true;
     });
 
-    // final isMoralPage = currentPage >= storyContent.length;
-    final linesToSpeak =  storyContent;
-    final speakersForLines =  speakers;
-    final currentStartIndex = startIndex;
-
     String lastSpeaker = "";
-    for (int i = currentStartIndex; i < (currentStartIndex + conversationsPerPage) && i < linesToSpeak.length; i++) {
+    for (int i = startIndex; i < startIndex + conversationsPerPage && i < storyContent.length; i++) {
       if (!isPlaying) break;
       
-      final line = linesToSpeak[i];
-      final speaker = speakersForLines[i];
+      final line = storyContent[i];
+      final speaker = speakers[i];
       final translatedLine = _translationService.translate(line);
       
       if (lastSpeaker != "" && lastSpeaker != speaker) {
-        await Future.delayed(const Duration(milliseconds: 1500));
+        await Future.delayed(const Duration(milliseconds: 800));
       }
       
-      if (speaker == "mira") {
-        await flutterTts.setVoice(miraVoice);
-        await flutterTts.setPitch(1.2); // Higher pitch for young female voice
-        await flutterTts.setSpeechRate(0.4);
-      } else if (speaker == "banana") {
-        await flutterTts.setVoice(bananaVoice);
-        await flutterTts.setPitch(0.8); // Medium pitch for banana peel
-        await flutterTts.setSpeechRate(0.3);
-      } else if (speaker == "wiggles") {
-        await flutterTts.setVoice(wigglesVoice);
-        await flutterTts.setPitch(0.6); // Lower pitch for magical wizard
-        await flutterTts.setSpeechRate(0.3);
-      } else if (speaker == "narrator") {
-        await flutterTts.setVoice(narratorVoice);
-        await flutterTts.setPitch(0.8);
-        await flutterTts.setSpeechRate(0.2);
+      if (speaker == "luna") {
+        await flutterTts.setVoice(lunaVoice);
+        await flutterTts.setPitch(2.8); // Slightly lower pitch for Bobby
+        await flutterTts.setSpeechRate(0.45);
+      } else if (speaker == "bobby") {
+        await flutterTts.setVoice(bobbyVoice);
+        await flutterTts.setPitch(0.1); // Slightly lower pitch for Bobby
+        await flutterTts.setSpeechRate(0.38);
       }
       
       await flutterTts.speak(translatedLine);
-      
-      final length = translatedLine.length;
-      final basePause = 1000;
-      final charPause = (length * 50).clamp(500, 2000);
-      await Future.delayed(Duration(milliseconds: charPause + basePause));
+
+      await Future.delayed(const Duration(milliseconds: 250));
       
       lastSpeaker = speaker;
     }
@@ -209,20 +194,18 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
     return storyContent.sublist(startIndex, endIndex);
   }
 
-  bool get hasNextPage => currentPage < storyContent.length - 1;
+  bool get hasNextPage => (currentPage + 1) * conversationsPerPage < storyContent.length;
   bool get hasPreviousPage => currentPage > 0;
 
   @override
   Widget build(BuildContext context) {
-    // final isMoralPage = currentPage >= storyContent.length;
-    final currentLines =  getCurrentPageLines();
+    final currentLines = getCurrentPageLines();
     final isFirstPage = currentPage == 0;
     final isSecondPage = currentPage == 1;
     final isThirdPage = currentPage == 2;
     final isFourthPage = currentPage == 3;
     final isFifthPage = currentPage == 4;
-    final isSixthPage = currentPage == 5;
-    final isSeventhPage = currentPage == 6;
+    final isLastPage = currentPage == 5;
     
     return WillPopScope(
       onWillPop: () async {
@@ -232,14 +215,13 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-           
-              _translationService.translate("Mira the Apple Core's Magic"),
+            _translationService.translate("Luna the Leaf's Big Idea"),
             style: const TextStyle(
               fontFamily: 'ComicNeue',
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: Colors.brown.shade100,
+          backgroundColor: Colors.green.shade100,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
@@ -254,7 +236,7 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
             IconButton(
               icon: Icon(
                 _translationService.isSpanish ? Icons.language : Icons.translate,
-                color: Colors.brown.shade900,
+                color: Colors.green.shade900,
               ),
               onPressed: () {
                 _translationService.toggleLanguage();
@@ -271,49 +253,42 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
               if (isFirstPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/compost/mira1.png',
+                    'assets/images/recycle/luna1.png',
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isSecondPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/compost/mira2.png',
+                    'assets/images/recycle/luna2.png',
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isThirdPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/compost/mira3.png',
+                    'assets/images/recycle/luna3.png',
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isFourthPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/compost/mira4.png',
+                    'assets/images/recycle/luna4.png',
                     fit: BoxFit.cover,
                   ),
                 )
               else if (isFifthPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/compost/mira5.png',
+                    'assets/images/recycle/luna5.png',
                     fit: BoxFit.cover,
                   ),
                 )
-              else if (isSixthPage)
+              else if (isLastPage)
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/compost/mira6.png',
-                    fit: BoxFit.cover,
-                  ),
-                )
-              else if (isSeventhPage)
-                Positioned.fill(
-                  child: Image.asset(
-                    'assets/images/compost/mira7.png',
+                    'assets/images/recycle/lunalast.gif',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -326,70 +301,43 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
                       child: ListView.builder(
                         itemCount: currentLines.length,
                         itemBuilder: (context, index) {
-                          final speaker = 
-                            speakers[currentPage * conversationsPerPage + index];
+                          final startIndex = currentPage * conversationsPerPage;
                           final line = currentLines[index];
-                          final isMira = speaker == "mira";
-                          final isBanana = speaker == "banana";
-                          final isWiggles = speaker == "wiggles";
-                          final isNarrator = speaker == "narrator";
+                          final speaker = speakers[startIndex + index];
+                          final isLuna = speaker == "luna";
                           
                           return Align(
-                            alignment: isNarrator ? Alignment.center : (isMira ? Alignment.centerLeft : Alignment.centerRight),
+                            alignment: isLuna ? Alignment.centerLeft : Alignment.centerRight,
                             child: Container(
                               constraints: BoxConstraints(
-                                maxWidth: isNarrator ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.75,
+                                maxWidth: MediaQuery.of(context).size.width * 0.75,
                               ),
                               margin: EdgeInsets.only(
                                 bottom: 30,
-                                left: isMira ? 0 : 40,
-                                right: isMira ? 40 : 0,
+                                left: isLuna ? 0 : 40,
+                                right: isLuna ? 40 : 0,
                                 top: index == 0 ? 20 : 0,
                               ),
-                              child: isNarrator ? 
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.brown.shade100.withOpacity(0.9),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
+                              child: CustomPaint(
+                                painter: CloudBubblePainter(
+                                  color: isLuna 
+                                    ? Colors.green.shade50.withOpacity(0.95)
+                                    : Colors.blue.shade50.withOpacity(0.95),
+                                  isLeftAligned: isLuna,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
                                   child: Text(
                                     _translationService.translate(line),
-                                    style: TextStyle(
-                                      fontSize:  24,
+                                    style: const TextStyle(
+                                      fontSize: 18,
                                       fontFamily: 'ComicNeue',
                                       fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
                                       height: 1.5,
-                                      color:  Colors.black,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ) :
-                                CustomPaint(
-                                  painter: CloudBubblePainter(
-                                    color: isMira 
-                                      ? Colors.red.shade50.withOpacity(0.95)
-                                      : isBanana
-                                        ? Colors.yellow.shade50.withOpacity(0.95)
-                                        : isWiggles
-                                          ? Colors.purple.shade50.withOpacity(0.95)
-                                          : Colors.brown.shade50.withOpacity(0.95),
-                                    isLeftAligned: isMira,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                                    child: Text(
-                                      _translationService.translate(line),
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontFamily: 'ComicNeue',
-                                        fontWeight: FontWeight.bold,
-                                        height: 1.5,
-                                      ),
                                     ),
                                   ),
                                 ),
+                              ),
                             ),
                           );
                         },
@@ -413,7 +361,7 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
                               icon: const Icon(Icons.arrow_back),
                               label: Text(_translationService.translate('Previous')),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.brown.shade300,
+                                backgroundColor: Colors.green.shade300,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 shape: RoundedRectangleBorder(
@@ -422,14 +370,14 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
                               ),
                             ),
                           ElevatedButton.icon(
-                            onPressed: () => _speakLines( currentPage * conversationsPerPage),
+                            onPressed: () => _speakLines(currentPage * conversationsPerPage),
                             icon: Icon(
                               isPlaying ? Icons.stop : Icons.volume_up,
                               color: Colors.white,
                             ),
                             label: Text(_translationService.translate(isPlaying ? 'Stop' : 'Listen')),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isPlaying ? Colors.red.shade300 : Colors.brown.shade300,
+                              backgroundColor: isPlaying ? Colors.red.shade300 : Colors.green.shade300,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               shape: RoundedRectangleBorder(
@@ -437,7 +385,7 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
                               ),
                             ),
                           ),
-                          if (hasNextPage )
+                          if (hasNextPage)
                             ElevatedButton.icon(
                               onPressed: () async {
                                 await flutterTts.stop();
@@ -449,7 +397,7 @@ class _CompostStoryScreenState extends State<CompostStoryScreen> {
                               icon: const Icon(Icons.arrow_forward),
                               label: Text(_translationService.translate('Next')),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.brown.shade300,
+                                backgroundColor: Colors.green.shade300,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 shape: RoundedRectangleBorder(
@@ -529,4 +477,4 @@ class CloudBubblePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
-}
+} 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../services/translation_service.dart';
+import 'package:tidy_town/services/translation_service.dart';
+import 'package:tidy_town/services/route_observer.dart';
 
 class StoryDetailScreen extends StatefulWidget {
   final String title;
@@ -16,7 +17,7 @@ class StoryDetailScreen extends StatefulWidget {
   State<StoryDetailScreen> createState() => _StoryDetailScreenState();
 }
 
-class _StoryDetailScreenState extends State<StoryDetailScreen> {
+class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   final TranslationService _translationService = TranslationService();
 
@@ -30,7 +31,22 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPushNext() {
+    _stopTts();
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     flutterTts.stop();
     super.dispose();
   }
