@@ -477,10 +477,6 @@ class _CompostDetailScreenState extends State<CompostDetailScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildGradientButton(
-                    icon: Icons.person,
-                    onPressed: () => _showLogoutDialog(),
-                  ),
-                  _buildGradientButton(
                     icon: Icons.home,
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -1049,10 +1045,6 @@ class _CompostDetailScreenState extends State<CompostDetailScreen>
         ),
       ),
     );
-  }
-
-  void _showLogoutDialog() {
-    // Implement logout dialog
   }
 
   Future<void> _speakLines(int pageIndex) async {

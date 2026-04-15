@@ -188,10 +188,6 @@ class _RecycleScreenState extends State<RecycleScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildGradientButton(
-                icon: Icons.person,
-                onPressed: () => _showLogoutDialog(),
-              ),
-              _buildGradientButton(
                 icon: Icons.home,
                 onPressed: () => Navigator.pop(context),
               ),
@@ -202,34 +198,6 @@ class _RecycleScreenState extends State<RecycleScreen> {
           const SizedBox(height: 20),
         ],
       ),
-    );
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(
-            _translationService.translate(
-              'Hey Western! Are you sure you want to logout?',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(_translationService.translate('Cancel')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(_translationService.translate('Logout')),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/'); // Back to welcome
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -633,10 +601,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildGradientButton(
-                    icon: Icons.person,
-                    onPressed: () => _showLogoutDialog(),
-                  ),
                   _buildGradientButton(
                     icon: Icons.home,
                     onPressed: () => Navigator.pop(context),
@@ -1255,34 +1219,6 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
     );
   }
 
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(
-            _translationService.translate(
-              'Hey Western! Are you sure you want to logout?',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(_translationService.translate('Cancel')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(_translationService.translate('Logout')),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildGradientButton({
     required IconData icon,
     required VoidCallback onPressed,
@@ -1829,34 +1765,6 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
           ),
         ),
       ),
-    );
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(
-            _translationService.translate(
-              'Hey Western! Are you sure you want to logout?',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(_translationService.translate('Cancel')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(_translationService.translate('Logout')),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 

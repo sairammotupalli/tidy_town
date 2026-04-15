@@ -472,10 +472,6 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildGradientButton(
-                    icon: Icons.person,
-                    onPressed: () => _showLogoutDialog(),
-                  ),
-                  _buildGradientButton(
                     icon: Icons.home,
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -1052,34 +1048,6 @@ class _LandfillDetailScreenState extends State<LandfillDetailScreen>
 
   void _showLarryStory() {
     // Implement Larry's story dialog
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_translationService.translate('😢 Logout?')),
-          content: Text(
-            _translationService.translate(
-              'Hey Western! Are you sure you want to logout?',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(_translationService.translate('Cancel')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(_translationService.translate('Logout')),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/'); // Back to welcome
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<void> _speakLines(int pageIndex) async {

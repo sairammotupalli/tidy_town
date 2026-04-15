@@ -73,66 +73,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     super.dispose();
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      pageBuilder: (_, __, ___) => const SizedBox(),
-      transitionDuration: const Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeInOutBack,
-          ),
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: Text(_translationService.translate('😢 Logout?')),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/images/avatar.png'),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  _translationService.translate('Hey Western! Are you sure you want to logout?'),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
-                },
-                child: Text(_translationService.translate('Cancel')),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/',
-                  ); // Back to welcome
-                },
-                child: Text(_translationService.translate('Logout')),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   Widget _buildProgressIndicator(CategoryProgress category) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -400,10 +340,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                 _translationService.toggleLanguage();
               });
             },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => _showLogoutDialog(context),
           ),
         ],
       ),
