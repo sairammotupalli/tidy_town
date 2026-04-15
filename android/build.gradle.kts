@@ -1,3 +1,4 @@
+// If you see "Unsupported class file major version 68": use JDK 17 for Gradle (see android/gradle.properties org.gradle.java.home), run ./gradlew --stop, then sync/build again.
 allprojects {
     repositories {
         google()
