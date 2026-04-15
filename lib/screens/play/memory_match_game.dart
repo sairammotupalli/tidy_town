@@ -13,6 +13,8 @@ class MemoryMatchGame extends StatefulWidget {
 class _MemoryMatchGameState extends State<MemoryMatchGame>
     with TickerProviderStateMixin, RouteAware {
   late FlutterTts _tts;
+  bool _isSpanish = false;
+  bool _playerStarted = false;
   int score = 0;
   int moves = 0;
   bool isGameComplete = false;
@@ -124,10 +126,19 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
       await _tts.setSpeechRate(0.5);
       await _tts.setVolume(1.0);
       await _tts.setPitch(1.0);
-      // TTS initialized successfully
     } catch (e) {
-      // Error initializing TTS
+      // ignore
     }
+  }
+
+  Future<void> _toggleLanguage() async {
+    await _stopAudio();
+    setState(() {
+      _isSpanish = !_isSpanish;
+    });
+    try {
+      await _tts.setLanguage(_isSpanish ? 'es-ES' : 'en-US');
+    } catch (_) {}
   }
 
   Future<void> _stopAudio() async {
@@ -156,12 +167,15 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
     showCelebration = false;
     isProcessing = false;
     celebrationMessage = null;
+    _playerStarted = false;
   }
 
   void _resetGame() {
+    _stopAudio();
     setState(() {
       _initializeGame();
     });
+    _playWelcomeInstructions();
   }
 
   @override
@@ -176,6 +190,11 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
   void _onCardTap(int index) {
     if (isProcessing || flippedCards.contains(index) || matchedCards.contains(index)) {
       return;
+    }
+
+    if (!_playerStarted) {
+      _playerStarted = true;
+      _stopAudio();
     }
 
     setState(() {
@@ -194,14 +213,17 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
     final secondCard = shuffledCards[flippedCards[1]];
 
     if (firstCard['id'] == secondCard['id']) {
-      // Match found!
+      final itemName = firstCard['id'].replaceAll('_', ' ').toUpperCase() as String;
+      final binName = firstCard['bin'] as String;
       setState(() {
         matchedCards.addAll(flippedCards);
         score++;
         showCelebration = true;
-        celebrationMessage = 'Great match! ${firstCard['id'].replaceAll('_', ' ').toUpperCase()} goes to ${firstCard['bin']}!';
+        celebrationMessage = _isSpanish
+            ? '¡Excelente combinación! $itemName va a ${_translateBin(binName)}!'
+            : 'Great match! $itemName goes to $binName!';
       });
-      
+
       _speakText(celebrationMessage!);
       _celebrationController.forward().then((_) {
         _celebrationController.reset();
@@ -216,8 +238,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
         _checkGameCompletion();
       });
     } else {
-      // No match - tell player it's wrong (no celebration animation)
-      _speakText('Wrong! Try again!');
+      _speakText(_isSpanish ? '¡Incorrecto! ¡Inténtalo de nuevo!' : 'Wrong! Try again!');
 
       Future.delayed(const Duration(milliseconds: 1000), () {
         setState(() {
@@ -257,9 +278,9 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 20),
-              const Text(
-                '🎉 Congratulations! 🎉',
-                style: TextStyle(
+              Text(
+                _isSpanish ? '🎉 ¡Felicidades! 🎉' : '🎉 Congratulations! 🎉',
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF4A3728),
@@ -268,7 +289,9 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
               ),
               const SizedBox(height: 10),
               Text(
-                'You completed the Memory Match Game!\nScore: $score pairs\nMoves: $moves',
+                _isSpanish
+                    ? '¡Completaste el Juego de Memoria!\nPuntos: $score pares\nMovidas: $moves'
+                    : 'You completed the Memory Match Game!\nScore: $score pairs\nMoves: $moves',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF4A3728),
@@ -290,7 +313,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: const Text('Play Again'),
+                    child: Text(_isSpanish ? 'Jugar de nuevo' : 'Play Again'),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -303,7 +326,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: const Text('Home'),
+                    child: Text(_isSpanish ? 'Inicio' : 'Home'),
                   ),
                 ],
               ),
@@ -316,12 +339,22 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
 
   Future<void> _playWelcomeInstructions() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    await _speakText("Welcome to the Memory Match Game!");
+    if (_playerStarted) return;
+    await _speakText(_isSpanish
+        ? '¡Bienvenido al Juego de Memoria!'
+        : 'Welcome to the Memory Match Game!');
+    if (_playerStarted) return;
     await Future.delayed(const Duration(milliseconds: 1000));
-    await _speakText("Match the waste items with their correct disposal bins!");
+    if (_playerStarted) return;
+    await _speakText(_isSpanish
+        ? '¡Combina los residuos con sus contenedores correctos!'
+        : 'Match the waste items with their correct disposal bins!');
+    if (_playerStarted) return;
     await Future.delayed(const Duration(milliseconds: 1000));
-    await _speakText("Tap two cards to flip them and find matching pairs!");
-    
+    if (_playerStarted) return;
+    await _speakText(_isSpanish
+        ? '¡Toca dos cartas para voltearlas y encontrar pares!'
+        : 'Tap two cards to flip them and find matching pairs!');
   }
 
   Future<void> _speakText(String text) async {
@@ -330,6 +363,12 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
     } catch (e) {
       // Error speaking text
     }
+  }
+
+  String _translateBin(String bin) {
+    if (!_isSpanish) return bin.toUpperCase();
+    const map = {'recycle': 'RECICLAR', 'compost': 'COMPOSTA', 'landfill': 'BASURA'};
+    return map[bin] ?? bin.toUpperCase();
   }
 
   Widget _buildCard(int index) {
@@ -409,7 +448,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                             ),
                           ),
                           child: Text(
-                            card['bin'].toUpperCase(),
+                            _translateBin(card['bin'] as String),
                             style: const TextStyle(
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
@@ -441,9 +480,9 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Memory Match Game',
-            style: TextStyle(
+          title: Text(
+            _isSpanish ? 'Juego de Memoria' : 'Memory Match Game',
+            style: const TextStyle(
               fontFamily: 'ComicNeue',
               fontWeight: FontWeight.bold,
             ),
@@ -460,6 +499,11 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
             },
           ),
           actions: [
+            IconButton(
+              tooltip: _isSpanish ? 'Switch to English' : 'Cambiar a Español',
+              icon: const Icon(Icons.translate),
+              onPressed: _toggleLanguage,
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: _resetGame,
@@ -502,9 +546,9 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                     children: [
                       Column(
                         children: [
-                          const Text(
-                            'Score',
-                            style: TextStyle(
+                          Text(
+                            _isSpanish ? 'Puntos' : 'Score',
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF4A3728),
@@ -522,9 +566,9 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                       ),
                       Column(
                         children: [
-                          const Text(
-                            'Moves',
-                            style: TextStyle(
+                          Text(
+                            _isSpanish ? 'Movidas' : 'Moves',
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF4A3728),
@@ -553,9 +597,11 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: Colors.purple.shade200),
                   ),
-                  child: const Text(
-                    'Match the waste items with their correct disposal bins!\nTap two cards to flip them and find matching pairs.',
-                    style: TextStyle(
+                  child: Text(
+                    _isSpanish
+                        ? '¡Combina los residuos con sus contenedores!\nToca dos cartas para voltearlas y encontrar pares.'
+                        : 'Match the waste items with their correct disposal bins!\nTap two cards to flip them and find matching pairs.',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF4A3728),
