@@ -15,6 +15,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
   late FlutterTts _tts;
   bool _isSpanish = false;
   bool _playerStarted = false;
+  int _audioSessionId = 0;
   int score = 0;
   int moves = 0;
   bool isGameComplete = false;
@@ -116,7 +117,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
 
   @override
   void didPushNext() {
-    _stopAudio();
+    _cancelAudioSession();
   }
 
   Future<void> _initializeTts() async {
@@ -147,6 +148,15 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
     } catch (_) {}
   }
 
+  Future<void> _cancelAudioSession() async {
+    _audioSessionId++;
+    await _stopAudio();
+  }
+
+  bool _canContinueAudio(int sessionId) {
+    return mounted && !_playerStarted && sessionId == _audioSessionId;
+  }
+
   void _initializeGame() {
     // Create pairs of cards
     List<Map<String, dynamic>> cardPairs = [];
@@ -171,16 +181,16 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
   }
 
   void _resetGame() {
-    _stopAudio();
+    _cancelAudioSession();
     setState(() {
       _initializeGame();
     });
-    _playWelcomeInstructions();
   }
 
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    _audioSessionId++;
     _stopAudio();
     _celebrationController.dispose();
     _flipController.dispose();
@@ -194,7 +204,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
 
     if (!_playerStarted) {
       _playerStarted = true;
-      _stopAudio();
+      _cancelAudioSession();
     }
 
     setState(() {
@@ -338,26 +348,28 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
   }
 
   Future<void> _playWelcomeInstructions() async {
+    final sessionId = ++_audioSessionId;
     await Future.delayed(const Duration(milliseconds: 500));
-    if (_playerStarted) return;
+    if (!_canContinueAudio(sessionId)) return;
     await _speakText(_isSpanish
         ? '¡Bienvenido al Juego de Memoria!'
         : 'Welcome to the Memory Match Game!');
-    if (_playerStarted) return;
+    if (!_canContinueAudio(sessionId)) return;
     await Future.delayed(const Duration(milliseconds: 1000));
-    if (_playerStarted) return;
+    if (!_canContinueAudio(sessionId)) return;
     await _speakText(_isSpanish
         ? '¡Combina los residuos con sus contenedores correctos!'
         : 'Match the waste items with their correct disposal bins!');
-    if (_playerStarted) return;
+    if (!_canContinueAudio(sessionId)) return;
     await Future.delayed(const Duration(milliseconds: 1000));
-    if (_playerStarted) return;
+    if (!_canContinueAudio(sessionId)) return;
     await _speakText(_isSpanish
         ? '¡Toca dos cartas para voltearlas y encontrar pares!'
         : 'Tap two cards to flip them and find matching pairs!');
   }
 
   Future<void> _speakText(String text) async {
+    if (!mounted) return;
     try {
       await _tts.speak(text);
     } catch (e) {
@@ -476,7 +488,9 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
-        _stopAudio();
+        if (didPop) {
+          _cancelAudioSession();
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -491,7 +505,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame>
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
-              await _stopAudio();
+              await _cancelAudioSession();
               if (!context.mounted) {
                 return;
               }
