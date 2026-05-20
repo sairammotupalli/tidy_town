@@ -444,8 +444,9 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                             ],
                           );
                         },
-                        onWillAccept: (item) => true,
-                        onAccept: (item) {
+                        onWillAcceptWithDetails: (details) => true,
+                        onAcceptWithDetails: (details) {
+                          final item = details.data;
                           if (!correctlySortedItems.contains(item['name'])) {
                             if (item['correctBin'] == binType) {
                               // Correct answer: increment score and move to next item

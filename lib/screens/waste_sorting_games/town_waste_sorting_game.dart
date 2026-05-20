@@ -12,10 +12,7 @@ class _StorySlide {
   final String textKey;
   final String? imagePath;
 
-  const _StorySlide({
-    required this.textKey,
-    required this.imagePath,
-  });
+  const _StorySlide({required this.textKey, required this.imagePath});
 }
 
 class TownWasteSortingGame extends StatefulWidget {
@@ -50,7 +47,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
   final String _mayaHappyImage = 'assets/images/maya_happy.png';
   final String _mayaSadImage = 'assets/images/maya_sad.png';
   final String _storyFallbackImage = 'assets/images/maya_neutral.png';
-  
+
   _TownView _view = _TownView.story;
   List<_StorySlide> _storySlides = const [];
   int _storySlideIndex = 0;
@@ -68,8 +65,10 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
   final List<_TownStage> _stages = [
     _TownStage(
       titleKey: 'Park Cleanup',
-      promptKey: 'Let\'s clean the park first!\nDrag each item into the right bin.',
-      introKey: 'My school is over, and I\'m walking back home through my town.lets come with me.\n\n.',
+      promptKey:
+          'Let\'s clean the park first!\nDrag each item into the right bin.',
+      introKey:
+          'My school is over, and I\'m walking back home through my town.lets come with me.\n\n.',
       introImage: 'assets/images/maya_walking_to_park.png',
       items: [
         {
@@ -88,7 +87,8 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
           'nameKey': 'Plastic Water Bottle',
           'image': 'assets/images/game/plastic_bottle.png',
           'correctBin': 'recycle',
-          'descriptionKey': 'A plastic water bottle left by someone in the park.',
+          'descriptionKey':
+              'A plastic water bottle left by someone in the park.',
         },
         {
           'nameKey': 'Candy Wrapper',
@@ -98,22 +98,23 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
         },
       ],
       question: _TownQuestion(
-        questionKey: '🌱 Which of these can turn into soil and help plants grow?',
-        optionsKeys: [
-          'Plastic bottle',
-          'Banana peel',
-          'Candy wrapper',
-        ],
+        questionKey:
+            '🌱 Which of these can turn into soil and help plants grow?',
+        optionsKeys: ['Plastic bottle', 'Banana peel', 'Candy wrapper'],
         correctIndex: 1,
-        correctMessageKey: '🎉 Awesome!\nBanana peels are food waste. They can turn into compost and help plants grow.',
-        wrongMessageKey: '❌ Oops!\nThe correct answer is banana peel 🍌\nFood waste breaks down naturally and becomes compost for plants.',
+        correctMessageKey:
+            '🎉 Awesome!\nBanana peels are food waste. They can turn into compost and help plants grow.',
+        wrongMessageKey:
+            '❌ Oops!\nThe correct answer is banana peel 🍌\nFood waste breaks down naturally and becomes compost for plants.',
       ),
       followUpStoryKey: null,
     ),
     _TownStage(
       titleKey: 'Bus Stand Cleanup',
-      promptKey: 'People wait here every day.\nLet\'s keep the bus stand clean!',
-      introKey: 'Next stop… the bus stand!\nI see trash near the bench and signboard.',
+      promptKey:
+          'People wait here every day.\nLet\'s keep the bus stand clean!',
+      introKey:
+          'Next stop… the bus stand!\nI see trash near the bench and signboard.',
       introImage: 'assets/images/maya_walking_to_bustand.png',
       items: [
         {
@@ -143,15 +144,18 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
           'To throw them on the road',
         ],
         correctIndex: 1,
-        correctMessageKey: '🌟 Correct!\nRecycling helps reuse materials and saves energy and natural resources.',
-        wrongMessageKey: '❌ Sorry!\nThe correct answer is: to reuse materials and save resources.\nRecycling protects our planet 🌍',
+        correctMessageKey:
+            '🌟 Correct!\nRecycling helps reuse materials and saves energy and natural resources.',
+        wrongMessageKey:
+            '❌ Sorry!\nThe correct answer is: to reuse materials and save resources.\nRecycling protects our planet 🌍',
       ),
       followUpStoryKey: null,
     ),
     _TownStage(
       titleKey: 'Grocery Store Cleanup',
       promptKey: 'Great job so far!\nLet\'s finish strong!',
-      introKey: 'Maya and Coco reach the grocery store.\nThis is the last place to clean!',
+      introKey:
+          'Maya and Coco reach the grocery store.\nThis is the last place to clean!',
       introImage: null,
       items: [
         {
@@ -176,7 +180,8 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
           'nameKey': 'Plastic Carry Bag',
           'image': 'assets/images/game/plastic_bag.png',
           'correctBin': 'landfill',
-          'descriptionKey': 'A plastic carry bag that should be disposed safely.',
+          'descriptionKey':
+              'A plastic carry bag that should be disposed safely.',
         },
       ],
       question: null,
@@ -187,12 +192,18 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
   List<Map<String, dynamic>> _shuffledItems = [];
 
   List<Map<String, dynamic>> get currentItems {
-    return _shuffledItems.map((item) => {
-      'name': _translationService.translate(item['nameKey']),
-      'image': item['image'],
-      'correctBin': item['correctBin'],
-      'description': _translationService.translate(item['descriptionKey']),
-    }).toList();
+    return _shuffledItems
+        .map(
+          (item) => {
+            'name': _translationService.translate(item['nameKey']),
+            'image': item['image'],
+            'correctBin': item['correctBin'],
+            'description': _translationService.translate(
+              item['descriptionKey'],
+            ),
+          },
+        )
+        .toList();
   }
 
   @override
@@ -200,91 +211,88 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
     super.initState();
     final questionPool = <_TownQuestion>[
       // Q1
-  const _TownQuestion(
-    questionKey: '🌱 Which of these can turn into soil and help plants grow?',
-    optionsKeys: ['Plastic bottle', 'Banana peel', 'Candy wrapper'],
-    correctIndex: 1,
-    correctMessageKey:
-        '🎉 Awesome!\nBanana peels are food waste. They can turn into compost and help plants grow.',
-    wrongMessageKey:
-        '❌ Oops!\nThe correct answer is banana peel 🍌\nFood waste breaks down naturally and becomes compost for plants.',
-  ),
+      const _TownQuestion(
+        questionKey:
+            '🌱 Which of these can turn into soil and help plants grow?',
+        optionsKeys: ['Plastic bottle', 'Banana peel', 'Candy wrapper'],
+        correctIndex: 1,
+        correctMessageKey:
+            '🎉 Awesome!\nBanana peels are food waste. They can turn into compost and help plants grow.',
+        wrongMessageKey:
+            '❌ Oops!\nThe correct answer is banana peel 🍌\nFood waste breaks down naturally and becomes compost for plants.',
+      ),
 
-  // Q2
-  const _TownQuestion(
-    questionKey: '♻️ Why should we recycle bottles and cans?',
-    optionsKeys: [
-      'To make the trash heavier',
-      'To reuse materials and save resources',
-      'To throw them on the road',
-    ],
-    correctIndex: 1,
-    correctMessageKey:
-        '🌟 Correct!\nRecycling helps reuse materials and saves energy and natural resources.',
-    wrongMessageKey:
-        '❌ Sorry!\nThe correct answer is: to reuse materials and save resources.\nRecycling protects our planet 🌍',
-  ),
+      // Q2
+      const _TownQuestion(
+        questionKey: '♻️ Why should we recycle bottles and cans?',
+        optionsKeys: [
+          'To make the trash heavier',
+          'To reuse materials and save resources',
+          'To throw them on the road',
+        ],
+        correctIndex: 1,
+        correctMessageKey:
+            '🌟 Correct!\nRecycling helps reuse materials and saves energy and natural resources.',
+        wrongMessageKey:
+            '❌ Sorry!\nThe correct answer is: to reuse materials and save resources.\nRecycling protects our planet 🌍',
+      ),
 
-  // Q3 (GK)
-  const _TownQuestion(
-    questionKey: '🌱 What happens to food waste when it becomes compost?',
-    optionsKeys: [
-      'It turns into soil for plants',
-      'It becomes plastic',
-      'It disappears into the air',
-    ],
-    correctIndex: 0,
-    correctMessageKey:
-        '✅ Correct!\nCompost turns food waste into soil that helps plants grow.',
-    wrongMessageKey:
-        '❌ Not quite.\nFood waste turns into soil that helps plants grow.',
-  ),
+      // Q3 (GK)
+      const _TownQuestion(
+        questionKey: '🌱 What happens to food waste when it becomes compost?',
+        optionsKeys: [
+          'It turns into soil for plants',
+          'It becomes plastic',
+          'It disappears into the air',
+        ],
+        correctIndex: 0,
+        correctMessageKey:
+            '✅ Correct!\nCompost turns food waste into soil that helps plants grow.',
+        wrongMessageKey:
+            '❌ Not quite.\nFood waste turns into soil that helps plants grow.',
+      ),
 
-  // Q4 (GK)
-  const _TownQuestion(
-    questionKey: '♻️ What usually happens to recycled items?',
-    optionsKeys: [
-      'They are made into new things',
-      'They are burned',
-      'They stay the same forever',
-    ],
-    correctIndex: 0,
-    correctMessageKey:
-        '✅ Correct!\nRecycled items can be made into new products.',
-    wrongMessageKey:
-        '❌ Oops!\nRecycled items are used to make new products.',
-  ),
+      // Q4 (GK)
+      const _TownQuestion(
+        questionKey: '♻️ What usually happens to recycled items?',
+        optionsKeys: [
+          'They are made into new things',
+          'They are burned',
+          'They stay the same forever',
+        ],
+        correctIndex: 0,
+        correctMessageKey:
+            '✅ Correct!\nRecycled items can be made into new products.',
+        wrongMessageKey:
+            '❌ Oops!\nRecycled items are used to make new products.',
+      ),
 
-  // Q5 (GK)
-  const _TownQuestion(
-    questionKey: '🌍 Why is too much trash bad for the Earth?',
-    optionsKeys: [
-      'It can pollute land and water',
-      'It makes the Earth bigger',
-      'It helps animals',
-    ],
-    correctIndex: 0,
-    correctMessageKey:
-        '✅ Correct!\nToo much trash can pollute land and water.',
-    wrongMessageKey:
-        '❌ Not this one.\nToo much trash can pollute land and water.',
-  ),
+      // Q5 (GK)
+      const _TownQuestion(
+        questionKey: '🌍 Why is too much trash bad for the Earth?',
+        optionsKeys: [
+          'It can pollute land and water',
+          'It makes the Earth bigger',
+          'It helps animals',
+        ],
+        correctIndex: 0,
+        correctMessageKey:
+            '✅ Correct!\nToo much trash can pollute land and water.',
+        wrongMessageKey:
+            '❌ Not this one.\nToo much trash can pollute land and water.',
+      ),
 
-  // Q6 (GK)
-  const _TownQuestion(
-    questionKey: '⏳ Which item breaks down faster in nature?',
-    optionsKeys: [
-      'Fruit peel',
-      'Plastic bag',
-      'Glass bottle',
-    ],
-    correctIndex: 0,
-    correctMessageKey:
-        '✅ Correct!\nFruit peels break down faster than plastic or glass.',
-    wrongMessageKey:
-        '❌ Not quite.\nFruit peels break down faster than plastic or glass.',
-  ),
-];
+      // Q6 (GK)
+      const _TownQuestion(
+        questionKey: '⏳ Which item breaks down faster in nature?',
+        optionsKeys: ['Fruit peel', 'Plastic bag', 'Glass bottle'],
+        correctIndex: 0,
+        correctMessageKey:
+            '✅ Correct!\nFruit peels break down faster than plastic or glass.',
+        wrongMessageKey:
+            '❌ Not quite.\nFruit peels break down faster than plastic or glass.',
+      ),
+    ];
 
     questionPool.shuffle(_random);
     _selectedQuestions = questionPool.take(2).toList(growable: false);
@@ -304,7 +312,8 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
       slides: const [
         _StorySlide(
           imagePath: 'assets/images/maya_intro.png',
-          textKey: 'Hi kids! 👋\nI’m Maya.\n\nTap the screen to start our town adventure! ✨',
+          textKey:
+              'Hi kids! 👋\nI’m Maya.\n\nTap the screen to start our town adventure! ✨',
         ),
         _StorySlide(
           imagePath: 'assets/images/maya_happy.png',
@@ -323,10 +332,10 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
         ),
       ],
       onDone: () {
+        _tts.stop();
         setState(() {
           _view = _TownView.sorting;
         });
-        _speakText(_translationService.translate("Let's clean the park first!"));
       },
     );
   }
@@ -369,6 +378,30 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
     }
   }
 
+  Future<void> _speakCurrentStorySlide() async {
+    if (_view != _TownView.story || _storySlides.isEmpty) {
+      return;
+    }
+    try {
+      await _tts.stop();
+      await _speakText(
+        _translationService.translate(_storySlides[_storySlideIndex].textKey),
+      );
+    } catch (_) {
+      // Ignore story TTS errors
+    }
+  }
+
+  Future<void> _handleLanguageToggle() async {
+    setState(() {
+      _translationService.toggleLanguage();
+    });
+    await _initializeTts();
+    if (_view == _TownView.story) {
+      await _speakCurrentStorySlide();
+    }
+  }
+
   Future<void> _speakTapText(String text) async {
     final wasSpanish = _translationService.isSpanish;
     await _speakText(text);
@@ -403,16 +436,19 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
       _questionFeedbackKey = null;
       _onQuestionContinue = null;
     });
+    _speakCurrentStorySlide();
   }
 
-  void _advanceStorySlide() {
+  Future<void> _advanceStorySlide() async {
     if (_view != _TownView.story || _storySlides.isEmpty) {
       return;
     }
+    await _tts.stop();
     if (_storySlideIndex + 1 < _storySlides.length) {
       setState(() {
         _storySlideIndex++;
       });
+      await _speakCurrentStorySlide();
       return;
     }
 
@@ -442,9 +478,10 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
     setState(() {
       _questionAnswered = true;
       _questionWasCorrect = isCorrect;
-      _questionFeedbackKey = isCorrect
-          ? _activeQuestion!.correctMessageKey
-          : _activeQuestion!.wrongMessageKey;
+      _questionFeedbackKey =
+          isCorrect
+              ? _activeQuestion!.correctMessageKey
+              : _activeQuestion!.wrongMessageKey;
     });
   }
 
@@ -551,6 +588,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
               ),
             ],
             onDone: () {
+              _tts.stop();
               setState(() {
                 _view = _TownView.sorting;
               });
@@ -570,6 +608,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
               ),
             ],
             onDone: () {
+              _tts.stop();
               setState(() {
                 _view = _TownView.sorting;
               });
@@ -583,8 +622,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
             slides: const [
               _StorySlide(
                 imagePath: 'assets/images/maya_seeing_cat.png',
-                textKey:
-                    'Meow! 🐱\nA small cat walks up.',
+                textKey: 'Meow! 🐱\nA small cat walks up.',
               ),
               _StorySlide(
                 imagePath: 'assets/images/maya_petting_cat.png',
@@ -608,12 +646,14 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
               ),
             ],
             onDone: () {
+              _tts.stop();
               setState(() {
                 _view = _TownView.sorting;
               });
             },
           );
         } else {
+          _tts.stop();
           setState(() {
             _view = _TownView.sorting;
           });
@@ -629,7 +669,9 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
   }
 
   void _showCompletionDialog() {
-    _speakText(_translationService.translate('You did it! Our town is clean and happy!'));
+    _speakText(
+      _translationService.translate('You did it! Our town is clean and happy!'),
+    );
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -643,7 +685,11 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                 _mayaHappyImage,
                 height: 100,
                 errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.sentiment_very_satisfied, size: 60, color: Colors.green);
+                  return const Icon(
+                    Icons.sentiment_very_satisfied,
+                    size: 60,
+                    color: Colors.green,
+                  );
                 },
               ),
               const SizedBox(height: 16),
@@ -680,11 +726,7 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
   @override
   Widget build(BuildContext context) {
     if (isGameComplete) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final stage = _stages[currentStageIndex];
@@ -728,14 +770,20 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                         children: [
                           IconButton(
                             onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.arrow_back, color: Colors.white),
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
                             style: IconButton.styleFrom(
                               backgroundColor: Colors.black.withOpacity(0.3),
                             ),
                           ),
                           const Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.9),
                               borderRadius: BorderRadius.circular(20),
@@ -752,19 +800,21 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                           const SizedBox(width: 8),
                           IconButton(
                             onPressed: () {
-                              setState(() {
-                                _translationService.toggleLanguage();
-                                _initializeTts();
-                              });
+                              _handleLanguageToggle();
                             },
                             icon: Icon(
-                              _translationService.isSpanish ? Icons.language : Icons.translate,
+                              _translationService.isSpanish
+                                  ? Icons.language
+                                  : Icons.translate,
                               color: Colors.white,
                             ),
                             style: IconButton.styleFrom(
                               backgroundColor: Colors.cyan.withOpacity(0.7),
                             ),
-                            tooltip: _translationService.isSpanish ? 'Switch to English' : 'Cambiar a Español',
+                            tooltip:
+                                _translationService.isSpanish
+                                    ? 'Switch to English'
+                                    : 'Cambiar a Español',
                           ),
                         ],
                       ),
@@ -773,10 +823,22 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                       child: LinearProgressIndicator(
-                        value: (currentItemIndex + _stages.take(currentStageIndex).fold<int>(0, (sum, s) => sum + s.items.length)) /
-                            _stages.fold<int>(0, (sum, s) => sum + s.items.length),
+                        value:
+                            (currentItemIndex +
+                                _stages
+                                    .take(currentStageIndex)
+                                    .fold<int>(
+                                      0,
+                                      (sum, s) => sum + s.items.length,
+                                    )) /
+                            _stages.fold<int>(
+                              0,
+                              (sum, s) => sum + s.items.length,
+                            ),
                         backgroundColor: Colors.white.withOpacity(0.3),
-                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Colors.orange,
+                        ),
                         minHeight: 6,
                       ),
                     ),
@@ -796,17 +858,23 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                       child: Container(
                                         width: double.infinity,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(0.2),
+                                              color: Colors.black.withOpacity(
+                                                0.2,
+                                              ),
                                               blurRadius: 10,
                                               offset: const Offset(0, 5),
                                             ),
                                           ],
                                         ),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
                                           child: Image.asset(
                                             showFeedback
                                                 ? (isCorrectAnswer
@@ -814,19 +882,29 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                                     : _mayaSadImage)
                                                 : _mayaNeutralImage,
                                             fit: BoxFit.contain,
-                                            errorBuilder: (context, error, stackTrace) {
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
                                               return Container(
                                                 decoration: BoxDecoration(
-                                                  color: showFeedback
-                                                      ? (isCorrectAnswer ? Colors.green : Colors.orange)
-                                                      : Colors.cyan,
-                                                  borderRadius: BorderRadius.circular(20),
+                                                  color:
+                                                      showFeedback
+                                                          ? (isCorrectAnswer
+                                                              ? Colors.green
+                                                              : Colors.orange)
+                                                          : Colors.cyan,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
                                                 ),
                                                 child: Icon(
                                                   showFeedback
                                                       ? (isCorrectAnswer
-                                                          ? Icons.sentiment_very_satisfied
-                                                          : Icons.sentiment_dissatisfied)
+                                                          ? Icons
+                                                              .sentiment_very_satisfied
+                                                          : Icons
+                                                              .sentiment_dissatisfied)
                                                       : Icons.person,
                                                   size: 80,
                                                   color: Colors.white,
@@ -848,7 +926,9 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                         borderRadius: BorderRadius.circular(20),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ),
                                             blurRadius: 8,
                                             offset: const Offset(0, 4),
                                           ),
@@ -898,7 +978,8 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                         flex: 4,
                                         child: Draggable<Map<String, dynamic>>(
                                           data: currentItems[currentItemIndex],
-                                          dragAnchorStrategy: pointerDragAnchorStrategy,
+                                          dragAnchorStrategy:
+                                              pointerDragAnchorStrategy,
                                           onDragStarted: () {
                                             setState(() {
                                               _isDraggingItem = true;
@@ -916,16 +997,21 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                           },
                                           feedback: Material(
                                             elevation: 4,
-                                            borderRadius: BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
                                             child: Container(
                                               width: 200,
                                               height: 200,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius: BorderRadius.circular(16),
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(12.0),
+                                                padding: const EdgeInsets.all(
+                                                  12.0,
+                                                ),
                                                 child: Image.asset(
                                                   currentItems[currentItemIndex]['image'],
                                                   fit: BoxFit.contain,
@@ -940,11 +1026,16 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                               height: 320,
                                               decoration: BoxDecoration(
                                                 color: Colors.grey.shade100,
-                                                borderRadius: BorderRadius.circular(16),
-                                                border: Border.all(color: Colors.grey.shade300),
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                border: Border.all(
+                                                  color: Colors.grey.shade300,
+                                                ),
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(12.0),
+                                                padding: const EdgeInsets.all(
+                                                  12.0,
+                                                ),
                                                 child: Image.asset(
                                                   currentItems[currentItemIndex]['image'],
                                                   fit: BoxFit.contain,
@@ -954,38 +1045,61 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                           ),
                                           child: GestureDetector(
                                             onTap: () {
-                                              _speakTapText(currentItems[currentItemIndex]['name']);
+                                              _speakTapText(
+                                                currentItems[currentItemIndex]['name'],
+                                              );
                                             },
                                             child: Container(
                                               width: 320,
                                               height: 320,
                                               decoration: BoxDecoration(
                                                 color: Colors.grey.shade100,
-                                                borderRadius: BorderRadius.circular(16),
-                                                border: Border.all(color: Colors.grey.shade300),
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                border: Border.all(
+                                                  color: Colors.grey.shade300,
+                                                ),
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(12.0),
+                                                padding: const EdgeInsets.all(
+                                                  12.0,
+                                                ),
                                                 child: Image.asset(
                                                   currentItems[currentItemIndex]['image'],
                                                   fit: BoxFit.contain,
-                                                  errorBuilder: (context, error, stackTrace) {
+                                                  errorBuilder: (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) {
                                                     return Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
                                                       children: [
                                                         Icon(
                                                           Icons.eco,
                                                           size: 60,
-                                                          color: Colors.grey.shade400,
+                                                          color:
+                                                              Colors
+                                                                  .grey
+                                                                  .shade400,
                                                         ),
-                                                        const SizedBox(height: 8),
+                                                        const SizedBox(
+                                                          height: 8,
+                                                        ),
                                                         Text(
                                                           currentItems[currentItemIndex]['name'],
                                                           style: TextStyle(
-                                                            color: Colors.grey.shade600,
-                                                            fontWeight: FontWeight.bold,
+                                                            color:
+                                                                Colors
+                                                                    .grey
+                                                                    .shade600,
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                           ),
-                                                          textAlign: TextAlign.center,
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
                                                       ],
                                                     );
@@ -1019,77 +1133,106 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
 
                       if (!showFeedback) ...[
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0, left: 16, right: 16),
+                          padding: const EdgeInsets.only(
+                            bottom: 20.0,
+                            left: 16,
+                            right: 16,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: binOrder.map((binType) {
-                              return Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                  child: DragTarget<Map<String, dynamic>>(
-                                    builder: (context, candidateItems, rejectedItems) {
-                                      final label = _translationService.translate(
-                                        binType == 'recycle'
-                                            ? 'Recycle'
-                                            : binType == 'compost'
-                                                ? 'Compost'
-                                                : 'Landfill',
-                                      );
+                            children:
+                                binOrder.map((binType) {
+                                  return Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6.0,
+                                      ),
+                                      child: DragTarget<Map<String, dynamic>>(
+                                        builder: (
+                                          context,
+                                          candidateItems,
+                                          rejectedItems,
+                                        ) {
+                                          final label = _translationService
+                                              .translate(
+                                                binType == 'recycle'
+                                                    ? 'Recycle'
+                                                    : binType == 'compost'
+                                                    ? 'Compost'
+                                                    : 'Landfill',
+                                              );
 
-                                      return GestureDetector(
-                                        onTap: _isDraggingItem ? null : () => _speakTapText(label),
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            Image.asset(
-                                              binImages[binType]!,
-                                              width: 250,
-                                              height: 380,
-                                              fit: BoxFit.contain,
-                                            ),
-                                            Positioned(
-                                              bottom: 14,
-                                              child: Container(
-                                                padding: const EdgeInsets.symmetric(
-                                                  horizontal: 14,
-                                                  vertical: 8,
+                                          return GestureDetector(
+                                            onTap:
+                                                _isDraggingItem
+                                                    ? null
+                                                    : () =>
+                                                        _speakTapText(label),
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  binImages[binType]!,
+                                                  width: 250,
+                                                  height: 380,
+                                                  fit: BoxFit.contain,
                                                 ),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white.withOpacity(0.9),
-                                                  borderRadius: BorderRadius.circular(14),
-                                                  border: Border.all(
-                                                    color: Colors.black.withOpacity(0.15),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black.withOpacity(0.12),
-                                                      blurRadius: 6,
-                                                      offset: const Offset(0, 3),
+                                                Positioned(
+                                                  bottom: 14,
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 14,
+                                                          vertical: 8,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white
+                                                          .withOpacity(0.9),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            14,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: Colors.black
+                                                            .withOpacity(0.15),
+                                                      ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(
+                                                                0.12,
+                                                              ),
+                                                          blurRadius: 6,
+                                                          offset: const Offset(
+                                                            0,
+                                                            3,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                                child: Text(
-                                                  label,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    fontSize: 18,
-                                                    color: Colors.black87,
+                                                    child: Text(
+                                                      label,
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        fontSize: 18,
+                                                        color: Colors.black87,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                    onWillAcceptWithDetails: (item) => true,
-                                    onAcceptWithDetails: (item) {
-                                      _handleAnswer(binType);
-                                    },
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                                          );
+                                        },
+                                        onWillAcceptWithDetails: (item) => true,
+                                        onAcceptWithDetails: (item) {
+                                          _handleAnswer(binType);
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                           ),
                         ),
                       ],
@@ -1132,17 +1275,29 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                       borderRadius: BorderRadius.circular(20),
                                       child: Image.asset(
                                         showQuestion
-                                          ? (_questionAnswered
-                                              ? (_questionWasCorrect ? _mayaHappyImage : _mayaNeutralImage)
-                                              : 'assets/images/maya_questioning.png')
+                                            ? (_questionAnswered
+                                                ? (_questionWasCorrect
+                                                    ? _mayaHappyImage
+                                                    : _mayaNeutralImage)
+                                                : 'assets/images/maya_questioning.png')
                                             : (_storySlides.isNotEmpty
-                                                ? (_storySlides[_storySlideIndex].imagePath ?? _storyFallbackImage)
+                                                ? (_storySlides[_storySlideIndex]
+                                                        .imagePath ??
+                                                    _storyFallbackImage)
                                                 : _storyFallbackImage),
                                         fit: BoxFit.contain,
-                                        errorBuilder: (context, error, stackTrace) {
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
                                           return Container(
                                             color: Colors.cyan,
-                                            child: const Icon(Icons.person, size: 80, color: Colors.white),
+                                            child: const Icon(
+                                              Icons.person,
+                                              size: 80,
+                                              color: Colors.white,
+                                            ),
                                           );
                                         },
                                       ),
@@ -1165,10 +1320,13 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: [
                                       Text(
-                                        _translationService.translate(showQuestion ? 'Question' : ''),
+                                        _translationService.translate(
+                                          showQuestion ? 'Question' : '',
+                                        ),
                                         style: const TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
@@ -1180,9 +1338,11 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                       Text(
                                         _translationService.translate(
                                           showQuestion
-                                              ? (_activeQuestion?.questionKey ?? '')
+                                              ? (_activeQuestion?.questionKey ??
+                                                  '')
                                               : (_storySlides.isNotEmpty
-                                                  ? _storySlides[_storySlideIndex].textKey
+                                                  ? _storySlides[_storySlideIndex]
+                                                      .textKey
                                                   : ''),
                                         ),
                                         style: const TextStyle(
@@ -1191,10 +1351,13 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      if (!showQuestion && _storySlides.isNotEmpty) ...[
+                                      if (!showQuestion &&
+                                          _storySlides.isNotEmpty) ...[
                                         const SizedBox(height: 8),
                                         Text(
-                                          _translationService.translate('(Tap anywhere to continue)'),
+                                          _translationService.translate(
+                                            '(Tap anywhere to continue)',
+                                          ),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey.shade700,
@@ -1202,10 +1365,13 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                           textAlign: TextAlign.center,
                                         ),
                                       ],
-                                      if (showQuestion && _questionFeedbackKey != null) ...[
+                                      if (showQuestion &&
+                                          _questionFeedbackKey != null) ...[
                                         const SizedBox(height: 12),
                                         Text(
-                                          _translationService.translate(_questionFeedbackKey!),
+                                          _translationService.translate(
+                                            _questionFeedbackKey!,
+                                          ),
                                           style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w600,
@@ -1224,55 +1390,82 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                       ),
                       if (showQuestion && _activeQuestion != null) ...[
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0, left: 16, right: 16),
+                          padding: const EdgeInsets.only(
+                            bottom: 20.0,
+                            left: 16,
+                            right: 16,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: _activeQuestion!.optionsKeys.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final optionKey = entry.value;
-                              return Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                  child: GestureDetector(
-                                    onTap: _questionAnswered
-                                        ? null
-                                        : () => _handleQuestionAnswer(index),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 200),
-                                      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-                                      decoration: BoxDecoration(
-                                        color: _questionAnswered
-                                            ? Colors.grey.shade200
-                                            : Colors.white.withOpacity(0.95),
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(
-                                          color: Colors.orange.shade400,
-                                          width: 2,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.15),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 4),
+                            children:
+                                _activeQuestion!.optionsKeys
+                                    .asMap()
+                                    .entries
+                                    .map((entry) {
+                                      final index = entry.key;
+                                      final optionKey = entry.value;
+                                      return Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6.0,
                                           ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          _translationService.translate(optionKey),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            color: Colors.black87,
+                                          child: GestureDetector(
+                                            onTap:
+                                                _questionAnswered
+                                                    ? null
+                                                    : () =>
+                                                        _handleQuestionAnswer(
+                                                          index,
+                                                        ),
+                                            child: AnimatedContainer(
+                                              duration: const Duration(
+                                                milliseconds: 200,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 18,
+                                                    horizontal: 12,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    _questionAnswered
+                                                        ? Colors.grey.shade200
+                                                        : Colors.white
+                                                            .withOpacity(0.95),
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                border: Border.all(
+                                                  color: Colors.orange.shade400,
+                                                  width: 2,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.15),
+                                                    blurRadius: 8,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  _translationService.translate(
+                                                    optionKey,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    color: Colors.black87,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                                      );
+                                    })
+                                    .toList(),
                           ),
                         ),
                       ],
@@ -1337,7 +1530,10 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                             ),
                             const SizedBox(height: 16),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 24,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.green.shade400.withOpacity(0.95),
                                 borderRadius: BorderRadius.circular(32),

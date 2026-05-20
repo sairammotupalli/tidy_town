@@ -38,7 +38,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with RouteAware {
   final FlutterTts flutterTts = FlutterTts();
   final TranslationService _translationService = TranslationService();
-  
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +62,9 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   Future<void> _speakWelcome() async {
     await flutterTts.setSpeechRate(0.3); // slow
     await flutterTts.setPitch(1.3); // kid-friendly pitch (1.0–2.0 is allowed)
-    await flutterTts.setLanguage(_translationService.isSpanish ? "es-ES" : "en-US");
+    await flutterTts.setLanguage(
+      _translationService.isSpanish ? "es-ES" : "en-US",
+    );
     await flutterTts.speak(_translationService.translate("Welcome"));
   }
 
@@ -89,10 +91,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             ),
             title: Text(
               _translationService.translate(category.name),
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,10 +109,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                 const SizedBox(height: 4),
                 Text(
                   '${category.completedQuestions}/${category.totalQuestions} ${_translationService.translate('completed')}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
               ],
             ),
@@ -161,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     final recycleProgress = await ProgressService.getProgress('Recycle');
     final compostProgress = await ProgressService.getProgress('Compost');
     final landfillProgress = await ProgressService.getProgress('Landfill');
-    
+
     return [
       CategoryProgress(
         name: 'Recycle',
@@ -190,129 +186,137 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   void _showGamesDialog() {
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _translationService.translate('🎮 Choose a Game 🎮'),
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4A3728),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const WasteSortingGameSelection(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 5,
-                      ),
-                      child: Text(
-                        _translationService.translate('Waste Sorting\nGame'),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'ComicNeue',
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                  Text(
+                    _translationService.translate('🎮 Choose a Game 🎮'),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4A3728),
                     ),
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MemoryMatchGame(),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        const WasteSortingGameSelection(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 5,
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          child: Text(
+                            _translationService.translate(
+                              'Waste Sorting\nGame',
+                            ),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ComicNeue',
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        elevation: 5,
                       ),
-                      child: Text(
-                        _translationService.translate('Memory Match\nGame'),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'ComicNeue',
-                          color: Colors.white,
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MemoryMatchGame(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 5,
+                          ),
+                          child: Text(
+                            _translationService.translate('Memory Match\nGame'),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ComicNeue',
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: 10),
                 ],
               ),
-              const SizedBox(height: 10),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
   void _showProgressDialog() async {
     final categories = await _buildCategories();
-    
+
     if (!mounted) return;
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _translationService.translate('Your Learning Progress'),
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4A3728),
-                ),
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _translationService.translate('Your Learning Progress'),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4A3728),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ...categories.map(
+                    (category) => _buildProgressIndicator(category),
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
-              const SizedBox(height: 20),
-              ...categories.map((category) => _buildProgressIndicator(category)),
-              const SizedBox(height: 10),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -358,7 +362,9 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).padding.top + kToolbarHeight),
+                SizedBox(
+                  height: MediaQuery.of(context).padding.top + kToolbarHeight,
+                ),
                 Lottie.asset(
                   'assets/animations/animal.json',
                   width: 600,
@@ -428,5 +434,4 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       ),
     );
   }
-
 }
