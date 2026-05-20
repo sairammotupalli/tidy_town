@@ -3,6 +3,7 @@ import 'package:tidy_town/screens/waste_sorting_games/village_waste_sorting_game
 import 'package:tidy_town/screens/waste_sorting_games/town_waste_sorting_game.dart';
 import 'package:tidy_town/screens/waste_sorting_games/space_waste_sorting_game.dart';
 import 'package:tidy_town/screens/waste_sorting_games/beach_waste_sorting_game.dart';
+import 'package:tidy_town/screens/waste_sorting_games/house_waste_sorting_game.dart';
 import 'package:tidy_town/services/translation_service.dart';
 
 class GameTheme {
@@ -27,7 +28,8 @@ class WasteSortingGameSelection extends StatefulWidget {
   const WasteSortingGameSelection({super.key});
 
   @override
-  State<WasteSortingGameSelection> createState() => _WasteSortingGameSelectionState();
+  State<WasteSortingGameSelection> createState() =>
+      _WasteSortingGameSelectionState();
 }
 
 class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
@@ -38,7 +40,8 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
       id: 'village',
       name: 'Village Adventure',
       description: 'Help Farmer Sam keep the peaceful village clean!',
-      thumbnailImage: 'assets/images/village_thumbnail.png', // NEW: Village with Farmer Sam
+      thumbnailImage:
+          'assets/images/village_thumbnail.png', // NEW: Village with Farmer Sam
       primaryColor: Colors.green,
       secondaryColor: Colors.lightGreen,
     ),
@@ -46,7 +49,8 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
       id: 'town',
       name: 'Town Explorer',
       description: 'Help Maya sort waste in the busy town center!',
-      thumbnailImage: 'assets/images/town_thumbnail.png', // NEW: Urban scene with Maya
+      thumbnailImage:
+          'assets/images/town_thumbnail.png', // NEW: Urban scene with Maya
       primaryColor: Colors.blue,
       secondaryColor: Colors.lightBlue,
     ),
@@ -54,7 +58,8 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
       id: 'space',
       name: 'Space Mission',
       description: 'Help Captain Luna clean up space debris!',
-      thumbnailImage: 'assets/images/space_thumbnail.png', // NEW: Space scene with Captain Luna
+      thumbnailImage:
+          'assets/images/space_thumbnail.png', // NEW: Space scene with Captain Luna
       primaryColor: Colors.purple,
       secondaryColor: Colors.deepPurple,
     ),
@@ -65,6 +70,15 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
       thumbnailImage: 'assets/images/beach_thumbnail.png',
       primaryColor: Colors.cyan,
       secondaryColor: Colors.teal,
+    ),
+    GameTheme(
+      id: 'house',
+      name: 'Home Cleanup with Bella',
+      description:
+          'Help Bella sort waste in the kitchen, bathroom, and living room!',
+      thumbnailImage: 'assets/images/House_cleaning_thumbnail.png',
+      primaryColor: Colors.deepOrange,
+      secondaryColor: Colors.orange,
     ),
   ];
 
@@ -113,7 +127,9 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
             children: [
               const SizedBox(height: 20),
               Text(
-                _translationService.translate('Select a theme for your waste sorting adventure!'),
+                _translationService.translate(
+                  'Select a theme for your waste sorting adventure!',
+                ),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -162,15 +178,16 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
           case 'beach':
             gameScreen = const BeachWasteSortingGame();
             break;
+          case 'house':
+            gameScreen = const HouseWasteSortingGame();
+            break;
           default:
             gameScreen = const BeachWasteSortingGame();
         }
-        
+
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => gameScreen,
-          ),
+          MaterialPageRoute(builder: (context) => gameScreen),
         );
       },
       child: Container(
@@ -179,11 +196,14 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [theme.primaryColor.withOpacity(0.8), theme.secondaryColor.withOpacity(0.6)],
+            colors: [
+              theme.primaryColor.withValues(alpha: 0.8),
+              theme.secondaryColor.withValues(alpha: 0.6),
+            ],
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -198,7 +218,7 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
                 margin: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -207,7 +227,7 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: theme.primaryColor.withOpacity(0.3),
+                        color: theme.primaryColor.withValues(alpha: 0.3),
                         child: Icon(
                           _getThemeIcon(theme.id),
                           size: 60,
@@ -268,6 +288,8 @@ class _WasteSortingGameSelectionState extends State<WasteSortingGameSelection> {
         return Icons.rocket_launch;
       case 'beach':
         return Icons.beach_access;
+      case 'house':
+        return Icons.home_work;
       default:
         return Icons.eco;
     }

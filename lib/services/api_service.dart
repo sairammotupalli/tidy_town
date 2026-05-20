@@ -76,15 +76,15 @@ class ApiService {
   Future<bool> uploadBuildArtifacts(Map<String, dynamic> artifacts) async {
     try {
       final formData = FormData.fromMap({
-        'android_apk': await MultipartFile.fromBytes(
+        'android_apk': MultipartFile.fromBytes(
           utf8.encode('mock_android_build.apk'),
           filename: 'app-release.apk',
         ),
-        'ios_ipa': await MultipartFile.fromBytes(
+        'ios_ipa': MultipartFile.fromBytes(
           utf8.encode('mock_ios_build.ipa'),
           filename: 'app-release.ipa',
         ),
-        'web_build': await MultipartFile.fromBytes(
+        'web_build': MultipartFile.fromBytes(
           utf8.encode('mock_web_build.zip'),
           filename: 'web-build.zip',
         ),

@@ -371,14 +371,14 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
     );
     await flutterTts.setSpeechRate(0.3);
 
-    String _nameOf(dynamic voice) {
+    String nameOf(dynamic voice) {
       if (voice is Map && voice['name'] is String) {
         return (voice['name'] as String);
       }
       return (voice?.name?.toString() ?? '');
     }
 
-    String _localeOf(dynamic voice) {
+    String localeOf(dynamic voice) {
       if (voice is Map && voice['locale'] is String) {
         return (voice['locale'] as String);
       }
@@ -391,9 +391,9 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
         return;
       }
 
-      dynamic _pickVoice(bool Function(String lowerName) matches) {
+      dynamic pickVoice(bool Function(String lowerName) matches) {
         for (final v in voices) {
-          final lower = _nameOf(v).toLowerCase();
+          final lower = nameOf(v).toLowerCase();
           if (matches(lower)) {
             return v;
           }
@@ -401,7 +401,7 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
         return voices.first;
       }
 
-      final tommyVoiceData = _pickVoice(
+      final tommyVoiceData = pickVoice(
         (n) =>
             n.contains('male') ||
             n.contains('man') ||
@@ -410,11 +410,11 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
             n.contains('david'),
       );
       tommyVoice = {
-        'name': _nameOf(tommyVoiceData),
-        'locale': _localeOf(tommyVoiceData),
+        'name': nameOf(tommyVoiceData),
+        'locale': localeOf(tommyVoiceData),
       };
 
-      final bottleVoiceData = _pickVoice(
+      final bottleVoiceData = pickVoice(
         (n) =>
             n.contains('female') ||
             n.contains('woman') ||
@@ -422,8 +422,8 @@ class _RecycleDetailScreenState extends State<RecycleDetailScreen>
             n.contains('karen'),
       );
       bottleVoice = {
-        'name': _nameOf(bottleVoiceData),
-        'locale': _localeOf(bottleVoiceData),
+        'name': nameOf(bottleVoiceData),
+        'locale': localeOf(bottleVoiceData),
       };
     } catch (_) {
       // Best-effort voice setup; ignore failures.
@@ -1338,14 +1338,14 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
     );
     await flutterTts.setSpeechRate(0.3);
 
-    String _nameOf(dynamic voice) {
+    String nameOf(dynamic voice) {
       if (voice is Map && voice['name'] is String) {
         return (voice['name'] as String);
       }
       return (voice?.name?.toString() ?? '');
     }
 
-    String _localeOf(dynamic voice) {
+    String localeOf(dynamic voice) {
       if (voice is Map && voice['locale'] is String) {
         return (voice['locale'] as String);
       }
@@ -1358,9 +1358,9 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
         return;
       }
 
-      dynamic _pickVoice(bool Function(String lowerName) matches) {
+      dynamic pickVoice(bool Function(String lowerName) matches) {
         for (final v in voices) {
-          final lower = _nameOf(v).toLowerCase();
+          final lower = nameOf(v).toLowerCase();
           if (matches(lower)) {
             return v;
           }
@@ -1368,7 +1368,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
         return voices.first;
       }
 
-      final tommyVoiceData = _pickVoice(
+      final tommyVoiceData = pickVoice(
         (n) =>
             n.contains('male') ||
             n.contains('man') ||
@@ -1377,11 +1377,11 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
             n.contains('david'),
       );
       tommyVoice = {
-        'name': _nameOf(tommyVoiceData),
-        'locale': _localeOf(tommyVoiceData),
+        'name': nameOf(tommyVoiceData),
+        'locale': localeOf(tommyVoiceData),
       };
 
-      final bottleVoiceData = _pickVoice(
+      final bottleVoiceData = pickVoice(
         (n) =>
             n.contains('female') ||
             n.contains('woman') ||
@@ -1389,8 +1389,8 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> with RouteAware {
             n.contains('karen'),
       );
       bottleVoice = {
-        'name': _nameOf(bottleVoiceData),
-        'locale': _localeOf(bottleVoiceData),
+        'name': nameOf(bottleVoiceData),
+        'locale': localeOf(bottleVoiceData),
       };
     } catch (_) {
       // Best-effort voice setup; ignore failures.

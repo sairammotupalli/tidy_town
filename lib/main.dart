@@ -5,6 +5,7 @@ import 'services/redis_cache_service.dart';
 import 'services/api_service.dart';
 import 'services/cicd_service.dart';
 import 'services/route_observer.dart';
+import 'utils/desktop_web_frame.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       navigatorObservers: [routeObserver],
+      builder: (context, child) {
+        return DesktopWebFrame(child: child ?? const SizedBox.shrink());
+      },
       initialRoute: '/',
       routes: {
         '/': (context) => const WelcomeScreen(), // 🏁 App starts here
