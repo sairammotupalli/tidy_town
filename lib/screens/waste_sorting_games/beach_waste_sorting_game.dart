@@ -692,8 +692,8 @@ class _BeachWasteSortingGameState extends State<BeachWasteSortingGame>
                                   ),
                                 );
                               },
-                              onWillAccept: (item) => true,
-                              onAccept: (item) {
+                              onWillAcceptWithDetails: (item) => true,
+                              onAcceptWithDetails: (item) {
                                 // Delegate scoring and progression to _handleAnswer
                                 _handleAnswer(binType);
                               },

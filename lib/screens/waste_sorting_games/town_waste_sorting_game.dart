@@ -1082,8 +1082,8 @@ class _TownWasteSortingGameState extends State<TownWasteSortingGame>
                                         ),
                                       );
                                     },
-                                    onWillAccept: (item) => true,
-                                    onAccept: (item) {
+                                    onWillAcceptWithDetails: (item) => true,
+                                    onAcceptWithDetails: (item) {
                                       _handleAnswer(binType);
                                     },
                                   ),
