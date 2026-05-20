@@ -444,7 +444,7 @@ class _WasteSortingGameState extends State<WasteSortingGame> with TickerProvider
                             ],
                           );
                         },
-                        onWillAcceptWithDetails: (details) => true,
+                        onWillAcceptWithDetails: (item) => true,
                         onAcceptWithDetails: (details) {
                           final item = details.data;
                           if (!correctlySortedItems.contains(item['name'])) {
